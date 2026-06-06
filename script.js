@@ -16,44 +16,55 @@ let baseDate = new Date();
 let selectedDate = getFormattedDate(new Date());
 let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
 
-// 内置常见食物规划数据库
+// 🌟 超豐富飲食資料庫（包含在地小吃、超商外食、飲料）
 const presetFoods = {
     staple: [
-        { name: "🍚 白米饭(一碗)", calories: 130 },
-        { name: "🍜 水煮面条", calories: 110 },
-        { name: "🍞 全麦面包(片)", calories: 80 },
-        { name: "🍠 蒸地瓜", calories: 100 },
-        { name: "🌽 水煮玉米", calories: 112 },
-        { name: "🥯 馒头", calories: 220 }
+        { name: "🍚 白米飯(一碗)", calories: 280 },
+        { name: "🍜 水煮麵條(碗)", calories: 220 },
+        { name: "🍞 全麥麵包(片)", calories: 80 },
+        { name: "🍠 蒸地瓜(中)", calories: 140 },
+        { name: "🌽 水煮玉米(根)", calories: 150 },
+        { name: "🍱 烤雞腿便當", calories: 750 },
+        { name: "🍛 咖哩飯", calories: 850 },
+        { name: "🥪 超商三明治", calories: 300 },
+        { name: "🍙 肉鬆御飯糰", calories: 210 }
     ],
     protein: [
-        { name: "🥚 水煮蛋", calories: 80 },
-        { name: "🍳 荷包蛋", calories: 120 },
-        { name: "🍗 煎鸡胸肉(100g)", calories: 140 },
-        { name: "🥩 瘦牛肉(100g)", calories: 160 },
-        { name: "🥛 纯牛奶(250ml)", calories: 150 },
-        { name: "🍦 优格(100g)", calories: 80 }
+        { name: "🥚 水煮蛋(顆)", calories: 75 },
+        { name: "🍳 荷包蛋(顆)", calories: 110 },
+        { name: "🍗 煎雞胸肉(100g)", calories: 140 },
+        { name: "🥩 滷牛肉(100g)", calories: 150 },
+        { name: "🐟 煎鮭魚(100g)", calories: 210 },
+        { name: "🥛 鮮乳(290ml)", calories: 180 },
+        { name: "🥛 無糖豆漿(400ml)", calories: 130 },
+        { name: "🍦 無糖優格(杯)", calories: 80 },
+        { name: "🥘 豆腐(半盒)", calories: 70 }
     ],
     veg: [
-        { name: "🥦 水煮西兰花", calories: 35 },
-        { name: "🥬 清炒生菜", calories: 45 },
-        { name: "🍅 番茄(一个)", calories: 30 },
-        { name: "🥒 黄瓜(一根)", calories: 30 },
-        { name: "🥗 卷心菜", calories: 25 }
+        { name: "🥦 水煮綠花椰", calories: 35 },
+        { name: "🥬 燙青菜(無肉燥)", calories: 40 },
+        { name: "🍅 大番茄(顆)", calories: 35 },
+        { name: "🥒 小黃瓜(條)", calories: 20 },
+        { name: "🥗 綜合沙拉(無醬)", calories: 45 },
+        { name: "🍄 炒綜合菇類", calories: 50 },
+        { name: "🧅 洋蔥炒蛋(盤)", calories: 120 }
     ],
     snack: [
-        { name: "🍎 苹果(中型)", calories: 95 },
-        { name: "🍌 香蕉(中型)", calories: 105 },
-        { name: "🥝 奇异果", calories: 40 },
-        { name: "🥜 混合坚果(25g)", calories: 150 },
-        { name: "☕ 黑咖啡(一杯)", calories: 5 },
-        { name: "☕ 拿铁(无糖)", calories: 120 }
+        { name: "🍎 蘋果(中型)", calories: 90 },
+        { name: "🍌 香蕉(中型)", calories: 100 },
+        { name: "🥝 奇異果(顆)", calories: 45 },
+        { name: "🥜 綜合堅果(包)", calories: 160 },
+        { name: "☕ 黑咖啡(杯)", calories: 5 },
+        { name: "☕ 無糖拿鐵(杯)", calories: 120 },
+        { name: "🧋 珍奶(微糖微冰)", calories: 550 },
+        { name: "🍵 無糖綠茶", calories: 0 },
+        { name: "🍫 巧克力(一片)", calories: 250 }
     ]
 };
 
 function init() {
     renderCalendarPagination();
-    switchQuickFoodCategory('staple'); // 默认显示主食
+    switchQuickFoodCategory('staple'); // 預設顯示主食
     updateUI();
     setupEventListeners();
 }
@@ -85,7 +96,6 @@ function renderCalendarPagination() {
     }
 }
 
-// 动态切换渲染快捷食物按钮
 function switchQuickFoodCategory(category) {
     quickFoodPool.innerHTML = '';
     const foods = presetFoods[category] || [];
@@ -93,7 +103,6 @@ function switchQuickFoodCategory(category) {
         const btn = document.createElement('button');
         btn.className = 'quick-food-btn';
         btn.innerHTML = `${food.name} <span>${food.calories}k</span>`;
-        // 点击快捷按钮直接触发添加
         btn.addEventListener('click', () => {
             addMealRecord(food.name, food.calories);
         });
@@ -101,7 +110,6 @@ function switchQuickFoodCategory(category) {
     });
 }
 
-// 提取通用添加记录逻辑
 function addMealRecord(name, calories) {
     const newMeal = { id: Date.now(), name: name, calories: calories };
     if (!allData[selectedDate]) {
@@ -125,7 +133,7 @@ function updateUI() {
     const currentMeals = allData[selectedDate] || [];
 
     if (currentMeals.length === 0) {
-        foodList.innerHTML = '<li class="empty-msg">这天还没有记录哦，吃点什么吧！</li>';
+        foodList.innerHTML = '<li class="empty-msg">這天還沒有記錄哦，吃點什麼吧！</li>';
         totalCaloriesEl.textContent = 0;
         updateProgress(0);
         return;
@@ -156,7 +164,6 @@ function updateProgress(total) {
 }
 
 function setupEventListeners() {
-    // 手动表单提交
     foodForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const name = foodNameInput.value.trim();
@@ -168,7 +175,6 @@ function setupEventListeners() {
         foodNameInput.focus();
     });
 
-    // 分类标签点击切换
     categoryTabs.addEventListener('click', function(e) {
         if (e.target.classList.contains('tab-btn')) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -178,7 +184,6 @@ function setupEventListeners() {
         }
     });
 
-    // 列表删除
     foodList.addEventListener('click', function(e) {
         if (e.target.classList.contains('btn-delete')) {
             const idToDelete = parseInt(e.target.getAttribute('data-id'));
@@ -191,7 +196,6 @@ function setupEventListeners() {
         }
     });
 
-    // 日历分页点击切换
     calendarDays.addEventListener('click', function(e) {
         const card = e.target.closest('.day-card');
         if (card) {
