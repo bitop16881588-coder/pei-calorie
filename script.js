@@ -1,37 +1,15 @@
-const foodForm = document.getElementById('food-form');
-const foodNameInput = document.getElementById('food-name');
-const foodCaloriesInput = document.getElementById('food-calories');
-const foodList = document.getElementById('food-list');
-const totalCaloriesEl = document.getElementById('total-calories');
-const progressCircle = document.querySelector('.progress-circle');
-const calendarDays = document.getElementById('calendar-days');
-const currentDateLabel = document.getElementById('current-date-label');
-const btnPrevWeek = document.getElementById('btn-prev-week');
-const btnNextWeek = document.getElementById('btn-next-week');
-const quickFoodPool = document.getElementById('quick-food-pool');
-const categoryTabs = document.querySelector('.category-tabs');
-
-// 左侧统计数据DOM
-const avgCaloriesEl = document.getElementById('avg-calories');
-const recordedDaysEl = document.getElementById('recorded-days');
-const maxCaloriesEl = document.getElementById('max-calories');
-
-// 右侧小工具DOM
-const waterCupGrid = document.getElementById('water-cup-grid');
-const waterCountEl = document.getElementById('water-count');
-const btnCalcTdee = document.getElementById('btn-calc-tdee');
-const tdeeWeightInput = document.getElementById('tdee-weight');
-const tdeeHeightInput = document.getElementById('tdee-height');
-const tdeeResultEl = document.getElementById('tdee-result');
-
-// 随机饮食DOM
-const btnRandomFood = document.getElementById('btn-random-food');
-const randomFoodResultEl = document.getElementById('random-food-result');
-
+// 核心数据初始化
 const DAILY_GOAL = 2000;
 let baseDate = new Date();
-let selectedDate = getFormattedDate(new Date());
 
+function getFormattedDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+let selectedDate = getFormattedDate(new Date());
 let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
 let waterData = JSON.parse(localStorage.getItem('waterLogByDate')) || {};
 
@@ -80,8 +58,12 @@ const presetFoods = {
     ]
 };
 
-// 存储当前随机出来的餐单
 let currentRandomCombo = [];
+
+// 确保 DOM 彻底完全加载后再执行初始化，防止找不到中间元素
+document.addEventListener("DOMContentLoaded", function() {
+    init();
+});
 
 function init() {
     renderCalendarPagination();
@@ -92,14 +74,9 @@ function init() {
     setupEventListeners();
 }
 
-function getFormattedDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
 function renderCalendarPagination() {
+    const calendarDays = document.getElementById('calendar-days');
+    if (!calendarDays) return;
     calendarDays.innerHTML = '';
     for (let i = -2; i <= 2; i++) {
         let d = new Date(baseDate);
@@ -120,6 +97,8 @@ function renderCalendarPagination() {
 }
 
 function switchQuickFoodCategory(category) {
+    const quickFoodPool = document.getElementById('quick-food-pool');
+    if (!quickFoodPool) return;
     quickFoodPool.innerHTML = '';
     const foods = presetFoods[category] || [];
     foods.forEach(food => {
@@ -141,6 +120,10 @@ function addMealRecord(name, calories) {
 }
 
 function calculateStats() {
+    const recordedDaysEl = document.getElementById('recorded-days');
+    const avgCaloriesEl = document.getElementById('avg-calories');
+    const maxCaloriesEl = document.getElementById('max-calories');
+
     const keys = Object.keys(allData);
     const dayCount = keys.length;
     if (recordedDaysEl) recordedDaysEl.textContent = dayCount + ' ';
@@ -165,6 +148,8 @@ function calculateStats() {
 }
 
 function renderWaterGrid() {
+    const waterCupGrid = document.getElementById('water-cup-grid');
+    const waterCountEl = document.getElementById('water-count');
     if (!waterCupGrid) return;
     waterCupGrid.innerHTML = '';
     const currentCups = waterData[selectedDate] || 0;
@@ -191,6 +176,10 @@ function toggleWaterCup(index) {
 }
 
 function updateUI() {
+    const foodList = document.getElementById('food-list');
+    const currentDateLabel = document.getElementById('current-date-label');
+    const totalCaloriesEl = document.getElementById('total-calories');
+
     if (!foodList) return;
     foodList.innerHTML = '';
     const todayStr = getFormattedDate(new Date());
@@ -224,12 +213,28 @@ function updateUI() {
 }
 
 function updateProgress(total) {
+    const progressCircle = document.querySelector('.progress-circle');
     if (!progressCircle) return;
     const percentage = Math.min((total / DAILY_GOAL) * 100, 100);
     progressCircle.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(var(--primary-color) ${percentage}%, #e0e0e0 ${percentage}%)`;
 }
 
 function setupEventListeners() {
+    const foodForm = document.getElementById('food-form');
+    const foodNameInput = document.getElementById('food-name');
+    const foodCaloriesInput = document.getElementById('food-calories');
+    const categoryTabs = document.querySelector('.category-tabs');
+    const foodList = document.getElementById('food-list');
+    const calendarDays = document.getElementById('calendar-days');
+    const btnPrevWeek = document.getElementById('btn-prev-week');
+    const btnNextWeek = document.getElementById('btn-next-week');
+    const btnCalcTdee = document.getElementById('btn-calc-tdee');
+    const tdeeWeightInput = document.getElementById('tdee-weight');
+    const tdeeHeightInput = document.getElementById('tdee-height');
+    const tdeeResultEl = document.getElementById('tdee-result');
+    const btnRandomFood = document.getElementById('btn-random-food');
+    const randomFoodResultEl = document.getElementById('random-food-result');
+
     if (foodForm) {
         foodForm.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -292,4 +297,55 @@ function setupEventListeners() {
             const bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5);
             const tdee = Math.round(bmr * 1.3);
             tdeeResultEl.style.padding = '12px';
-            tdeeResultEl.innerHTML = `🌟 预估基础代谢
+            tdeeResultEl.innerHTML = `🌟 预估基础代谢(BMR): <b>${bmr}</b> kcal<br>日常维持热量(TDEE): <b>${tdee}</b> kcal<br>👉 建议减脂目标: <b>${tdee - 300}~${tdee}</b> kcal`;
+        });
+    }
+
+    if (btnRandomFood) {
+        btnRandomFood.addEventListener('click', function() {
+            const categories = ['staple', 'protein', 'veg', 'snack'];
+            currentRandomCombo = [];
+            let totalRandomCalories = 0;
+            let htmlContent = `<div style="text-align:left; font-size:0.85rem; color:#475569;">`;
+
+            categories.forEach(cat => {
+                const list = presetFoods[cat];
+                const randomItem = list[Math.floor(Math.random() * list.length)];
+                currentRandomCombo.push(randomItem);
+                totalRandomCalories += randomItem.calories;
+                
+                let prefix = "▪️ ";
+                if(cat === 'staple') prefix = "🍞 ";
+                if(cat === 'protein') prefix = "🥩 ";
+                if(cat === 'veg') prefix = "🥦 ";
+                if(cat === 'snack') prefix = "🍎 ";
+                
+                htmlContent += `${prefix}${randomItem.name} (${randomItem.calories}k)<br>`;
+            });
+
+            htmlContent += `<hr style="margin:8px 0; border:none; border-top:1px dashed #cbd5e1;">`;
+            htmlContent += `🔥 套餐总热量: <b>${totalRandomCalories}</b> kcal<br>`;
+            htmlContent += `<button id="btn-add-random-combo" style="width:100%; background-color:#2ec4b6; color:white; border:none; padding:6px; border-radius:6px; margin-top:8px; font-weight:bold; cursor:pointer;">直接吃这套！一键写入</button>`;
+            htmlContent += `</div>`;
+
+            randomFoodResultEl.style.padding = '12px';
+            randomFoodResultEl.innerHTML = htmlContent;
+
+            document.getElementById('btn-add-random-combo').addEventListener('click', function() {
+                currentRandomCombo.forEach(food => {
+                    const newMeal = { id: Date.now() + Math.random(), name: "🎲 " + food.name, calories: food.calories };
+                    if (!allData[selectedDate]) allData[selectedDate] = [];
+                    allData[selectedDate].push(newMeal);
+                });
+                saveToLocalStorage();
+                updateUI();
+                calculateStats();
+                alert('成功！已将这套随机健康餐加入你的餐单啰 🎉');
+            });
+        });
+    }
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem('calorieDataByDate', JSON.stringify(allData));
+}
