@@ -6,6 +6,7 @@
     --text-color: #333333;
     --text-light: #777777;
     --danger-color: #e63946;
+    --active-bg: #2ec4b6;
 }
 
 * {
@@ -48,39 +49,79 @@ header p {
     font-size: 0.9rem;
 }
 
-/* 日期切换导航 */
-.date-container {
+/* 行事历分頁条 */
+.calendar-pagination {
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 15px;
+    justify-content: space-between;
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 15px;
     margin-bottom: 25px;
+    border: 1px solid #edf2f7;
 }
 
-.btn-date-nav {
-    background: #f0f0f0;
+.nav-arrow {
+    background: none;
     border: none;
-    font-size: 1rem;
-    padding: 8px 14px;
-    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--text-light);
     cursor: pointer;
-    color: var(--text-color);
-    transition: background 0.2s;
+    padding: 8px;
+    transition: color 0.2s;
 }
 
-.btn-date-nav:hover {
-    background: #e0e0e0;
+.nav-arrow:hover {
+    color: var(--primary-color);
 }
 
-#date-picker {
-    border: 1px solid #e0e0e0;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--text-color);
-    outline: none;
-    text-align: center;
+.days-container {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none; /* 隐藏滚动条 */
+}
+
+.days-container::-webkit-scrollbar {
+    display: none; /* 隐藏滚动条 */
+}
+
+/* 单个日历卡片分頁 */
+.day-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 55px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.day-card .month-label {
+    font-size: 0.65rem;
+    color: var(--text-light);
+    margin-bottom: 2px;
+}
+
+.day-card .day-number {
+    font-size: 1.05rem;
+    font-weight: bold;
+}
+
+/* 选中高亮状态 */
+.day-card.active {
+    background: var(--active-bg);
+    color: white;
+    border-color: var(--active-bg);
+    box-shadow: 0 4px 10px rgba(46, 196, 182, 0.3);
+}
+
+.day-card.active .month-label {
+    color: rgba(255, 255, 255, 0.8);
 }
 
 /* 进度环仪表盘 */
