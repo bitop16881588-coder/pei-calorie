@@ -5,33 +5,50 @@ const foodCaloriesInput = document.getElementById('food-calories');
 const foodList = document.getElementById('food-list');
 const totalCaloriesEl = document.getElementById('total-calories');
 const progressCircle = document.querySelector('.progress-circle');
+const datePicker = document.getElementById('date-picker');
+const btnPrevDay = document.getElementById('btn-prev-day');
+const btnNextDay = document.getElementById('btn-next-day');
 
-// 设定一个每日目标卡路里（例如：2000 kcal），用来让进度条动起来
 const DAILY_GOAL = 2000;
 
-// 从 LocalStorage 读取历史记录，如果没有则初始化为空数组
-let meals = JSON.parse(localStorage.getItem('meals')) || [];
+// 当前选中的日期，默认为今天 (格式：YYYY-MM-DD)
+let currentDate = getFormattedDate(new Date());
 
-// 初始化渲染
+// 从 LocalStorage 读取所有数据
+// 数据结构调整为：{ "2026-06-06": [{id:1, name:'苹果', calories:80}], "2026-06-07": [] }
+let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
+
+// 初始化
 function init() {
+    datePicker.value = currentDate;
     updateUI();
+    setupEventListeners();
+}
+
+// 格式化日期为 YYYY-MM-DD
+function getFormattedDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 // 更新页面的核心函数
 function updateUI() {
-    // 1. 清空列表
     foodList.innerHTML = '';
+    
+    // 获取当前日期的食物数组，如果没有记录则为空数组
+    const currentMeals = allData[currentDate] || [];
 
-    if (meals.length === 0) {
-        foodList.innerHTML = '<li class="empty-msg">今天还没有记录哦，吃点什么吧！</li>';
+    if (currentMeals.length === 0) {
+        foodList.innerHTML = '<li class="empty-msg">此日期还没有记录哦，吃点什么吧！</li>';
         totalCaloriesEl.textContent = 0;
         updateProgress(0);
         return;
     }
 
-    // 2. 渲染每一条饮食记录
     let totalCalories = 0;
-    meals.forEach((meal) => {
+    currentMeals.forEach((meal) => {
         totalCalories += meal.calories;
 
         const li = document.createElement('li');
@@ -41,12 +58,11 @@ function updateUI() {
                 <span class="name">${meal.name}</span>
                 <span class="cal">${meal.calories} kcal</span>
             </div>
-            <button class="btn-delete" onclick="deleteMeal(${meal.id})">&times;</button>
+            <button class="btn-delete" data-id="${meal.id}">&times;</button>
         `;
         foodList.appendChild(li);
     });
 
-    // 3. 更新总卡路里和进度环
     totalCaloriesEl.textContent = totalCalories;
     updateProgress(totalCalories);
 }
@@ -54,44 +70,84 @@ function updateUI() {
 // 动态计算环形进度条的百分比
 function updateProgress(total) {
     const percentage = Math.min((total / DAILY_GOAL) * 100, 100);
-    // 修改 CSS 的 conic-gradient 角度
     progressCircle.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(var(--primary-color) ${percentage}%, #e0e0e0 ${percentage}%)`;
 }
 
-// 添加食物
-foodForm.addEventListener('submit', function(e) {
-    e.preventDefault();
+// 事件监听器设置
+function setupEventListeners() {
+    // 表单提交
+    foodForm.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-    const name = foodNameInput.value.trim();
-    const calories = parseInt(foodCaloriesInput.value);
+        const name = foodNameInput.value.trim();
+        const calories = parseInt(foodCaloriesInput.value);
 
-    if (!name || !calories) return;
+        if (!name || !calories) return;
 
-    const newMeal = {
-        id: Date.now(), // 用时间戳做唯一ID
-        name: name,
-        calories: calories
-    };
+        const newMeal = {
+            id: Date.now(),
+            name: name,
+            calories: calories
+        };
 
-    meals.push(newMeal);
-    saveToLocalStorage();
-    updateUI();
+        // 如果当天还没创建数组，初始化它
+        if (!allData[currentDate]) {
+            allData[currentDate] = [];
+        }
 
-    // 重置表单
-    foodForm.reset();
-    foodNameInput.focus();
-});
+        allData[currentDate].push(newMeal);
+        saveToLocalStorage();
+        updateUI();
 
-// 删除食物 (通过 ID)
-function deleteMeal(id) {
-    meals = meals.filter(meal => meal.id !== id);
-    saveToLocalStorage();
+        foodForm.reset();
+        foodNameInput.focus();
+    });
+
+    // 列表点击事件 (利用事件委托处理删除)
+    foodList.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-delete')) {
+            const idToDelete = parseInt(e.target.getAttribute('data-id'));
+            allData[currentDate] = allData[currentDate].filter(meal => meal.id !== idToDelete);
+            
+            // 如果当天删空了，把这个日期的 key 删掉释放空间
+            if (allData[currentDate].length === 0) {
+                delete allData[currentDate];
+            }
+            
+            saveToLocalStorage();
+            updateUI();
+        }
+    });
+
+    // 日期选择器改变
+    datePicker.addEventListener('change', function(e) {
+        currentDate = e.target.value;
+        updateUI();
+    });
+
+    // 前一天按钮
+    btnPrevDay.addEventListener('click', function() {
+        adjustDate(-1);
+    });
+
+    // 后一天按钮
+    btnNextDay.addEventListener('click', function() {
+        adjustDate(1);
+    });
+}
+
+// 加减日期的辅助函数
+function adjustDate(days) {
+    const d = new Date(datePicker.value);
+    d.setDate(d.getDate() + days);
+    currentDate = getFormattedDate(d);
+    datePicker.value = currentDate;
     updateUI();
 }
 
-// 保存数据到本地存储
+// 保存到本地存储
 function saveToLocalStorage() {
-    localStorage.setItem('meals', JSON.stringify(meals));
+    localStorage.setItem('calorieDataByDate', JSON.stringify(allData));
 }
 
 // 启动
