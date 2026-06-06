@@ -8,18 +8,52 @@ const calendarDays = document.getElementById('calendar-days');
 const currentDateLabel = document.getElementById('current-date-label');
 const btnPrevWeek = document.getElementById('btn-prev-week');
 const btnNextWeek = document.getElementById('btn-next-week');
+const quickFoodPool = document.getElementById('quick-food-pool');
+const categoryTabs = document.querySelector('.category-tabs');
 
 const DAILY_GOAL = 2000;
-
-// 基准日期（用于计算当前展示的一组分页日期，默认包含今天）
 let baseDate = new Date();
-// 选中的目标记录日期，默认是今天
 let selectedDate = getFormattedDate(new Date());
-
 let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
+
+// 内置常见食物规划数据库
+const presetFoods = {
+    staple: [
+        { name: "🍚 白米饭(一碗)", calories: 130 },
+        { name: "🍜 水煮面条", calories: 110 },
+        { name: "🍞 全麦面包(片)", calories: 80 },
+        { name: "🍠 蒸地瓜", calories: 100 },
+        { name: "🌽 水煮玉米", calories: 112 },
+        { name: "🥯 馒头", calories: 220 }
+    ],
+    protein: [
+        { name: "🥚 水煮蛋", calories: 80 },
+        { name: "🍳 荷包蛋", calories: 120 },
+        { name: "🍗 煎鸡胸肉(100g)", calories: 140 },
+        { name: "🥩 瘦牛肉(100g)", calories: 160 },
+        { name: "🥛 纯牛奶(250ml)", calories: 150 },
+        { name: "🍦 优格(100g)", calories: 80 }
+    ],
+    veg: [
+        { name: "🥦 水煮西兰花", calories: 35 },
+        { name: "🥬 清炒生菜", calories: 45 },
+        { name: "🍅 番茄(一个)", calories: 30 },
+        { name: "🥒 黄瓜(一根)", calories: 30 },
+        { name: "🥗 卷心菜", calories: 25 }
+    ],
+    snack: [
+        { name: "🍎 苹果(中型)", calories: 95 },
+        { name: "🍌 香蕉(中型)", calories: 105 },
+        { name: "🥝 奇异果", calories: 40 },
+        { name: "🥜 混合坚果(25g)", calories: 150 },
+        { name: "☕ 黑咖啡(一杯)", calories: 5 },
+        { name: "☕ 拿铁(无糖)", calories: 120 }
+    ]
+};
 
 function init() {
     renderCalendarPagination();
+    switchQuickFoodCategory('staple'); // 默认显示主食
     updateUI();
     setupEventListeners();
 }
@@ -31,15 +65,11 @@ function getFormattedDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-// 动态渲染类似行事历的 5 天分頁卡片
 function renderCalendarPagination() {
     calendarDays.innerHTML = '';
-    
-    // 生成以 baseDate 为中心的 5 天日期分頁卡片
     for (let i = -2; i <= 2; i++) {
         let d = new Date(baseDate);
         d.setDate(d.getDate() + i);
-        
         const dateStr = getFormattedDate(d);
         const monthStr = `${d.getMonth() + 1}月`;
         const dayNum = d.getDate();
@@ -51,15 +81,39 @@ function renderCalendarPagination() {
             <span class="month-label">${monthStr}</span>
             <span class="day-number">${dayNum}</span>
         `;
-        
         calendarDays.appendChild(card);
     }
 }
 
+// 动态切换渲染快捷食物按钮
+function switchQuickFoodCategory(category) {
+    quickFoodPool.innerHTML = '';
+    const foods = presetFoods[category] || [];
+    foods.forEach(food => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-food-btn';
+        btn.innerHTML = `${food.name} <span>${food.calories}k</span>`;
+        // 点击快捷按钮直接触发添加
+        btn.addEventListener('click', () => {
+            addMealRecord(food.name, food.calories);
+        });
+        quickFoodPool.appendChild(btn);
+    });
+}
+
+// 提取通用添加记录逻辑
+function addMealRecord(name, calories) {
+    const newMeal = { id: Date.now(), name: name, calories: calories };
+    if (!allData[selectedDate]) {
+        allData[selectedDate] = [];
+    }
+    allData[selectedDate].push(newMeal);
+    saveToLocalStorage();
+    updateUI();
+}
+
 function updateUI() {
     foodList.innerHTML = '';
-    
-    // 渲染日期标签文本
     const todayStr = getFormattedDate(new Date());
     if (selectedDate === todayStr) {
         currentDateLabel.textContent = '今日';
@@ -80,7 +134,6 @@ function updateUI() {
     let totalCalories = 0;
     currentMeals.forEach((meal) => {
         totalCalories += meal.calories;
-
         const li = document.createElement('li');
         li.className = 'food-item';
         li.innerHTML = `
@@ -103,26 +156,26 @@ function updateProgress(total) {
 }
 
 function setupEventListeners() {
-    // 提交数据
+    // 手动表单提交
     foodForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const name = foodNameInput.value.trim();
         const calories = parseInt(foodCaloriesInput.value);
-
         if (!name || !calories) return;
 
-        const newMeal = { id: Date.now(), name: name, calories: calories };
-
-        if (!allData[selectedDate]) {
-            allData[selectedDate] = [];
-        }
-
-        allData[selectedDate].push(newMeal);
-        saveToLocalStorage();
-        updateUI();
-
+        addMealRecord(name, calories);
         foodForm.reset();
         foodNameInput.focus();
+    });
+
+    // 分类标签点击切换
+    categoryTabs.addEventListener('click', function(e) {
+        if (e.target.classList.contains('tab-btn')) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            const cat = e.target.getAttribute('data-cat');
+            switchQuickFoodCategory(cat);
+        }
     });
 
     // 列表删除
@@ -130,37 +183,30 @@ function setupEventListeners() {
         if (e.target.classList.contains('btn-delete')) {
             const idToDelete = parseInt(e.target.getAttribute('data-id'));
             allData[selectedDate] = allData[selectedDate].filter(meal => meal.id !== idToDelete);
-            
             if (allData[selectedDate].length === 0) {
                 delete allData[selectedDate];
             }
-            
             saveToLocalStorage();
             updateUI();
         }
     });
 
-    // 点击行事历分页卡片切换日期
+    // 日历分页点击切换
     calendarDays.addEventListener('click', function(e) {
         const card = e.target.closest('.day-card');
         if (card) {
             selectedDate = card.getAttribute('data-date');
-            
-            // 重新高亮选中的分页
             document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
             card.classList.add('active');
-            
             updateUI();
         }
     });
 
-    // 日期分页向左翻页（查看更早的日期）
     btnPrevWeek.addEventListener('click', function() {
         baseDate.setDate(baseDate.getDate() - 5);
         renderCalendarPagination();
     });
 
-    // 日期分页向右翻页（查看更晚的日期）
     btnNextWeek.addEventListener('click', function() {
         baseDate.setDate(baseDate.getDate() + 5);
         renderCalendarPagination();
