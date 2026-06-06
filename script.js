@@ -1,126 +1,336 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DailyCal - 每日饮食卡路里记录</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <div class="dashboard-wrapper">
+const foodForm = document.getElementById('food-form');
+const foodNameInput = document.getElementById('food-name');
+const foodCaloriesInput = document.getElementById('food-calories');
+const foodList = document.getElementById('food-list');
+const totalCaloriesEl = document.getElementById('total-calories');
+const progressCircle = document.querySelector('.progress-circle');
+const calendarDays = document.getElementById('calendar-days');
+const currentDateLabel = document.getElementById('current-date-label');
+const btnPrevWeek = document.getElementById('btn-prev-week');
+const btnNextWeek = document.getElementById('btn-next-week');
+const quickFoodPool = document.getElementById('quick-food-pool');
+const categoryTabs = document.querySelector('.category-tabs');
+
+// 左侧统计数据DOM
+const avgCaloriesEl = document.getElementById('avg-calories');
+const recordedDaysEl = document.getElementById('recorded-days');
+const maxCaloriesEl = document.getElementById('max-calories');
+
+// 右侧小工具DOM
+const waterCupGrid = document.getElementById('water-cup-grid');
+const waterCountEl = document.getElementById('water-count');
+const btnCalcTdee = document.getElementById('btn-calc-tdee');
+const tdeeWeightInput = document.getElementById('tdee-weight');
+const tdeeHeightInput = document.getElementById('tdee-height');
+const tdeeResultEl = document.getElementById('tdee-result');
+
+// 新增：随机饮食DOM
+const btnRandomFood = document.getElementById('btn-random-food');
+const randomFoodResultEl = document.getElementById('random-food-result');
+
+const DAILY_GOAL = 2000;
+let baseDate = new Date();
+let selectedDate = getFormattedDate(new Date());
+
+let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
+let waterData = JSON.parse(localStorage.getItem('waterLogByDate')) || {};
+
+const presetFoods = {
+    staple: [
+        { name: "🍚 白米饭(一碗)", calories: 280 },
+        { name: "🍜 水煮面条(碗)", calories: 220 },
+        { name: "🍞 全麦面包(片)", calories: 80 },
+        { name: "🍠 蒸地瓜(中)", calories: 140 },
+        { name: "🌽 水煮玉米(根)", calories: 150 },
+        { name: "🍱 烤鸡腿便当", calories: 750 },
+        { name: "🍛 咖喱饭", calories: 850 },
+        { name: "🥪 超商三明治", calories: 300 },
+        { name: "🍙 肉松御饭团", calories: 210 }
+    ],
+    protein: [
+        { name: "🥚 水煮蛋(颗)", calories: 75 },
+        { name: "🍳 荷包蛋(颗)", calories: 110 },
+        { name: "🍗 煎鸡胸肉(100g)", calories: 140 },
+        { name: "🥩 卤牛肉(100g)", calories: 150 },
+        { name: "🐟 煎鲑鱼(100g)", calories: 210 },
+        { name: "🥛 鲜乳(290ml)", calories: 180 },
+        { name: "🥛 无糖豆浆(400ml)", calories: 130 },
+        { name: "🍦 无糖优格(杯)", calories: 80 },
+        { name: "🥘 豆腐(半盒)", calories: 70 }
+    ],
+    veg: [
+        { name: "🥦 水煮绿花椰", calories: 35 },
+        { name: "🥬 烫青菜", calories: 40 },
+        { name: "🍅 大番茄(颗)", calories: 35 },
+        { name: "🥒 小黄瓜(条)", calories: 20 },
+        { name: "🥗 综合沙拉(无酱)", calories: 45 },
+        { name: "🍄 炒综合菇类", calories: 50 },
+        { name: "🧅 洋葱炒蛋(盘)", calories: 120 }
+    ],
+    snack: [
+        { name: "🍎 苹果(中型)", calories: 90 },
+        { name: "🍌 香蕉(中型)", calories: 100 },
+        { name: "🥝 奇异果(颗)", calories: 45 },
+        { name: "🥜 综合坚果(包)", calories: 160 },
+        { name: "☕ 黑咖啡(杯)", calories: 5 },
+        { name: "☕ 无糖拿铁(杯)", calories: 120 },
+        { name: "🧋 珍奶(微糖微冰)", calories: 550 },
+        { name: "🍵 无糖绿茶", calories: 0 },
+        { name: "🍫 巧克力(一片)", calories: 250 }
+    ]
+};
+
+// 临时存储当前随机出来的餐单，供一键添加使用
+let currentRandomCombo = [];
+
+function init() {
+    renderCalendarPagination();
+    switchQuickFoodCategory('staple');
+    updateUI();
+    renderWaterGrid();
+    calculateStats();
+    setupEventListeners();
+}
+
+function getFormattedDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function renderCalendarPagination() {
+    calendarDays.innerHTML = '';
+    for (let i = -2; i <= 2; i++) {
+        let d = new Date(baseDate);
+        d.setDate(d.getDate() + i);
+        const dateStr = getFormattedDate(d);
+        const monthStr = `${d.getMonth() + 1}月`;
+        const dayNum = d.getDate();
         
-        <aside class="side-panel left-panel">
-            <div class="panel-card">
-                <h3>📊 摄入统计看板</h3>
-                <div class="stat-item">
-                    <span class="stat-title">本周平均摄入</span>
-                    <span id="avg-calories" class="stat-value">0 <small>kcal</small></span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-title">已记录天数</span>
-                    <span id="recorded-days" class="stat-value">0 <small>天</small></span>
-                </div>
-                <div class="stat-item">
-                    <span class="stat-title">最高摄入的一天</span>
-                    <span id="max-calories" class="stat-value">0 <small>kcal</small></span>
-                </div>
-            </div>
+        const card = document.createElement('div');
+        card.className = `day-card ${dateStr === selectedDate ? 'active' : ''}`;
+        card.setAttribute('data-date', dateStr);
+        card.innerHTML = `
+            <span class="month-label">${monthStr}</span>
+            <span class="day-number">${dayNum}</span>
+        `;
+        calendarDays.appendChild(card);
+    }
+}
 
-            <div class="cute-quote-box">
-                <div class="mascot-avatar">✨ 📋 ✨</div>
-                <div class="quote-content">
-                    “ 健康不是惩罚，而是对身体的投资。 ”
-                </div>
-            </div>
-        </aside>
+function switchQuickFoodCategory(category) {
+    quickFoodPool.innerHTML = '';
+    const foods = presetFoods[category] || [];
+    foods.forEach(food => {
+        const btn = document.createElement('button');
+        btn.className = 'quick-food-btn';
+        btn.innerHTML = `${food.name} <span>${food.calories}k</span>`;
+        btn.addEventListener('click', () => { addMealRecord(food.name, food.calories); });
+        quickFoodPool.appendChild(btn);
+    });
+}
 
-        <main class="main-panel">
-            <div class="container">
-                <header>
-                    <h1>🍎 DailyCal</h1>
-                    <p>记录每一餐，掌控你的健康</p>
-                </header>
+function addMealRecord(name, calories) {
+    const newMeal = { id: Date.now() + Math.random(), name: name, calories: calories };
+    if (!allData[selectedDate]) allData[selectedDate] = [];
+    allData[selectedDate].push(newMeal);
+    saveToLocalStorage();
+    updateUI();
+    calculateStats();
+}
 
-                <section class="calendar-pagination">
-                    <button id="btn-prev-week" class="nav-arrow">◀</button>
-                    <div id="calendar-days" class="days-container">
-                        </div>
-                    <button id="btn-next-week" class="nav-arrow">▶</button>
-                </section>
+function calculateStats() {
+    const keys = Object.keys(allData);
+    const dayCount = keys.length;
+    recordedDaysEl.textContent = dayCount + ' ';
+    
+    if (dayCount === 0) {
+        avgCaloriesEl.innerHTML = `0 <small>kcal</small>`;
+        maxCaloriesEl.innerHTML = `0 <small>kcal</small>`;
+        return;
+    }
 
-                <section class="dashboard">
-                    <div class="progress-circle">
-                        <div class="inner">
-                            <span id="total-calories">0</span>
-                            <small><span id="current-date-label">今日</span>摄入 (kcal)</small>
-                        </div>
-                    </div>
-                </section>
+    let totalSum = 0;
+    let maxVal = 0;
 
-                <section class="quick-add-section">
-                    <h3>常用食物快捷添加</h3>
-                    <div class="category-tabs">
-                        <button class="tab-btn active" data-cat="staple">主食</button>
-                        <button class="tab-btn" data-cat="protein">肉蛋奶</button>
-                        <button class="tab-btn" data-cat="veg">蔬菜</button>
-                        <button class="tab-btn" data-cat="snack">水果零食</button>
-                    </div>
-                    <div id="quick-food-pool" class="food-pool">
-                        </div>
-                </section>
+    keys.forEach(dateKey => {
+        const daySum = allData[dateKey].reduce((sum, item) => sum + item.calories, 0);
+        totalSum += daySum;
+        if (daySum > maxVal) maxVal = daySum;
+    });
 
-                <section class="form-section">
-                    <h3>手动添加饮食</h3>
-                    <form id="food-form">
-                        <div class="form-group">
-                            <input type="text" id="food-name" placeholder="食物名称 (如: 煎鸡蛋)" required>
-                        </div>
-                        <div class="form-group">
-                            <input type="number" id="food-calories" placeholder="卡路里 (kcal)" required min="1">
-                        </div>
-                        <button type="submit" class="btn-submit">添加记录</button>
-                    </form>
-                </section>
+    avgCaloriesEl.innerHTML = `${Math.round(totalSum / dayCount)} <small>kcal</small>`;
+    maxCaloriesEl.innerHTML = `${maxVal} <small>kcal</small>`;
+}
 
-                <section class="list-section">
-                    <h3>当日餐单</h3>
-                    <ul id="food-list" class="food-list">
-                        </ul>
-                </section>
-            </div>
-        </main>
+function renderWaterGrid() {
+    waterCupGrid.innerHTML = '';
+    const currentCups = waterData[selectedDate] || 0;
+    waterCountEl.textContent = currentCups * 250;
 
-        <aside class="side-panel right-panel">
-            <div class="panel-card water-card">
-                <h3>🥛 今日饮水追踪</h3>
-                <p class="water-sub">目标: 2000 ml (8杯水)</p>
-                <div class="water-grid" id="water-cup-grid">
-                    </div>
-                <div class="water-status">
-                    今日已喝: <span id="water-count">0</span> / 2000 ml
-                </div>
-            </div>
+    for (let i = 1; i <= 8; i++) {
+        const btn = document.createElement('button');
+        btn.className = `cup-btn ${i <= currentCups ? 'active' : ''}`;
+        btn.textContent = '🥛';
+        btn.addEventListener('click', () => { toggleWaterCup(i); });
+        waterCupGrid.appendChild(btn);
+    }
+}
 
-            <div class="panel-card tdee-card">
-                <h3>⚙️ 目标计算小工具</h3>
-                <div class="tdee-row">
-                    <input type="number" id="tdee-weight" placeholder="体重 (kg)" min="30">
-                    <input type="number" id="tdee-height" placeholder="身高 (cm)" min="100">
-                </div>
-                <button id="btn-calc-tdee" class="btn-calc">粗估基础热量目标</button>
-                <div id="tdee-result" class="tdee-result-text"></div>
-            </div>
+function toggleWaterCup(index) {
+    let currentCups = waterData[selectedDate] || 0;
+    if (currentCups === index) {
+        waterData[selectedDate] = index - 1;
+    } else {
+        waterData[selectedDate] = index;
+    }
+    localStorage.setItem('waterLogByDate', JSON.stringify(waterData));
+    renderWaterGrid();
+}
 
-            <div class="panel-card random-menu-card">
-                <h3>🎲 今日健康餐推荐</h3>
-                <p class="water-sub">不知道吃什么？让 DailyCal 帮你配！</p>
-                <button id="btn-random-food" class="btn-calc" style="background-color: #ff9f1c;">🍳 抽取幸运健康餐</button>
-                <div id="random-food-result" class="tdee-result-text"></div>
-            </div>
-        </aside>
+function updateUI() {
+    foodList.innerHTML = '';
+    const todayStr = getFormattedDate(new Date());
+    currentDateLabel.textContent = (selectedDate === todayStr) ? '今日' : selectedDate.split('-').slice(1).join('/');
 
-    </div>
+    const currentMeals = allData[selectedDate] || [];
 
-    <script src="script.js"></script>
-</body>
-</html>
+    if (currentMeals.length === 0) {
+        foodList.innerHTML = '<li class="empty-msg">这天还没有记录哦，吃点什么吧！</li>';
+        totalCaloriesEl.textContent = 0;
+        updateProgress(0);
+        renderWaterGrid();
+        return;
+    }
+
+    let totalCalories = 0;
+    currentMeals.forEach((meal) => {
+        totalCalories += meal.calories;
+        const li = document.createElement('li');
+        li.className = 'food-item';
+        li.innerHTML = `
+            <div class="food-info"><span class="name">${meal.name}</span><span class="cal">${meal.calories} kcal</span></div>
+            <button class="btn-delete" data-id="${meal.id}">&times;</button>
+        `;
+        foodList.appendChild(li);
+    });
+
+    totalCaloriesEl.textContent = totalCalories;
+    updateProgress(totalCalories);
+    renderWaterGrid();
+}
+
+function updateProgress(total) {
+    const percentage = Math.min((total / DAILY_GOAL) * 100, 100);
+    progressCircle.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(var(--primary-color) ${percentage}%, #e0e0e0 ${percentage}%)`;
+}
+
+function setupEventListeners() {
+    foodForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const name = foodNameInput.value.trim();
+        const calories = parseInt(foodCaloriesInput.value);
+        if (!name || !calories) return;
+        addMealRecord(name, calories);
+        foodForm.reset();
+        foodNameInput.focus();
+    });
+
+    categoryTabs.addEventListener('change', function(e) { /* 保留占位 */ });
+    categoryTabs.addEventListener('click', function(e) {
+        if (e.target.classList.contains('tab-btn')) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+            switchQuickFoodCategory(e.target.getAttribute('data-cat'));
+        }
+    });
+
+    foodList.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-delete')) {
+            const idToDelete = parseFloat(e.target.getAttribute('data-id'));
+            allData[selectedDate] = allData[selectedDate].filter(meal => meal.id !== idToDelete);
+            if (allData[selectedDate].length === 0) delete allData[selectedDate];
+            saveToLocalStorage();
+            updateUI();
+            calculateStats();
+        }
+    });
+
+    calendarDays.addEventListener('click', function(e) {
+        const card = e.target.closest('.day-card');
+        if (card) {
+            selectedDate = card.getAttribute('data-date');
+            document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            updateUI();
+        }
+    });
+
+    btnPrevWeek.addEventListener('click', function() { baseDate.setDate(baseDate.getDate() - 5); renderCalendarPagination(); });
+    btnNextWeek.addEventListener('click', function() { baseDate.setDate(baseDate.getDate() + 5); renderCalendarPagination(); });
+
+    btnCalcTdee.addEventListener('click', function() {
+        const w = parseFloat(tdeeWeightInput.value);
+        const h = parseFloat(tdeeHeightInput.value);
+        if(!w || !h) {
+            tdeeResultEl.style.padding = '10px';
+            tdeeResultEl.textContent = '请先输入身高和体重哦！';
+            return;
+        }
+        const bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5);
+        const tdee = Math.round(bmr * 1.3);
+        tdeeResultEl.style.padding = '12px';
+        tdeeResultEl.innerHTML = `🌟 预估基础代谢(BMR): <b>${bmr}</b> kcal<br>日常维持热量(TDEE): <b>${tdee}</b> kcal<br>👉 建议减脂目标: <b>${tdee - 300}~${tdee}</b> kcal`;
+    });
+
+    // 🌟 新增：随机轻食餐盲盒抽取逻辑
+    btnRandomFood.addEventListener('click', function() {
+        const categories = ['staple', 'protein', 'veg', 'snack'];
+        currentRandomCombo = [];
+        let totalRandomCalories = 0;
+        let htmlContent = `<div style="text-align:left; font-size:0.85rem; color:#475569;">`;
+
+        categories.forEach(cat => {
+            const list = presetFoods[cat];
+            const randomItem = list[Math.floor(Math.random() * list.length)];
+            currentRandomCombo.push(randomItem);
+            totalRandomCalories += randomItem.calories;
+            
+            let prefix = "▪️ ";
+            if(cat === 'staple') prefix = "🍞 ";
+            if(cat === 'protein') prefix = "🥩 ";
+            if(cat === 'veg') prefix = "🥦 ";
+            if(cat === 'snack') prefix = "🍎 ";
+            
+            htmlContent += `${prefix}${randomItem.name} (${randomItem.calories}k)<br>`;
+        });
+
+        htmlContent += `<hr style="margin:8px 0; border:none; border-top:1px dashed #cbd5e1;">`;
+        htmlContent += `🔥 套餐总热量: <b>${totalRandomCalories}</b> kcal<br>`;
+        htmlContent += `<button id="btn-add-random-combo" style="width:100%; background-color:#2ec4b6; color:white; border:none; padding:6px; border-radius:6px; margin-top:8px; font-weight:bold; cursor:pointer;">直接吃这套！一键写入</button>`;
+        htmlContent += `</div>`;
+
+        randomFoodResultEl.style.padding = '12px';
+        randomFoodResultEl.innerHTML = htmlContent;
+
+        // 动态为刚生成的“一键写入”按钮绑定点击事件
+        document.getElementById('btn-add-random-combo').addEventListener('click', function() {
+            currentRandomCombo.forEach(food => {
+                const newMeal = { id: Date.now() + Math.random(), name: "🎲 " + food.name, calories: food.calories };
+                if (!allData[selectedDate]) allData[selectedDate] = [];
+                allData[selectedDate].push(newMeal);
+            });
+            saveToLocalStorage();
+            updateUI();
+            calculateStats();
+            alert('成功！已将这套隨機健康餐加入你的餐單囉 🎉');
+        });
+    });
+}
+
+function saveToLocalStorage() {
+    localStorage.setItem('calorieDataByDate', JSON.stringify(allData));
+}
+
+init();
