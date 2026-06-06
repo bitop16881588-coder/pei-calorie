@@ -1,31 +1,29 @@
-// 获取 DOM 元素
 const foodForm = document.getElementById('food-form');
 const foodNameInput = document.getElementById('food-name');
 const foodCaloriesInput = document.getElementById('food-calories');
 const foodList = document.getElementById('food-list');
 const totalCaloriesEl = document.getElementById('total-calories');
 const progressCircle = document.querySelector('.progress-circle');
-const datePicker = document.getElementById('date-picker');
-const btnPrevDay = document.getElementById('btn-prev-day');
-const btnNextDay = document.getElementById('btn-next-day');
+const calendarDays = document.getElementById('calendar-days');
+const currentDateLabel = document.getElementById('current-date-label');
+const btnPrevWeek = document.getElementById('btn-prev-week');
+const btnNextWeek = document.getElementById('btn-next-week');
 
 const DAILY_GOAL = 2000;
 
-// 当前选中的日期，默认为今天 (格式：YYYY-MM-DD)
-let currentDate = getFormattedDate(new Date());
+// 基准日期（用于计算当前展示的一组分页日期，默认包含今天）
+let baseDate = new Date();
+// 选中的目标记录日期，默认是今天
+let selectedDate = getFormattedDate(new Date());
 
-// 从 LocalStorage 读取所有数据
-// 数据结构调整为：{ "2026-06-06": [{id:1, name:'苹果', calories:80}], "2026-06-07": [] }
 let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
 
-// 初始化
 function init() {
-    datePicker.value = currentDate;
+    renderCalendarPagination();
     updateUI();
     setupEventListeners();
 }
 
-// 格式化日期为 YYYY-MM-DD
 function getFormattedDate(date) {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -33,15 +31,47 @@ function getFormattedDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-// 更新页面的核心函数
+// 动态渲染类似行事历的 5 天分頁卡片
+function renderCalendarPagination() {
+    calendarDays.innerHTML = '';
+    
+    // 生成以 baseDate 为中心的 5 天日期分頁卡片
+    for (let i = -2; i <= 2; i++) {
+        let d = new Date(baseDate);
+        d.setDate(d.getDate() + i);
+        
+        const dateStr = getFormattedDate(d);
+        const monthStr = `${d.getMonth() + 1}月`;
+        const dayNum = d.getDate();
+        
+        const card = document.createElement('div');
+        card.className = `day-card ${dateStr === selectedDate ? 'active' : ''}`;
+        card.setAttribute('data-date', dateStr);
+        card.innerHTML = `
+            <span class="month-label">${monthStr}</span>
+            <span class="day-number">${dayNum}</span>
+        `;
+        
+        calendarDays.appendChild(card);
+    }
+}
+
 function updateUI() {
     foodList.innerHTML = '';
     
-    // 获取当前日期的食物数组，如果没有记录则为空数组
-    const currentMeals = allData[currentDate] || [];
+    // 渲染日期标签文本
+    const todayStr = getFormattedDate(new Date());
+    if (selectedDate === todayStr) {
+        currentDateLabel.textContent = '今日';
+    } else {
+        const parts = selectedDate.split('-');
+        currentDateLabel.textContent = `${parts[1]}/${parts[2]}`;
+    }
+
+    const currentMeals = allData[selectedDate] || [];
 
     if (currentMeals.length === 0) {
-        foodList.innerHTML = '<li class="empty-msg">此日期还没有记录哦，吃点什么吧！</li>';
+        foodList.innerHTML = '<li class="empty-msg">这天还没有记录哦，吃点什么吧！</li>';
         totalCaloriesEl.textContent = 0;
         updateProgress(0);
         return;
@@ -67,35 +97,27 @@ function updateUI() {
     updateProgress(totalCalories);
 }
 
-// 动态计算环形进度条的百分比
 function updateProgress(total) {
     const percentage = Math.min((total / DAILY_GOAL) * 100, 100);
     progressCircle.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(var(--primary-color) ${percentage}%, #e0e0e0 ${percentage}%)`;
 }
 
-// 事件监听器设置
 function setupEventListeners() {
-    // 表单提交
+    // 提交数据
     foodForm.addEventListener('submit', function(e) {
         e.preventDefault();
-
         const name = foodNameInput.value.trim();
         const calories = parseInt(foodCaloriesInput.value);
 
         if (!name || !calories) return;
 
-        const newMeal = {
-            id: Date.now(),
-            name: name,
-            calories: calories
-        };
+        const newMeal = { id: Date.now(), name: name, calories: calories };
 
-        // 如果当天还没创建数组，初始化它
-        if (!allData[currentDate]) {
-            allData[currentDate] = [];
+        if (!allData[selectedDate]) {
+            allData[selectedDate] = [];
         }
 
-        allData[currentDate].push(newMeal);
+        allData[selectedDate].push(newMeal);
         saveToLocalStorage();
         updateUI();
 
@@ -103,15 +125,14 @@ function setupEventListeners() {
         foodNameInput.focus();
     });
 
-    // 列表点击事件 (利用事件委托处理删除)
+    // 列表删除
     foodList.addEventListener('click', function(e) {
         if (e.target.classList.contains('btn-delete')) {
             const idToDelete = parseInt(e.target.getAttribute('data-id'));
-            allData[currentDate] = allData[currentDate].filter(meal => meal.id !== idToDelete);
+            allData[selectedDate] = allData[selectedDate].filter(meal => meal.id !== idToDelete);
             
-            // 如果当天删空了，把这个日期的 key 删掉释放空间
-            if (allData[currentDate].length === 0) {
-                delete allData[currentDate];
+            if (allData[selectedDate].length === 0) {
+                delete allData[selectedDate];
             }
             
             saveToLocalStorage();
@@ -119,36 +140,35 @@ function setupEventListeners() {
         }
     });
 
-    // 日期选择器改变
-    datePicker.addEventListener('change', function(e) {
-        currentDate = e.target.value;
-        updateUI();
+    // 点击行事历分页卡片切换日期
+    calendarDays.addEventListener('click', function(e) {
+        const card = e.target.closest('.day-card');
+        if (card) {
+            selectedDate = card.getAttribute('data-date');
+            
+            // 重新高亮选中的分页
+            document.querySelectorAll('.day-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            
+            updateUI();
+        }
     });
 
-    // 前一天按钮
-    btnPrevDay.addEventListener('click', function() {
-        adjustDate(-1);
+    // 日期分页向左翻页（查看更早的日期）
+    btnPrevWeek.addEventListener('click', function() {
+        baseDate.setDate(baseDate.getDate() - 5);
+        renderCalendarPagination();
     });
 
-    // 后一天按钮
-    btnNextDay.addEventListener('click', function() {
-        adjustDate(1);
+    // 日期分页向右翻页（查看更晚的日期）
+    btnNextWeek.addEventListener('click', function() {
+        baseDate.setDate(baseDate.getDate() + 5);
+        renderCalendarPagination();
     });
 }
 
-// 加减日期的辅助函数
-function adjustDate(days) {
-    const d = new Date(datePicker.value);
-    d.setDate(d.getDate() + days);
-    currentDate = getFormattedDate(d);
-    datePicker.value = currentDate;
-    updateUI();
-}
-
-// 保存到本地存储
 function saveToLocalStorage() {
     localStorage.setItem('calorieDataByDate', JSON.stringify(allData));
 }
 
-// 启动
 init();
