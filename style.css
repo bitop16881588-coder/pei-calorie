@@ -34,7 +34,7 @@ body {
 
 header {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 header h1 {
@@ -46,6 +46,41 @@ header h1 {
 header p {
     color: var(--text-light);
     font-size: 0.9rem;
+}
+
+/* 日期切换导航 */
+.date-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.btn-date-nav {
+    background: #f0f0f0;
+    border: none;
+    font-size: 1rem;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--text-color);
+    transition: background 0.2s;
+}
+
+.btn-date-nav:hover {
+    background: #e0e0e0;
+}
+
+#date-picker {
+    border: 1px solid #e0e0e0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color);
+    outline: none;
+    text-align: center;
 }
 
 /* 进度环仪表盘 */
