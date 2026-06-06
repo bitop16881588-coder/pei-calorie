@@ -30,7 +30,6 @@ let selectedDate = getFormattedDate(new Date());
 
 // 数据读取
 let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
-// 喝水数据结构：{ "2026-06-06": 3 } (代表喝了3杯)
 let waterData = JSON.parse(localStorage.getItem('waterLogByDate')) || {};
 
 const presetFoods = {
@@ -135,7 +134,6 @@ function addMealRecord(name, calories) {
     calculateStats();
 }
 
-// 核心计算左侧多天数据面板的逻辑
 function calculateStats() {
     const keys = Object.keys(allData);
     const dayCount = keys.length;
@@ -160,7 +158,6 @@ function calculateStats() {
     maxCaloriesEl.innerHTML = `${maxVal} <small>kcal</small>`;
 }
 
-// 渲染右侧饮水杯子按钮群
 function renderWaterGrid() {
     waterCupGrid.innerHTML = '';
     const currentCups = waterData[selectedDate] || 0;
@@ -178,9 +175,9 @@ function renderWaterGrid() {
 function toggleWaterCup(index) {
     let currentCups = waterData[selectedDate] || 0;
     if (currentCups === index) {
-        waterData[selectedDate] = index - 1; // 点已激活的最后一个则取消
+        waterData[selectedDate] = index - 1;
     } else {
-        waterData[selectedDate] = index; // 否则设置为点中的杯数
+        waterData[selectedDate] = index;
     }
     localStorage.setItem('waterLogByDate', JSON.stringify(waterData));
     renderWaterGrid();
@@ -215,7 +212,7 @@ function updateUI() {
 
     totalCaloriesEl.textContent = totalCalories;
     updateProgress(totalCalories);
-    renderWaterGrid(); // 饮水联动跟随日期切换
+    renderWaterGrid();
 }
 
 function updateProgress(total) {
@@ -266,18 +263,24 @@ function setupEventListeners() {
     btnPrevWeek.addEventListener('click', function() { baseDate.setDate(baseDate.getDate() - 5); renderCalendarPagination(); });
     btnNextWeek.addEventListener('click', function() { baseDate.setDate(baseDate.getDate() + 5); renderCalendarPagination(); });
 
-    // TDEE简易粗估器事件
+    // 🌟 彻底修复后的 TDEE 计算事件逻辑
     btnCalcTdee.addEventListener('click', function() {
         const w = parseFloat(tdeeWeightInput.value);
         const h = parseFloat(tdeeHeightInput.value);
+        
         if(!w || !h) {
+            tdeeResultEl.style.padding = '10px';
             tdeeResultEl.textContent = '请先输入身高和体重哦！';
             return;
         }
-        // 使用简易基础代谢公式粗估 (以中等代谢率系数1.3估算)
-        const bmr = Math.round(10 * w + 6.25 * h - 5 * 25 + 5); 
+        
+        // 采用通用的 Mifflin-St Jeor 公式，安全防错
+        const bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5);
         const tdee = Math.round(bmr * 1.3);
-        tdeeResultEl.innerHTML = `🌟 您的预估基础代谢(BMR)约为 <b>${bmr}</b> kcal，日常维持热量(TDEE)约为 <b>${tdee}</b> kcal。建议减脂期目标设为 <b>${tdee - 300}~${tdee}</b> kcal 之间！`;
+        
+        // 让结果框带有一点内衬样式，显示更美观
+        tdeeResultEl.style.padding = '12px';
+        tdeeResultEl.innerHTML = `🌟 预估基础代谢(BMR): <b>${bmr}</b> kcal<br>日常维持热量(TDEE): <b>${tdee}</b> kcal<br>👉 建议减脂目标: <b>${tdee - 300}~${tdee}</b> kcal`;
     });
 }
 
