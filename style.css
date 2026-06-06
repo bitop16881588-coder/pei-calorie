@@ -79,14 +79,13 @@ header p {
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    scrollbar-width: none; /* 隐藏滚动条 */
+    scrollbar-width: none;
 }
 
 .days-container::-webkit-scrollbar {
-    display: none; /* 隐藏滚动条 */
+    display: none;
 }
 
-/* 单个日历卡片分頁 */
 .day-card {
     display: flex;
     flex-direction: column;
@@ -112,7 +111,6 @@ header p {
     font-weight: bold;
 }
 
-/* 选中高亮状态 */
 .day-card.active {
     background: var(--active-bg);
     color: white;
@@ -122,6 +120,74 @@ header p {
 
 .day-card.active .month-label {
     color: rgba(255, 255, 255, 0.8);
+}
+
+/* 快捷添加区域样式 */
+.quick-add-section {
+    margin-bottom: 25px;
+}
+
+.category-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 12px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 8px;
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 6px 0;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 6px;
+    color: var(--text-light);
+    transition: all 0.2s;
+}
+
+.tab-btn.active {
+    background: white;
+    color: var(--primary-color);
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.food-pool {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    min-height: 76px;
+    background: #fcfdfe;
+    border: 1px dashed #e2e8f0;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.quick-food-btn {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+
+.quick-food-btn:hover {
+    border-color: var(--primary-color);
+    background: #f0fdfa;
+    transform: translateY(-1px);
+}
+
+.quick-food-btn span {
+    color: var(--text-light);
+    font-size: 0.75rem;
 }
 
 /* 进度环仪表盘 */
@@ -160,10 +226,10 @@ header p {
     font-size: 0.75rem;
 }
 
-/* 表单样式 */
-.form-section h3, .list-section h3 {
+/* 表单与列表基础样式 */
+.form-section h3, .list-section h3, .quick-add-section h3 {
     font-size: 1.1rem;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
     color: #4a4a4a;
     border-left: 4px solid var(--accent-color);
     padding-left: 8px;
@@ -206,7 +272,6 @@ header p {
     background-color: #24a89b;
 }
 
-/* 列表样式 */
 .food-list {
     list-style: none;
 }
