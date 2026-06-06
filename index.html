@@ -7,58 +7,111 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🍎 DailyCal</h1>
-            <p>记录每一餐，掌控你的健康</p>
-        </header>
-
-        <section class="calendar-pagination">
-            <button id="btn-prev-week" class="nav-arrow">◀</button>
-            <div id="calendar-days" class="days-container">
+    <div class="dashboard-wrapper">
+        
+        <aside class="side-panel left-panel">
+            <div class="panel-card">
+                <h3>📊 摄入统计看板</h3>
+                <div class="stat-item">
+                    <span class="stat-title">本周平均摄入</span>
+                    <span id="avg-calories" class="stat-value">0 <small>kcal</small></span>
                 </div>
-            <button id="btn-next-week" class="nav-arrow">▶</button>
-        </section>
-
-        <section class="dashboard">
-            <div class="progress-circle">
-                <div class="inner">
-                    <span id="total-calories">0</span>
-                    <small><span id="current-date-label">今日</span>摄入 (kcal)</small>
+                <div class="stat-item">
+                    <span class="stat-title">已记录天数</span>
+                    <span id="recorded-days" class="stat-value">0 <small>天</small></span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-title">最高摄入的一天</span>
+                    <span id="max-calories" class="stat-value">0 <small>kcal</small></span>
                 </div>
             </div>
-        </section>
 
-        <section class="quick-add-section">
-            <h3>常用食物快捷添加</h3>
-            <div class="category-tabs">
-                <button class="tab-btn active" data-cat="staple">主食</button>
-                <button class="tab-btn" data-cat="protein">肉蛋奶</button>
-                <button class="tab-btn" data-cat="veg">蔬菜</button>
-                <button class="tab-btn" data-cat="snack">水果零食</button>
+            <div class="cute-quote-box">
+                <div class="mascot-avatar">✨ 📋 ✨</div>
+                <div class="quote-content">
+                    “ 健康不是惩罚，而是对身体的投资。 ”
+                </div>
             </div>
-            <div id="quick-food-pool" class="food-pool">
-                </div>
-        </section>
+        </aside>
 
-        <section class="form-section">
-            <h3>手动添加饮食</h3>
-            <form id="food-form">
-                <div class="form-group">
-                    <input type="text" id="food-name" placeholder="食物名称 (如: 煎鸡蛋)" required>
-                </div>
-                <div class="form-group">
-                    <input type="number" id="food-calories" placeholder="卡路里 (kcal)" required min="1">
-                </div>
-                <button type="submit" class="btn-submit">添加记录</button>
-            </form>
-        </section>
+        <main class="main-panel">
+            <div class="container">
+                <header>
+                    <h1>🍎 DailyCal</h1>
+                    <p>记录每一餐，掌控你的健康</p>
+                </header>
 
-        <section class="list-section">
-            <h3>当日餐单</h3>
-            <ul id="food-list" class="food-list">
-                </ul>
-        </section>
+                <section class="calendar-pagination">
+                    <button id="btn-prev-week" class="nav-arrow">◀</button>
+                    <div id="calendar-days" class="days-container">
+                        </div>
+                    <button id="btn-next-week" class="nav-arrow">▶</button>
+                </section>
+
+                <section class="dashboard">
+                    <div class="progress-circle">
+                        <div class="inner">
+                            <span id="total-calories">0</span>
+                            <small><span id="current-date-label">今日</span>摄入 (kcal)</small>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="quick-add-section">
+                    <h3>常用食物快捷添加</h3>
+                    <div class="category-tabs">
+                        <button class="tab-btn active" data-cat="staple">主食</button>
+                        <button class="tab-btn" data-cat="protein">肉蛋奶</button>
+                        <button class="tab-btn" data-cat="veg">蔬菜</button>
+                        <button class="tab-btn" data-cat="snack">水果零食</button>
+                    </div>
+                    <div id="quick-food-pool" class="food-pool">
+                        </div>
+                </section>
+
+                <section class="form-section">
+                    <h3>手动添加饮食</h3>
+                    <form id="food-form">
+                        <div class="form-group">
+                            <input type="text" id="food-name" placeholder="食物名称 (如: 煎鸡蛋)" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="number" id="food-calories" placeholder="卡路里 (kcal)" required min="1">
+                        </div>
+                        <button type="submit" class="btn-submit">添加记录</button>
+                    </form>
+                </section>
+
+                <section class="list-section">
+                    <h3>当日餐单</h3>
+                    <ul id="food-list" class="food-list">
+                        </ul>
+                </section>
+            </div>
+        </main>
+
+        <aside class="side-panel right-panel">
+            <div class="panel-card water-card">
+                <h3>🥛 今日饮水追踪</h3>
+                <p class="water-sub">目标: 2000 ml (8杯水)</p>
+                <div class="water-grid" id="water-cup-grid">
+                    </div>
+                <div class="water-status">
+                    今日已喝: <span id="water-count">0</span> / 2000 ml
+                </div>
+            </div>
+
+            <div class="panel-card tdee-card">
+                <h3>⚙️ 目标计算小工具</h3>
+                <div class="tdee-row">
+                    <input type="number" id="tdee-weight" placeholder="体重 (kg)" min="30">
+                    <input type="number" id="tdee-height" placeholder="身高 (cm)" min="100">
+                </div>
+                <button id="btn-calc-tdee" class="btn-calc">粗估基础热量目标</button>
+                <div id="tdee-result" class="tdee-result-text"></div>
+            </div>
+        </aside>
+
     </div>
 
     <script src="script.js"></script>
