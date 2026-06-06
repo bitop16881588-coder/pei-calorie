@@ -11,12 +11,28 @@ const btnNextWeek = document.getElementById('btn-next-week');
 const quickFoodPool = document.getElementById('quick-food-pool');
 const categoryTabs = document.querySelector('.category-tabs');
 
+// 左侧统计数据DOM
+const avgCaloriesEl = document.getElementById('avg-calories');
+const recordedDaysEl = document.getElementById('recorded-days');
+const maxCaloriesEl = document.getElementById('max-calories');
+
+// 右侧小工具DOM
+const waterCupGrid = document.getElementById('water-cup-grid');
+const waterCountEl = document.getElementById('water-count');
+const btnCalcTdee = document.getElementById('btn-calc-tdee');
+const tdeeWeightInput = document.getElementById('tdee-weight');
+const tdeeHeightInput = document.getElementById('tdee-height');
+const tdeeResultEl = document.getElementById('tdee-result');
+
 const DAILY_GOAL = 2000;
 let baseDate = new Date();
 let selectedDate = getFormattedDate(new Date());
-let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
 
-// 豐富的飲食資料庫（包含在地小吃、超商外食、飲料）
+// 数据读取
+let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
+// 喝水数据结构：{ "2026-06-06": 3 } (代表喝了3杯)
+let waterData = JSON.parse(localStorage.getItem('waterLogByDate')) || {};
+
 const presetFoods = {
     staple: [
         { name: "🍚 白米饭(一碗)", calories: 280 },
@@ -64,8 +80,10 @@ const presetFoods = {
 
 function init() {
     renderCalendarPagination();
-    switchQuickFoodCategory('staple'); // 默认显示主食
+    switchQuickFoodCategory('staple');
     updateUI();
+    renderWaterGrid();
+    calculateStats();
     setupEventListeners();
 }
 
@@ -103,32 +121,75 @@ function switchQuickFoodCategory(category) {
         const btn = document.createElement('button');
         btn.className = 'quick-food-btn';
         btn.innerHTML = `${food.name} <span>${food.calories}k</span>`;
-        btn.addEventListener('click', () => {
-            addMealRecord(food.name, food.calories);
-        });
+        btn.addEventListener('click', () => { addMealRecord(food.name, food.calories); });
         quickFoodPool.appendChild(btn);
     });
 }
 
 function addMealRecord(name, calories) {
     const newMeal = { id: Date.now(), name: name, calories: calories };
-    if (!allData[selectedDate]) {
-        allData[selectedDate] = [];
-    }
+    if (!allData[selectedDate]) allData[selectedDate] = [];
     allData[selectedDate].push(newMeal);
     saveToLocalStorage();
     updateUI();
+    calculateStats();
+}
+
+// 核心计算左侧多天数据面板的逻辑
+function calculateStats() {
+    const keys = Object.keys(allData);
+    const dayCount = keys.length;
+    recordedDaysEl.textContent = dayCount + ' ';
+    
+    if (dayCount === 0) {
+        avgCaloriesEl.innerHTML = `0 <small>kcal</small>`;
+        maxCaloriesEl.innerHTML = `0 <small>kcal</small>`;
+        return;
+    }
+
+    let totalSum = 0;
+    let maxVal = 0;
+
+    keys.forEach(dateKey => {
+        const daySum = allData[dateKey].reduce((sum, item) => sum + item.calories, 0);
+        totalSum += daySum;
+        if (daySum > maxVal) maxVal = daySum;
+    });
+
+    avgCaloriesEl.innerHTML = `${Math.round(totalSum / dayCount)} <small>kcal</small>`;
+    maxCaloriesEl.innerHTML = `${maxVal} <small>kcal</small>`;
+}
+
+// 渲染右侧饮水杯子按钮群
+function renderWaterGrid() {
+    waterCupGrid.innerHTML = '';
+    const currentCups = waterData[selectedDate] || 0;
+    waterCountEl.textContent = currentCups * 250;
+
+    for (let i = 1; i <= 8; i++) {
+        const btn = document.createElement('button');
+        btn.className = `cup-btn ${i <= currentCups ? 'active' : ''}`;
+        btn.textContent = '🥛';
+        btn.addEventListener('click', () => { toggleWaterCup(i); });
+        waterCupGrid.appendChild(btn);
+    }
+}
+
+function toggleWaterCup(index) {
+    let currentCups = waterData[selectedDate] || 0;
+    if (currentCups === index) {
+        waterData[selectedDate] = index - 1; // 点已激活的最后一个则取消
+    } else {
+        waterData[selectedDate] = index; // 否则设置为点中的杯数
+    }
+    localStorage.setItem('waterLogByDate', JSON.stringify(waterData));
+    renderWaterGrid();
 }
 
 function updateUI() {
     foodList.innerHTML = '';
     const todayStr = getFormattedDate(new Date());
-    if (selectedDate === todayStr) {
-        currentDateLabel.textContent = '今日';
-    } else {
-        const parts = selectedDate.split('-');
-        currentDateLabel.textContent = `${parts[1]}/${parts[2]}`;
-    }
+    currentDateLabel.textContent = (selectedDate === todayStr) ? '今日' : selectedDate.split('-').slice(1).join('/');
 
     const currentMeals = allData[selectedDate] || [];
 
@@ -136,6 +197,7 @@ function updateUI() {
         foodList.innerHTML = '<li class="empty-msg">这天还没有记录哦，吃点什么吧！</li>';
         totalCaloriesEl.textContent = 0;
         updateProgress(0);
+        renderWaterGrid();
         return;
     }
 
@@ -145,10 +207,7 @@ function updateUI() {
         const li = document.createElement('li');
         li.className = 'food-item';
         li.innerHTML = `
-            <div class="food-info">
-                <span class="name">${meal.name}</span>
-                <span class="cal">${meal.calories} kcal</span>
-            </div>
+            <div class="food-info"><span class="name">${meal.name}</span><span class="cal">${meal.calories} kcal</span></div>
             <button class="btn-delete" data-id="${meal.id}">&times;</button>
         `;
         foodList.appendChild(li);
@@ -156,6 +215,7 @@ function updateUI() {
 
     totalCaloriesEl.textContent = totalCalories;
     updateProgress(totalCalories);
+    renderWaterGrid(); // 饮水联动跟随日期切换
 }
 
 function updateProgress(total) {
@@ -169,7 +229,6 @@ function setupEventListeners() {
         const name = foodNameInput.value.trim();
         const calories = parseInt(foodCaloriesInput.value);
         if (!name || !calories) return;
-
         addMealRecord(name, calories);
         foodForm.reset();
         foodNameInput.focus();
@@ -179,8 +238,7 @@ function setupEventListeners() {
         if (e.target.classList.contains('tab-btn')) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             e.target.classList.add('active');
-            const cat = e.target.getAttribute('data-cat');
-            switchQuickFoodCategory(cat);
+            switchQuickFoodCategory(e.target.getAttribute('data-cat'));
         }
     });
 
@@ -188,11 +246,10 @@ function setupEventListeners() {
         if (e.target.classList.contains('btn-delete')) {
             const idToDelete = parseInt(e.target.getAttribute('data-id'));
             allData[selectedDate] = allData[selectedDate].filter(meal => meal.id !== idToDelete);
-            if (allData[selectedDate].length === 0) {
-                delete allData[selectedDate];
-            }
+            if (allData[selectedDate].length === 0) delete allData[selectedDate];
             saveToLocalStorage();
             updateUI();
+            calculateStats();
         }
     });
 
@@ -206,14 +263,21 @@ function setupEventListeners() {
         }
     });
 
-    btnPrevWeek.addEventListener('click', function() {
-        baseDate.setDate(baseDate.getDate() - 5);
-        renderCalendarPagination();
-    });
+    btnPrevWeek.addEventListener('click', function() { baseDate.setDate(baseDate.getDate() - 5); renderCalendarPagination(); });
+    btnNextWeek.addEventListener('click', function() { baseDate.setDate(baseDate.getDate() + 5); renderCalendarPagination(); });
 
-    btnNextWeek.addEventListener('click', function() {
-        baseDate.setDate(baseDate.getDate() + 5);
-        renderCalendarPagination();
+    // TDEE简易粗估器事件
+    btnCalcTdee.addEventListener('click', function() {
+        const w = parseFloat(tdeeWeightInput.value);
+        const h = parseFloat(tdeeHeightInput.value);
+        if(!w || !h) {
+            tdeeResultEl.textContent = '请先输入身高和体重哦！';
+            return;
+        }
+        // 使用简易基础代谢公式粗估 (以中等代谢率系数1.3估算)
+        const bmr = Math.round(10 * w + 6.25 * h - 5 * 25 + 5); 
+        const tdee = Math.round(bmr * 1.3);
+        tdeeResultEl.innerHTML = `🌟 您的预估基础代谢(BMR)约为 <b>${bmr}</b> kcal，日常维持热量(TDEE)约为 <b>${tdee}</b> kcal。建议减脂期目标设为 <b>${tdee - 300}~${tdee}</b> kcal 之间！`;
     });
 }
 
