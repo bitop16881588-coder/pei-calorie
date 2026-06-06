@@ -13,17 +13,18 @@
             <p>记录每一餐，掌控你的健康</p>
         </header>
 
-        <section class="date-container">
-            <button id="btn-prev-day" class="btn-date-nav">◀</button>
-            <input type="date" id="date-picker">
-            <button id="btn-next-day" class="btn-date-nav">▶</button>
+        <section class="calendar-pagination">
+            <button id="btn-prev-week" class="nav-arrow">◀</button>
+            <div id="calendar-days" class="days-container">
+                </div>
+            <button id="btn-next-week" class="nav-arrow">▶</button>
         </section>
 
         <section class="dashboard">
             <div class="progress-circle">
                 <div class="inner">
                     <span id="total-calories">0</span>
-                    <small>今日摄入 (kcal)</small>
+                    <small><span id="current-date-label">今日</span>摄入 (kcal)</small>
                 </div>
             </div>
         </section>
