@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DailyCal - 每日饮食卡路里记录</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <div class="cute-quote-box">
+        “ 健康不是惩罚，而是对身体的投资。 ”
+    </div>
+
     <div class="dashboard-wrapper">
         
         <aside class="side-panel left-panel">
@@ -25,19 +30,19 @@
                     <span id="max-calories" class="stat-value">0 <small>kcal</small></span>
                 </div>
             </div>
-
-            <div class="cute-quote-box">
-                <div class="mascot-avatar">✨ 📋 ✨</div>
-                <div class="quote-content">
-                    “ 健康不是惩罚，而是对身体的投资。 ”
-                </div>
+            
+            <div class="panel-card">
+                <h3>🔥 本周卡路里趋势</h3>
+                <canvas id="calorieLineChart"></canvas>
             </div>
         </aside>
 
         <main class="main-panel">
             <div class="container">
                 <header>
-                    <h1>🍎 DailyCal</h1>
+                    <div class="header-content">
+                        <h1>🍎 DailyCal 健康看盘</h1>
+                    </div>
                     <p>记录每一餐，掌控你的健康</p>
                 </header>
 
@@ -52,7 +57,7 @@
                     <div class="progress-circle">
                         <div class="inner">
                             <span id="total-calories">0</span>
-                            <small><span id="current-date-label">今日</span>摄入 (kcal)</small>
+                            <small><span id="current-date-label">今日</span>摄入 / 2000 kcal</small>
                         </div>
                     </div>
                 </section>
