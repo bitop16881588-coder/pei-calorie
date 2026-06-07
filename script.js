@@ -2,24 +2,27 @@ let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
 let waterData = JSON.parse(localStorage.getItem('waterLogByDate')) || {};
 let selectedDate = new Date().toISOString().split('T')[0];
 
+// 🌟 這裡就是你要的「常用食物快捷」清單，已經幫你新增好豐富的外食選項了！
 const presetFoods = {
     staple: [
-        { name: "🍚 白米飯(一碗)", calories: 280 }, { name: "🍜 水煮麵條(碗)", calories: 220 },
-        { name: "🍱 烤雞腿便當", calories: 750 }, { name: "🍔 麥當勞漢堡", calories: 550 },
-        { name: "🥪 超商三明治", calories: 300 }, { name: "🍙 肉鬆御飯糰", calories: 210 }
+        { name: "🍚 白米飯(一碗)", calories: 280 }, { name: "🍱 雞胸肉健身餐盒", calories: 450 },
+        { name: "🍱 排骨便當", calories: 850 }, { name: "🍙 鮪魚飯糰", calories: 190 },
+        { name: "🍝 超商義大利麵", calories: 550 }, { name: "🍔 麥當勞大麥克", calories: 550 },
+        { name: "🥟 水餃(10顆)", calories: 600 }
     ],
     protein: [
-        { name: "🥚 水煮蛋(顆)", calories: 75 }, { name: "🍳 荷包蛋(顆)", calories: 110 },
-        { name: "🍗 煎雞胸肉(100g)", calories: 140 }, { name: "🥩 滷牛肉(100g)", calories: 150 },
-        { name: "🐟 煎鮭魚(100g)", calories: 210 }, { name: "🥛 無糖豆漿(400ml)", calories: 130 }
+        { name: "🍗 紐奧良烤雞胸", calories: 120 }, { name: "🥚 茶葉蛋", calories: 70 },
+        { name: "🥛 無糖豆漿(大)", calories: 200 }, { name: "🍳 荷包蛋", calories: 110 },
+        { name: "🐟 煎鮭魚(100g)", calories: 210 }
     ],
     veg: [
         { name: "🥦 水煮綠花椰", calories: 35 }, { name: "🥬 燙青菜(淋油)", calories: 80 },
-        { name: "🍅 大番茄(顆)", calories: 35 }, { name: "🥗 凱薩沙拉(含醬)", calories: 350 }
+        { name: "🥗 凱薩沙拉(含醬)", calories: 350 }, { name: "🍅 大番茄", calories: 35 }
     ],
     snack: [
-        { name: "🍎 蘋果(中型)", calories: 90 }, { name: "🍌 香蕉(中型)", calories: 100 },
-        { name: "☕ 黑咖啡(杯)", calories: 5 }, { name: "🧋 珍奶(全糖)", calories: 650 }
+        { name: "🧋 50嵐 波霸奶茶(微糖)", calories: 500 }, { name: "🥤 麻古果粒茶", calories: 350 },
+        { name: "🍵 清心 優多綠茶", calories: 320 }, { name: "☕ 五桐號 奶霜紅茶", calories: 400 },
+        { name: "🍎 蘋果(中型)", calories: 90 }, { name: "🥜 綜合堅果(包)", calories: 160 }
     ]
 };
 
@@ -31,6 +34,37 @@ function init() {
     updateUI();
     renderWaterGrid();
     renderChart();
+    setupRandomFoodFeature(); 
+}
+
+// 隨機飲食盲盒功能
+function setupRandomFoodFeature() {
+    const btnRandom = document.getElementById('btn-random-food');
+    const resultDiv = document.getElementById('random-food-result');
+    if (!btnRandom) return;
+
+    btnRandom.onclick = () => {
+        let combo = [];
+        let total = 0;
+        let html = '<div style="font-size: 0.8rem;">';
+        
+        ['staple', 'protein', 'veg', 'snack'].forEach(cat => {
+            let list = presetFoods[cat];
+            let item = list[Math.floor(Math.random() * list.length)];
+            combo.push(item);
+            total += item.calories;
+            html += `${item.name} (${item.calories}k)<br>`;
+        });
+
+        html += `<hr>🔥 總熱量: ${total}k<br>`;
+        html += `<button id="btn-apply-combo" style="margin-top:5px; cursor:pointer; background:#2ec4b6; color:white; border:none; padding:5px 10px; border-radius:5px;">一鍵寫入</button></div>`;
+        resultDiv.innerHTML = html;
+
+        document.getElementById('btn-apply-combo').onclick = () => {
+            combo.forEach(f => addFood(f.name, f.calories));
+            alert("已加入餐單！");
+        };
+    };
 }
 
 function renderCalendar() {
@@ -82,7 +116,6 @@ function updateUI() {
         list.appendChild(li);
     });
     totalEl.textContent = total;
-    // 繪製圓環
     const prog = document.querySelector('.progress-circle');
     let p = Math.min((total/2000)*100, 100);
     prog.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#2ec4b6 ${p}%, #e0e0e0 0%)`;
