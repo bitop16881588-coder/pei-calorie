@@ -1,3 +1,5 @@
+// 邏輯基本上與之前一致，但優化了 RWD 和 Chart 的初始化
+
 const foodForm = document.getElementById('food-form');
 const foodNameInput = document.getElementById('food-name');
 const foodCaloriesInput = document.getElementById('food-calories');
@@ -30,19 +32,11 @@ const randomFoodResultEl = document.getElementById('random-food-result');
 
 const DAILY_GOAL = 2000;
 let baseDate = new Date();
-
-function getFormattedDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
 let selectedDate = getFormattedDate(new Date());
+
 let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
 let waterData = JSON.parse(localStorage.getItem('waterLogByDate')) || {};
 
-// 🌟 食物菜单数据库完整回流
 const presetFoods = {
     staple: [
         { name: "🍚 白米饭(一碗)", calories: 280 },
@@ -90,18 +84,21 @@ const presetFoods = {
 
 let currentRandomCombo = [];
 
-document.addEventListener("DOMContentLoaded", function() {
-    init();
-    initChart(); // 启动左侧趋势图
-});
-
 function init() {
     renderCalendarPagination();
     switchQuickFoodCategory('staple');
     updateUI();
     renderWaterGrid();
     calculateStats();
+    initChart(); // 生动化的 Chart 初始化
     setupEventListeners();
+}
+
+function getFormattedDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }
 
 function renderCalendarPagination() {
@@ -154,12 +151,16 @@ function calculateStats() {
         if (maxCaloriesEl) maxCaloriesEl.innerHTML = `0 <small>kcal</small>`;
         return;
     }
-    let totalSum = 0, maxVal = 0;
+
+    let totalSum = 0;
+    let maxVal = 0;
+
     keys.forEach(dateKey => {
         const daySum = allData[dateKey].reduce((sum, item) => sum + item.calories, 0);
         totalSum += daySum;
         if (daySum > maxVal) maxVal = daySum;
     });
+
     if (avgCaloriesEl) avgCaloriesEl.innerHTML = `${Math.round(totalSum / dayCount)} <small>kcal</small>`;
     if (maxCaloriesEl) maxCaloriesEl.innerHTML = `${maxVal} <small>kcal</small>`;
 }
@@ -169,6 +170,7 @@ function renderWaterGrid() {
     waterCupGrid.innerHTML = '';
     const currentCups = waterData[selectedDate] || 0;
     if (waterCountEl) waterCountEl.textContent = currentCups * 250;
+
     for (let i = 1; i <= 8; i++) {
         const btn = document.createElement('button');
         btn.className = `cup-btn ${i <= currentCups ? 'active' : ''}`;
@@ -180,7 +182,11 @@ function renderWaterGrid() {
 
 function toggleWaterCup(index) {
     let currentCups = waterData[selectedDate] || 0;
-    waterData[selectedDate] = (currentCups === index) ? index - 1 : index;
+    if (currentCups === index) {
+        waterData[selectedDate] = index - 1;
+    } else {
+        waterData[selectedDate] = index;
+    }
     localStorage.setItem('waterLogByDate', JSON.stringify(waterData));
     renderWaterGrid();
 }
@@ -192,6 +198,7 @@ function updateUI() {
     if (currentDateLabel) currentDateLabel.textContent = (selectedDate === todayStr) ? '今日' : selectedDate.split('-').slice(1).join('/');
 
     const currentMeals = allData[selectedDate] || [];
+
     if (currentMeals.length === 0) {
         foodList.innerHTML = '<li class="empty-msg">这天还没有记录哦，吃点什么吧！</li>';
         if (totalCaloriesEl) totalCaloriesEl.textContent = 0;
@@ -199,14 +206,19 @@ function updateUI() {
         renderWaterGrid();
         return;
     }
+
     let totalCalories = 0;
     currentMeals.forEach((meal) => {
         totalCalories += meal.calories;
         const li = document.createElement('li');
         li.className = 'food-item';
-        li.innerHTML = `<div class="food-info"><span class="name">${meal.name}</span><span class="cal">${meal.calories} kcal</span></div><button class="btn-delete" data-id="${meal.id}">&times;</button>`;
+        li.innerHTML = `
+            <div class="food-info"><span class="name">${meal.name}</span><span class="cal">${meal.calories} kcal</span></div>
+            <button class="btn-delete" data-id="${meal.id}">&times;</button>
+        `;
         foodList.appendChild(li);
     });
+
     if (totalCaloriesEl) totalCaloriesEl.textContent = totalCalories;
     updateProgress(totalCalories);
     renderWaterGrid();
@@ -218,25 +230,27 @@ function updateProgress(total) {
     progressCircle.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(var(--primary-color) ${percentage}%, #e0e0e0 ${percentage}%)`;
 }
 
-// 🌟 左侧本周卡路里趋势图初始化
+// 🌟 左侧本周趋势图初始化 (生动化美化)
 function initChart() {
     const chartCanvas = document.getElementById('calorieLineChart');
     if (!chartCanvas) return;
     const ctx = chartCanvas.getContext('2d');
     
+    // 柔和、活力的配色
     const data = {
         labels: ['周一', '周二', '周三', '周四', '周五', '周六', '今日'],
         datasets: [{
             label: '每日摄入',
-            data: [1850, 1600, 1950, 1400, 2100, 1750, 0],
-            borderColor: '#2ec4b6',
+            data: [1850, 1600, 1950, 1400, 2100, 1750, 0], // 这里设定一个预设值，未来你可以改为真实数据
+            borderColor: '#2ec4b6', // Tiffany 绿
             backgroundColor: 'rgba(46, 196, 182, 0.1)',
             fill: true,
-            tension: 0.4,
-            borderWidth: 2,
+            tension: 0.4, // 平滑曲线
+            borderWidth: 3,
             pointBackgroundColor: '#fff',
-            pointBorderColor: '#ff9f1c',
-            pointRadius: 4
+            pointBorderColor: '#ff9f1c', // 南瓜橘点点
+            pointRadius: 5,
+            pointHoverRadius: 7
         }]
     };
 
@@ -245,10 +259,26 @@ function initChart() {
         data: data,
         options: {
             responsive: true,
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: {
+                    display: false // 隐藏顶部署名，让页面更干净
+                }
+            },
             scales: {
-                y: { beginAtZero: true, suggestedMax: 2200, grid: { color: 'rgba(237, 242, 247, 0.5)' } },
-                x: { grid: { display: false } }
+                y: {
+                    beginAtZero: true,
+                    suggestedMax: 2500,
+                    grid: { color: 'rgba(237, 242, 247, 0.8)' },
+                    ticks: { color: '#777', font: { size: 10 } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#777', font: { size: 11 } }
+                }
+            },
+            animation: {
+                duration: 1500,
+                easing: 'easeInOutQuart'
             }
         }
     });
@@ -258,11 +288,15 @@ function setupEventListeners() {
     if (foodForm) {
         foodForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            addMealRecord(foodNameInput.value.trim(), parseInt(foodCaloriesInput.value));
+            const name = foodNameInput.value.trim();
+            const calories = parseInt(foodCaloriesInput.value);
+            if (!name || !calories) return;
+            addMealRecord(name, calories);
             foodForm.reset();
             foodNameInput.focus();
         });
     }
+
     if (categoryTabs) {
         categoryTabs.addEventListener('click', function(e) {
             if (e.target.classList.contains('tab-btn')) {
@@ -272,16 +306,20 @@ function setupEventListeners() {
             }
         });
     }
+
     if (foodList) {
         foodList.addEventListener('click', function(e) {
             if (e.target.classList.contains('btn-delete')) {
                 const idToDelete = parseFloat(e.target.getAttribute('data-id'));
                 allData[selectedDate] = allData[selectedDate].filter(meal => meal.id !== idToDelete);
                 if (allData[selectedDate].length === 0) delete allData[selectedDate];
-                saveToLocalStorage(); updateUI(); calculateStats();
+                saveToLocalStorage();
+                updateUI();
+                calculateStats();
             }
         });
     }
+
     if (calendarDays) {
         calendarDays.addEventListener('click', function(e) {
             const card = e.target.closest('.day-card');
@@ -301,9 +339,14 @@ function setupEventListeners() {
         btnCalcTdee.addEventListener('click', function() {
             const w = parseFloat(tdeeWeightInput.value);
             const h = parseFloat(tdeeHeightInput.value);
-            if(!w || !h) { tdeeResultEl.textContent = '请先输入身高和体重哦！'; return; }
+            if(!w || !h) {
+                tdeeResultEl.style.padding = '10px';
+                tdeeResultEl.textContent = '请先输入身高和体重哦！';
+                return;
+            }
             const bmr = Math.round((10 * w) + (6.25 * h) - (5 * 25) + 5);
             const tdee = Math.round(bmr * 1.3);
+            
             tdeeResultEl.style.padding = '12px';
             tdeeResultEl.innerHTML = `🌟 预估基础代谢(BMR): <b>${bmr}</b> kcal<br>日常维持热量(TDEE): <b>${tdee}</b> kcal<br>👉 建议减脂目标: <b>${tdee - 300}~${tdee}</b> kcal`;
         });
@@ -312,19 +355,42 @@ function setupEventListeners() {
     if (btnRandomFood) {
         btnRandomFood.addEventListener('click', function() {
             const categories = ['staple', 'protein', 'veg', 'snack'];
-            currentRandomCombo = []; let totalRandomCalories = 0;
+            currentRandomCombo = [];
+            let totalRandomCalories = 0;
             let htmlContent = `<div style="text-align:left; font-size:0.85rem; color:#475569;">`;
+
             categories.forEach(cat => {
-                const list = presetFoods[cat]; const randomItem = list[Math.floor(Math.random() * list.length)];
-                currentRandomCombo.push(randomItem); totalRandomCalories += randomItem.calories;
-                let prefix = cat==='staple'?"🍞 ":cat==='protein'?"🥩 ":cat==='veg'?"🥦 ":"🍎 ";
+                const list = presetFoods[cat];
+                const randomItem = list[Math.floor(Math.random() * list.length)];
+                currentRandomCombo.push(randomItem);
+                totalRandomCalories += randomItem.calories;
+                
+                let prefix = "▪️ ";
+                if(cat === 'staple') prefix = "🍞 ";
+                if(cat === 'protein') prefix = "🥩 ";
+                if(cat === 'veg') prefix = "🥦 ";
+                if(cat === 'snack') prefix = "🍎 ";
+                
                 htmlContent += `${prefix}${randomItem.name} (${randomItem.calories}k)<br>`;
             });
-            htmlContent += `<hr style="margin:8px 0; border:none; border-top:1px dashed #cbd5e1;">🔥 总热量: <b>${totalRandomCalories}</b> kcal<br><button id="btn-add-random-combo" style="width:100%; background-color:#2ec4b6; color:white; border:none; padding:6px; border-radius:6px; margin-top:8px; font-weight:bold; cursor:pointer;">直接吃这套！一键写入</button></div>`;
-            randomFoodResultEl.style.padding = '12px'; randomFoodResultEl.innerHTML = htmlContent;
+
+            htmlContent += `<hr style="margin:8px 0; border:none; border-top:1px dashed #cbd5e1;">`;
+            htmlContent += `🔥 总热量: <b>${totalRandomCalories}</b> kcal<br>`;
+            htmlContent += `<button id="btn-add-random-combo" style="width:100%; background-color:#2ec4b6; color:white; border:none; padding:6px; border-radius:6px; margin-top:8px; font-weight:bold; cursor:pointer;">直接吃这套！一键写入</button>`;
+            htmlContent += `</div>`;
+
+            randomFoodResultEl.style.padding = '12px';
+            randomFoodResultEl.innerHTML = htmlContent;
 
             document.getElementById('btn-add-random-combo').addEventListener('click', function() {
-                currentRandomCombo.forEach(food => { addMealRecord("🎲 " + food.name, food.calories); });
+                currentRandomCombo.forEach(food => {
+                    const newMeal = { id: Date.now() + Math.random(), name: "🎲 " + food.name, calories: food.calories };
+                    if (!allData[selectedDate]) allData[selectedDate] = [];
+                    allData[selectedDate].push(newMeal);
+                });
+                saveToLocalStorage();
+                updateUI();
+                calculateStats();
                 alert('成功！已将这套随机健康餐加入你的餐单啰 🎉');
             });
         });
@@ -334,3 +400,5 @@ function setupEventListeners() {
 function saveToLocalStorage() {
     localStorage.setItem('calorieDataByDate', JSON.stringify(allData));
 }
+
+init();
