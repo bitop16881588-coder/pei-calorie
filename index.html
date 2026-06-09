@@ -1,87 +1,586 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DailyCal - 每日飲食卡路里記錄</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DailyCal · 每日健康日誌</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+  :root{
+    --bg:#F4F6F0;
+    --surface:#FFFFFF;
+    --ink:#21302A;
+    --muted:#6E7B73;
+    --line:#E7ECE4;
+    --primary:#2F8F5B;
+    --primary-soft:#DCEFE2;
+    --accent:#FF9F1C;
+    --accent-soft:#FFEBCC;
+    --coral:#E8704F;
+    --shadow:0 6px 24px rgba(33,48,42,.07);
+    --shadow-sm:0 2px 8px rgba(33,48,42,.05);
+    --radius:18px;
+    --num:"Fredoka", system-ui, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    --sans:system-ui, -apple-system, "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:var(--sans);
+    background:
+      radial-gradient(900px 500px at 100% -10%, #E9F4EC 0%, transparent 55%),
+      radial-gradient(700px 400px at -5% 0%, #FFF3E0 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    min-height:100vh;
+    padding:18px 16px 60px;
+  }
+  /* ---------- top quote ---------- */
+  .quote{
+    max-width:1180px;margin:0 auto 18px;text-align:center;
+    font-size:14px;color:var(--muted);letter-spacing:.02em;
+    background:var(--surface);border:1px solid var(--line);
+    padding:10px 18px;border-radius:999px;box-shadow:var(--shadow-sm);
+    display:inline-block;width:100%;
+  }
+  .quote b{color:var(--primary);font-weight:600}
+
+  /* ---------- layout ---------- */
+  .wrap{
+    max-width:1180px;margin:0 auto;
+    display:grid;grid-template-columns:290px minmax(0,1fr) 290px;
+    gap:18px;align-items:start;
+  }
+  .col{display:flex;flex-direction:column;gap:18px}
+
+  .card{
+    background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+  }
+  .card h3{
+    font-size:14px;font-weight:600;color:var(--ink);
+    display:flex;align-items:center;gap:8px;margin-bottom:14px;
+  }
+  .card h3 .ico{font-size:16px}
+
+  /* ---------- header ---------- */
+  .head{text-align:center;padding:6px 0 2px}
+  .head h1{font-family:var(--num);font-weight:700;font-size:30px;letter-spacing:.01em}
+  .head .tag{color:var(--muted);font-size:13px;margin-top:2px}
+  .head .sel{
+    display:inline-block;margin-top:10px;font-size:13px;color:var(--primary);
+    background:var(--primary-soft);padding:4px 14px;border-radius:999px;font-weight:600;
+  }
+
+  /* ---------- calendar week ---------- */
+  .cal{display:flex;align-items:center;gap:8px}
+  .cal .arrow{
+    flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink);font-size:16px;cursor:pointer;
+    display:grid;place-items:center;transition:.15s;
+  }
+  .cal .arrow:hover{background:var(--primary-soft);border-color:var(--primary-soft)}
+  .days{flex:1;display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .day{
+    border:1px solid var(--line);background:var(--surface);border-radius:12px;
+    padding:8px 2px 6px;text-align:center;cursor:pointer;transition:.15s;position:relative;
+  }
+  .day:hover{border-color:var(--primary)}
+  .day .wk{font-size:11px;color:var(--muted)}
+  .day .dt{font-family:var(--num);font-size:16px;font-weight:600;margin-top:1px}
+  .day.today .dt{color:var(--accent)}
+  .day.sel{background:var(--primary);border-color:var(--primary)}
+  .day.sel .wk,.day.sel .dt{color:#fff}
+  .day .dot{
+    position:absolute;left:50%;bottom:4px;transform:translateX(-50%);
+    width:5px;height:5px;border-radius:50%;background:var(--accent);
+  }
+  .day.sel .dot{background:#fff}
+
+  /* ---------- progress ring ---------- */
+  .ring-card{display:flex;flex-direction:column;align-items:center;padding:24px 18px}
+  .ring{position:relative;width:220px;height:220px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .track{fill:none;stroke:var(--line);stroke-width:16}
+  .ring .bar{
+    fill:none;stroke:var(--primary);stroke-width:16;stroke-linecap:round;
+    transition:stroke-dashoffset .7s cubic-bezier(.22,1,.36,1), stroke .4s;
+  }
+  .ring .center{
+    position:absolute;inset:0;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:1px;
+  }
+  .ring .num{font-family:var(--num);font-size:46px;font-weight:700;line-height:1}
+  .ring .of{font-size:12px;color:var(--muted)}
+  .ring .over{font-size:12px;font-weight:600;color:var(--coral);margin-top:3px;min-height:16px}
+
+  /* ---------- quick add ---------- */
+  .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .tab{
+    border:1px solid var(--line);background:var(--surface);border-radius:999px;
+    padding:6px 14px;font-size:13px;color:var(--muted);cursor:pointer;transition:.15s;font-family:var(--sans);
+  }
+  .tab.active{background:var(--ink);border-color:var(--ink);color:#fff}
+  .pool{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .chip{
+    border:1px solid var(--line);background:#fff;border-radius:12px;
+    padding:10px 12px;text-align:left;cursor:pointer;transition:.15s;font-family:var(--sans);
+    display:flex;justify-content:space-between;align-items:center;gap:6px;
+  }
+  .chip:hover{border-color:var(--primary);background:var(--primary-soft)}
+  .chip .nm{font-size:13px;color:var(--ink)}
+  .chip .kc{font-size:12px;color:var(--muted);white-space:nowrap}
+
+  /* ---------- manual form ---------- */
+  .field{margin-bottom:10px}
+  input{
+    width:100%;border:1px solid var(--line);border-radius:12px;
+    padding:11px 14px;font-size:14px;font-family:var(--sans);color:var(--ink);background:#fff;
+  }
+  input:focus{outline:2px solid var(--primary);outline-offset:1px;border-color:var(--primary)}
+  input::placeholder{color:#A9B3AC}
+  .btn{
+    width:100%;border:none;border-radius:12px;padding:12px;font-size:14px;font-weight:600;
+    cursor:pointer;font-family:var(--sans);transition:.15s;color:#fff;background:var(--primary);
+  }
+  .btn:hover{filter:brightness(1.05)}
+  .btn:active{transform:translateY(1px)}
+  .btn.accent{background:var(--accent)}
+  .btn.ghost{background:var(--primary-soft);color:var(--primary)}
+
+  /* ---------- food list ---------- */
+  .list{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .list li{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+    animation:pop .25s ease;
+  }
+  .list .li-name{font-size:14px}
+  .list .li-cal{font-size:13px;color:var(--muted);margin-left:auto;font-family:var(--num);font-weight:500}
+  .list .del{
+    border:none;background:none;color:#C2CBC4;cursor:pointer;font-size:18px;line-height:1;
+    width:24px;height:24px;border-radius:6px;transition:.15s;
+  }
+  .list .del:hover{color:var(--coral);background:#FBE9E3}
+  .empty{color:var(--muted);font-size:13px;text-align:center;padding:14px 4px}
+  @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+
+  /* ---------- stats ---------- */
+  .stat{display:flex;align-items:baseline;justify-content:space-between;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .stat:last-child{border-bottom:none}
+  .stat .t{font-size:13px;color:var(--muted)}
+  .stat .v{font-family:var(--num);font-size:20px;font-weight:600}
+  .stat .v small{font-size:12px;color:var(--muted);font-weight:400;margin-left:2px}
+  .chart-box{position:relative;height:190px}
+
+  /* ---------- water ---------- */
+  .water{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+  .cup{
+    aspect-ratio:1;border:1px solid var(--line);border-radius:12px;background:#fff;
+    display:grid;place-items:center;font-size:22px;cursor:pointer;transition:.15s;filter:grayscale(1) opacity(.4);
+  }
+  .cup.full{filter:none;background:#EAF4FB;border-color:#BFE0F2}
+  .cup:hover{border-color:#7FC0E6}
+  .water-status{font-size:13px;color:var(--muted);text-align:center}
+  .water-status b{font-family:var(--num);font-size:16px;color:#3A9BD6}
+
+  /* ---------- tdee / lucky ---------- */
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+  .result{
+    margin-top:12px;font-size:13px;color:var(--ink);background:var(--bg);
+    border-radius:12px;padding:0;overflow:hidden;max-height:0;transition:max-height .3s ease,padding .3s ease;
+  }
+  .result.show{padding:12px 14px;max-height:240px}
+  .result .big{font-family:var(--num);font-size:22px;font-weight:600;color:var(--primary)}
+  .result .sub{color:var(--muted);font-size:12px;margin:4px 0 10px}
+  .result .meal{font-size:15px;font-weight:600;margin-bottom:2px}
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:#fff;padding:11px 20px;border-radius:999px;font-size:14px;
+    box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* ---------- mobile ---------- */
+  @media (max-width:960px){
+    body{padding:14px 12px 50px}
+    .wrap{display:flex;flex-direction:column;gap:14px}
+    .col{display:contents}
+    #p-head{order:1}#p-cal{order:2}#p-ring{order:3}#p-quick{order:4}
+    #p-manual{order:5}#p-list{order:6}#p-water{order:7}#p-stats{order:8}
+    #p-chart{order:9}#p-tdee{order:10}#p-lucky{order:11}
+    .head h1{font-size:26px}
+    .ring{width:200px;height:200px}
+    .pool{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:380px){.pool{grid-template-columns:1fr}}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
-    <div class="cute-quote-box">“ 健康不是懲罰，而是對身體的投資。 ”</div>
-    <div class="dashboard-wrapper">
-        <aside class="side-panel left-panel">
-            <div class="panel-card">
-                <h3><i class="fa-solid fa-chart-pie"></i> 攝入統計看板</h3>
-                <div class="stat-item"><span class="stat-title">本週平均攝入</span><span id="avg-calories" class="stat-value">0 <small>kcal</small></span></div>
-                <div class="stat-item"><span class="stat-title">已記錄天數</span><span id="recorded-days" class="stat-value">0 <small>天</small></span></div>
-                <div class="stat-item"><span class="stat-title">最高攝入的一天</span><span id="max-calories" class="stat-value">0 <small>kcal</small></span></div>
-            </div>
-            <div class="panel-card">
-                <h3><i class="fa-solid fa-chart-line"></i> 本週卡路里趨勢</h3>
-                <canvas id="calorieLineChart"></canvas>
-            </div>
-        </aside>
+  <div class="quote">健康不是懲罰,而是對身體的<b>投資</b>。</div>
 
-        <main class="main-panel">
-            <div class="container">
-                <header>
-                    <div class="header-content"><h1>🍎 DailyCal 健康看盤</h1></div>
-                    <p>記錄每一餐，掌控你的健康</p>
-                </header>
-                <section class="calendar-pagination">
-                    <button id="btn-prev-week" class="pag-arrow">&lt;</button>
-                    <div id="calendar-days" class="days-container"></div>
-                    <button id="btn-next-week" class="pag-arrow">&gt;</button>
-                </section>
-                <section class="dashboard">
-                    <div class="progress-circle"><div class="inner"><span id="total-calories">0</span><small>今日總攝入 / 2000 kcal</small></div></div>
-                </section>
-                <section class="quick-add-section">
-                    <h3><i class="fa-solid fa-cookie-bite"></i> 常用食物快捷添加</h3>
-                    <div class="category-tabs">
-                        <button class="tab-btn active" data-cat="staple">主食</button>
-                        <button class="tab-btn" data-cat="protein">肉蛋奶</button>
-                        <button class="tab-btn" data-cat="veg">蔬菜</button>
-                        <button class="tab-btn" data-cat="snack">水果零食</button>
-                    </div>
-                    <div id="quick-food-pool" class="food-pool"></div>
-                </section>
-                <section class="form-section">
-                    <h3><i class="fa-solid fa-pencil"></i> 手動添加飲食</h3>
-                    <form id="food-form">
-                        <div class="form-group"><input type="text" id="food-name" placeholder="食物名稱 (如: 煎雞腿)" required></div>
-                        <div class="form-group"><input type="number" id="food-calories" placeholder="卡路里 (kcal)" required min="1"></div>
-                        <button type="submit" class="btn-submit">添加記錄</button>
-                    </form>
-                </section>
-                <section class="list-section">
-                    <h3><i class="fa-solid fa-list-check"></i> 當日餐單</h3>
-                    <ul id="food-list" class="food-list"></ul>
-                </section>
-            </div>
-        </main>
-
-        <aside class="side-panel right-panel">
-            <div class="panel-card water-card">
-                <h3><i class="fa-solid fa-droplet"></i> 今日飲水追蹤</h3>
-                <div class="water-grid" id="water-cup-grid"></div>
-                <div class="water-status">今日已喝: <span id="water-count">0</span> / 2000 ml</div>
-            </div>
-            <div class="panel-card tdee-card">
-                <h3><i class="fa-solid fa-gears"></i> 目標計算小工具</h3>
-                <div class="tdee-row"><input type="number" id="tdee-weight" placeholder="體重 (kg)"><input type="number" id="tdee-height" placeholder="身高 (cm)"></div>
-                <button id="btn-calc-tdee" class="btn-calc">粗估每日消耗</button>
-                <div id="tdee-result" class="tdee-result-text"></div>
-            </div>
-            <div class="panel-card random-menu-card">
-                <h3><i class="fa-solid fa-dice"></i> 今日健康餐推薦</h3>
-                <button id="btn-random-food" class="btn-calc" style="background-color: #ff9f1c;">🍳 抽取幸運健康餐</button>
-                <div id="random-food-result" class="tdee-result-text"></div>
-            </div>
-        </aside>
+  <div class="wrap">
+    <!-- LEFT -->
+    <div class="col">
+      <div class="card" id="p-stats">
+        <h3><span class="ico">📊</span> 本週攝入統計</h3>
+        <div class="stat"><span class="t">本週平均攝入</span><span class="v" id="s-avg">0<small>kcal</small></span></div>
+        <div class="stat"><span class="t">已記錄天數</span><span class="v" id="s-days">0<small>天</small></span></div>
+        <div class="stat"><span class="t">最高的一天</span><span class="v" id="s-max">0<small>kcal</small></span></div>
+      </div>
+      <div class="card" id="p-chart">
+        <h3><span class="ico">📈</span> 本週卡路里趨勢</h3>
+        <div class="chart-box"><canvas id="chart"></canvas></div>
+      </div>
     </div>
-    <script src="script.js"></script>
+
+    <!-- CENTER -->
+    <div class="col">
+      <div id="p-head" class="head">
+        <h1>🍎 DailyCal</h1>
+        <div class="tag">記錄每一餐,看見自己的進步</div>
+        <div class="sel" id="sel-label">今天</div>
+      </div>
+
+      <div class="card" id="p-cal">
+        <div class="cal">
+          <button class="arrow" id="prev-week" aria-label="上一週">‹</button>
+          <div class="days" id="days"></div>
+          <button class="arrow" id="next-week" aria-label="下一週">›</button>
+        </div>
+      </div>
+
+      <div class="card ring-card" id="p-ring">
+        <div class="ring">
+          <svg viewBox="0 0 220 220" width="220" height="220">
+            <circle class="track" cx="110" cy="110" r="92"></circle>
+            <circle class="bar" id="ring-bar" cx="110" cy="110" r="92"></circle>
+          </svg>
+          <div class="center">
+            <span class="num" id="ring-num">0</span>
+            <span class="of" id="ring-of">/ 2000 kcal</span>
+            <span class="over" id="ring-over"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="p-quick">
+        <h3><span class="ico">🍪</span> 常用食物快捷添加</h3>
+        <div class="tabs" id="tabs">
+          <button class="tab active" data-cat="staple">主食</button>
+          <button class="tab" data-cat="protein">肉蛋奶</button>
+          <button class="tab" data-cat="veg">蔬菜</button>
+          <button class="tab" data-cat="snack">水果零食</button>
+        </div>
+        <div class="pool" id="pool"></div>
+      </div>
+
+      <div class="card" id="p-manual">
+        <h3><span class="ico">✏️</span> 手動添加飲食</h3>
+        <div class="field"><input type="text" id="f-name" placeholder="食物名稱(如:煎雞腿)"></div>
+        <div class="field"><input type="number" id="f-cal" placeholder="卡路里(kcal)" min="1"></div>
+        <button class="btn" id="add-manual">添加記錄</button>
+      </div>
+
+      <div class="card" id="p-list">
+        <h3><span class="ico">📝</span> 當日餐單</h3>
+        <ul class="list" id="list"></ul>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col">
+      <div class="card" id="p-water">
+        <h3><span class="ico">💧</span> 今日飲水追蹤</h3>
+        <div class="water" id="water"></div>
+        <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
+      </div>
+
+      <div class="card" id="p-tdee">
+        <h3><span class="ico">🎯</span> 目標計算小工具</h3>
+        <div class="row2">
+          <input type="number" id="t-weight" placeholder="體重 kg" min="1">
+          <input type="number" id="t-height" placeholder="身高 cm" min="1">
+        </div>
+        <button class="btn ghost" id="calc-tdee">粗估每日消耗</button>
+        <div class="result" id="tdee-result"></div>
+      </div>
+
+      <div class="card" id="p-lucky">
+        <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
+        <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
+        <div class="result" id="lucky-result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  const KEY="dailycal_v1";
+  const WEEKDAYS=["一","二","三","四","五","六","日"];
+  const FOODS={
+    staple:[["白飯一碗",280],["糙米飯一碗",250],["吐司一片",90],["地瓜一條",120],["麵條一碗",300],["水餃 10顆",420],["蛋餅",250],["飯糰",350]],
+    protein:[["煎雞腿",250],["滷雞腿",230],["水煮蛋",75],["荷包蛋",110],["鮭魚一片",200],["雞胸肉",165],["牛奶一杯",130],["無糖豆漿",80]],
+    veg:[["燙青菜",50],["生菜沙拉",60],["番茄",30],["花椰菜",40],["玉米一根",90],["菇類",35],["海帶",25],["味噌湯",60]],
+    snack:[["蘋果",95],["香蕉",105],["芭樂",70],["珍珠奶茶",500],["洋芋片(小)",150],["黑巧克力",150],["餅乾兩片",100],["無糖優格",90]]
+  };
+  const LUCKY=[
+    {m:"雞胸肉 + 糙米飯 + 燙青菜",c:480},
+    {m:"鮭魚 + 地瓜 + 花椰菜",c:520},
+    {m:"滷雞腿 + 白飯 + 生菜沙拉",c:600},
+    {m:"無糖豆漿 + 全麥吐司 + 水煮蛋",c:360},
+    {m:"番茄牛肉湯 + 糙米飯",c:540},
+    {m:"蝦仁炒蛋 + 燙青菜 + 白飯",c:560},
+    {m:"希臘優格 + 香蕉 + 堅果",c:340},
+    {m:"雞胸沙拉 + 玉米 + 水煮蛋",c:420}
+  ];
+
+  // ---------- state ----------
+  let data=load();
+  let selected=new Date();
+  let weekStart=startOfWeek(new Date());
+  let curCat="staple";
+
+  // ---------- storage ----------
+  function load(){
+    try{
+      const raw=localStorage.getItem(KEY);
+      if(raw){const d=JSON.parse(raw); d.records=d.records||{}; d.water=d.water||{}; d.goal=d.goal||2000; d.weight=d.weight||""; d.height=d.height||""; return d;}
+    }catch(e){}
+    return {records:{},water:{},goal:2000,weight:"",height:""};
+  }
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
+
+  // ---------- date helpers ----------
+  function key(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+  function startOfWeek(d){const x=new Date(d);const off=(x.getDay()+6)%7;x.setDate(x.getDate()-off);x.setHours(0,0,0,0);return x;}
+  function sameDay(a,b){return key(a)===key(b);}
+  function dayItems(d){return data.records[key(d)]||[];}
+  function dayTotal(d){return dayItems(d).reduce((s,i)=>s+i.cal,0);}
+
+  // ---------- toast ----------
+  let toastTimer;
+  function toast(msg){
+    const el=document.getElementById("toast");
+    el.textContent=msg;el.classList.add("show");
+    clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),1800);
+  }
+
+  // ---------- render: calendar ----------
+  function renderCalendar(){
+    const box=document.getElementById("days");
+    box.innerHTML="";
+    const today=new Date();
+    for(let i=0;i<7;i++){
+      const d=new Date(weekStart);d.setDate(d.getDate()+i);
+      const b=document.createElement("button");
+      b.className="day";
+      if(sameDay(d,today))b.classList.add("today");
+      if(sameDay(d,selected))b.classList.add("sel");
+      b.innerHTML='<div class="wk">'+WEEKDAYS[i]+'</div><div class="dt">'+d.getDate()+'</div>'+(dayTotal(d)>0?'<span class="dot"></span>':'');
+      b.addEventListener("click",()=>{selected=new Date(d);renderAll();});
+      box.appendChild(b);
+    }
+  }
+
+  // ---------- render: selected label ----------
+  function renderLabel(){
+    const d=selected,today=new Date();
+    const txt=(d.getMonth()+1)+" 月 "+d.getDate()+" 日(週"+WEEKDAYS[(d.getDay()+6)%7]+")";
+    document.getElementById("sel-label").textContent=sameDay(d,today)?("今天 · "+txt):("記錄中 · "+txt);
+  }
+
+  // ---------- render: ring ----------
+  const R=92, C=2*Math.PI*R;
+  const ringBar=document.getElementById("ring-bar");
+  ringBar.style.strokeDasharray=C;ringBar.style.strokeDashoffset=C;
+  function renderRing(){
+    const total=dayTotal(selected),goal=data.goal||2000;
+    const pct=goal>0?total/goal:0,shown=Math.min(pct,1);
+    ringBar.style.strokeDashoffset=C*(1-shown);
+    ringBar.style.stroke=pct<=0.7?"var(--primary)":(pct<=1?"var(--accent)":"var(--coral)");
+    document.getElementById("ring-num").textContent=total;
+    document.getElementById("ring-of").textContent="/ "+goal+" kcal";
+    document.getElementById("ring-over").textContent=total>goal?("超過 "+(total-goal)+" kcal"):"";
+  }
+
+  // ---------- render: list ----------
+  function renderList(){
+    const ul=document.getElementById("list");
+    const items=dayItems(selected);
+    ul.innerHTML="";
+    if(!items.length){ul.innerHTML='<div class="empty">這天還沒有記錄,點上方快捷食物或手動添加吧。</div>';return;}
+    items.forEach(it=>{
+      const li=document.createElement("li");
+      li.innerHTML='<span class="li-name"></span><span class="li-cal">'+it.cal+' kcal</span><button class="del" aria-label="刪除">×</button>';
+      li.querySelector(".li-name").textContent=it.name;
+      li.querySelector(".del").addEventListener("click",()=>{removeItem(it.id);});
+      ul.appendChild(li);
+    });
+  }
+
+  // ---------- render: quick foods ----------
+  function renderPool(){
+    const pool=document.getElementById("pool");
+    pool.innerHTML="";
+    FOODS[curCat].forEach(([nm,kc])=>{
+      const b=document.createElement("button");
+      b.className="chip";
+      b.innerHTML='<span class="nm"></span><span class="kc">'+kc+' kcal</span>';
+      b.querySelector(".nm").textContent=nm;
+      b.addEventListener("click",()=>addItem(nm,kc));
+      pool.appendChild(b);
+    });
+  }
+
+  // ---------- render: stats + chart ----------
+  let chart;
+  function weekTotals(){
+    const arr=[];
+    for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(d.getDate()+i);arr.push(dayTotal(d));}
+    return arr;
+  }
+  function renderStats(){
+    const totals=weekTotals();
+    const recorded=totals.filter(v=>v>0);
+    const avg=recorded.length?Math.round(recorded.reduce((a,b)=>a+b,0)/recorded.length):0;
+    const max=totals.length?Math.max(...totals):0;
+    document.getElementById("s-avg").innerHTML=avg+'<small>kcal</small>';
+    document.getElementById("s-days").innerHTML=recorded.length+'<small>天</small>';
+    document.getElementById("s-max").innerHTML=max+'<small>kcal</small>';
+  }
+  function renderChart(){
+    if(!window.Chart)return;
+    const totals=weekTotals(),goal=data.goal||2000;
+    if(!chart){
+      chart=new Chart(document.getElementById("chart"),{
+        type:"line",
+        data:{labels:WEEKDAYS.slice(),datasets:[
+          {label:"攝取",data:totals,borderColor:"#2F8F5B",backgroundColor:"rgba(47,143,91,.12)",fill:true,tension:.35,pointRadius:4,pointBackgroundColor:"#2F8F5B",borderWidth:2},
+          {label:"目標",data:totals.map(()=>goal),borderColor:"#FF9F1C",borderDash:[5,5],pointRadius:0,borderWidth:1.5,fill:false}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{labels:{boxWidth:12,font:{size:11},color:"#6E7B73"}}},
+          scales:{y:{beginAtZero:true,grid:{color:"#EEF2EC"},ticks:{font:{size:11},color:"#6E7B73"}},x:{grid:{display:false},ticks:{font:{size:11},color:"#6E7B73"}}}
+        }
+      });
+    }else{
+      chart.data.datasets[0].data=totals;
+      chart.data.datasets[1].data=totals.map(()=>goal);
+      chart.update();
+    }
+  }
+
+  // ---------- render: water ----------
+  function renderWater(){
+    const box=document.getElementById("water");
+    const cups=8;
+    const count=Math.round((data.water[key(selected)]||0)/250);
+    box.innerHTML="";
+    for(let i=0;i<cups;i++){
+      const c=document.createElement("button");
+      c.className="cup"+(i<count?" full":"");
+      c.textContent="💧";c.setAttribute("aria-label","第"+(i+1)+"杯水");
+      c.addEventListener("click",()=>{
+        const newCount=(i+1===count)?i:i+1;
+        data.water[key(selected)]=newCount*250;save();renderWater();
+      });
+      box.appendChild(c);
+    }
+    document.getElementById("water-ml").textContent=count*250;
+  }
+
+  // ---------- mutations ----------
+  function addItem(name,cal){
+    const k=key(selected);
+    if(!data.records[k])data.records[k]=[];
+    data.records[k].push({id:Date.now()+""+Math.floor(Math.random()*1000),name:name,cal:cal});
+    save();renderAll();toast("已添加 "+name+" · "+cal+" kcal");
+  }
+  function removeItem(id){
+    const k=key(selected);
+    data.records[k]=(data.records[k]||[]).filter(i=>i.id!==id);
+    if(!data.records[k].length)delete data.records[k];
+    save();renderAll();
+  }
+
+  // ---------- render all ----------
+  function renderAll(){
+    renderCalendar();renderLabel();renderRing();renderList();
+    renderStats();renderChart();renderWater();
+  }
+
+  // ---------- events ----------
+  document.getElementById("prev-week").addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()-7);renderAll();});
+  document.getElementById("next-week").addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()+7);renderAll();});
+
+  document.getElementById("tabs").addEventListener("click",e=>{
+    const t=e.target.closest(".tab");if(!t)return;
+    curCat=t.dataset.cat;
+    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));
+    renderPool();
+  });
+
+  function submitManual(){
+    const nameEl=document.getElementById("f-name"),calEl=document.getElementById("f-cal");
+    const name=nameEl.value.trim(),cal=parseInt(calEl.value,10);
+    if(!name){toast("請輸入食物名稱");nameEl.focus();return;}
+    if(!cal||cal<1){toast("請輸入正確的卡路里");calEl.focus();return;}
+    addItem(name,cal);nameEl.value="";calEl.value="";nameEl.focus();
+  }
+  document.getElementById("add-manual").addEventListener("click",submitManual);
+  document.getElementById("f-cal").addEventListener("keydown",e=>{if(e.key==="Enter")submitManual();});
+  document.getElementById("f-name").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("f-cal").focus();});
+
+  // TDEE
+  const tw=document.getElementById("t-weight"),th=document.getElementById("t-height");
+  tw.value=data.weight;th.value=data.height;
+  document.getElementById("calc-tdee").addEventListener("click",()=>{
+    const w=parseFloat(tw.value),h=parseFloat(th.value);
+    if(!w||!h||w<1||h<1){toast("請先輸入體重與身高");return;}
+    data.weight=tw.value;data.height=th.value;save();
+    const bmr=Math.round(10*w+6.25*h-5*30+5);   // Mifflin-St Jeor,假設約 30 歲
+    const tdee=Math.round(bmr*1.375);            // 輕度活動
+    const cut=Math.max(1200,tdee-400);
+    const box=document.getElementById("tdee-result");
+    box.innerHTML=
+      '<div class="big">約 '+tdee+' kcal</div>'+
+      '<div class="sub">每日消耗粗估(基礎代謝 '+bmr+',假設約 30 歲、輕度活動)</div>'+
+      '想減脂的話,建議每日攝取約 <b>'+cut+' kcal</b>。'+
+      '<button class="btn ghost" id="apply-goal" style="margin-top:10px">套用 '+cut+' 為每日目標</button>';
+    box.classList.add("show");
+    document.getElementById("apply-goal").addEventListener("click",()=>{
+      data.goal=cut;save();renderRing();renderChart();toast("每日目標已設為 "+cut+" kcal");
+    });
+  });
+
+  // Lucky meal
+  document.getElementById("lucky-btn").addEventListener("click",()=>{
+    const pick=LUCKY[Math.floor(Math.random()*LUCKY.length)];
+    const box=document.getElementById("lucky-result");
+    box.innerHTML=
+      '<div class="meal">'+pick.m+'</div>'+
+      '<div class="sub">約 '+pick.c+' kcal</div>'+
+      '<button class="btn ghost" id="add-lucky">加入今日餐單</button>';
+    box.classList.add("show");
+    document.getElementById("add-lucky").addEventListener("click",()=>addItem(pick.m,pick.c));
+  });
+
+  // ---------- init ----------
+  renderPool();
+  renderAll();
+})();
+</script>
 </body>
 </html>
