@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DailyCal · 每日健康美學日誌</title>
+    <title>DailyCal · 每日健康日誌</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -12,18 +12,18 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
 <body>
-    <div class="cute-quote-box">“ 健康不是懲罰，而是對身體最好的<b>投資</b>。 ”</div>
+    <div class="cute-quote-box">“ 健康不是懲罰，而是對身體的<b>投資</b>。 ”</div>
 
     <div class="dashboard-wrapper">
         <aside class="side-panel">
             <div class="panel-card" id="p-stats">
-                <h3><i class="fa-solid fa-chart-pie chart-icon"></i> 本週攝入統計</h3>
+                <h3><span class="ico">📊</span> 本週攝入統計</h3>
                 <div class="stat-item"><span class="stat-title">本週平均攝入</span><span class="stat-value" id="s-avg">0<small>kcal</small></span></div>
                 <div class="stat-item"><span class="stat-title">已記錄天數</span><span class="stat-value" id="s-days">0<small>天</small></span></div>
                 <div class="stat-item"><span class="stat-title">最高的一天</span><span class="stat-value" id="s-max">0<small>kcal</small></span></div>
             </div>
             <div class="panel-card" id="p-chart">
-                <h3><i class="fa-solid fa-chart-line chart-icon"></i> 本週卡路里趨勢</h3>
+                <h3><span class="ico">📈</span> 本週卡路里趨勢</h3>
                 <div class="chart-box"><canvas id="chart"></canvas></div>
             </div>
         </aside>
@@ -31,16 +31,16 @@
         <main class="main-panel">
             <div class="container">
                 <header class="head">
-                    <div class="header-content"><h1>🍎 DailyCal</h1></div>
+                    <h1>🍎 DailyCal</h1>
                     <div class="tag">記錄每一餐，看見自己的進步</div>
                     <div class="sel" id="sel-label">今天</div>
                 </header>
 
                 <section class="cal-card" id="p-cal">
                     <div class="cal">
-                        <button class="arrow" id="prev-week" aria-label="上一週">‹</button>
+                        <button class="arrow" id="prev-week">‹</button>
                         <div class="days" id="days"></div>
-                        <button class="arrow" id="next-week" aria-label="下一週">›</button>
+                        <button class="arrow" id="next-week">›</button>
                     </div>
                 </section>
 
@@ -51,7 +51,7 @@
                 </nav>
 
                 <div id="diet-tab" class="tab-pane active">
-                    <div class="panel-card ring-card" id="p-ring" style="box-shadow: none; padding: 10px 0;">
+                    <div class="ring-card" id="p-ring">
                         <div class="ring">
                             <svg viewBox="0 0 220 220" width="220" height="220">
                                 <circle class="track" cx="110" cy="110" r="92"></circle>
@@ -65,8 +65,8 @@
                         </div>
                     </div>
 
-                    <div class="panel-card" id="p-quick" style="box-shadow: none; padding: 10px 0; border: none;">
-                        <h3><i class="fa-solid fa-cookie-bite title-icon"></i> 常用食物快捷添加</h3>
+                    <div id="p-quick" style="margin-top: 20px;">
+                        <h3><span class="ico">🍪</span> 常用食物快捷添加</h3>
                         <div class="tabs" id="tabs">
                             <button class="tab active" data-cat="staple">主食</button>
                             <button class="tab" data-cat="protein">肉蛋奶</button>
@@ -76,36 +76,36 @@
                         <div class="pool" id="pool"></div>
                     </div>
 
-                    <div class="panel-card" id="p-manual" style="box-shadow: none; padding: 10px 0; border: none;">
-                        <h3><i class="fa-solid fa-pencil title-icon"></i> 手動添加飲食</h3>
+                    <div id="p-manual" style="margin-top: 20px;">
+                        <h3><span class="ico">✏️</span> 手動添加飲食</h3>
                         <div class="field"><input type="text" id="f-name" placeholder="食物名稱(如:煎雞腿)"></div>
                         <div class="field"><input type="number" id="f-cal" placeholder="卡路里(kcal)" min="1"></div>
                         <button class="btn" id="add-manual">添加記錄</button>
                     </div>
 
-                    <div class="panel-card" id="p-list" style="box-shadow: none; padding: 10px 0; border: none;">
-                        <h3><i class="fa-solid fa-list-check title-icon"></i> 當日餐單</h3>
+                    <div id="p-list" style="margin-top: 20px;">
+                        <h3><span class="ico">📝</span> 當日餐單</h3>
                         <ul class="list" id="list"></ul>
                     </div>
                 </div>
 
                 <div id="fitness-tab" class="tab-pane">
                     <div class="sub-feature-card">
-                        <div class="feature-icon-wrapper"><i class="fa-solid fa-fire-flame-curved" style="color: #E8704F;"></i></div>
+                        <div class="feature-icon-wrapper"><i class="fa-solid fa-fire-flame-curved" style="color: var(--coral);"></i></div>
                         <h3>高效燃脂計畫</h3>
-                        <p>為你專屬推薦：全身高效空腹燃脂運動。每天只需 20 分鐘，活化全身代謝。</p>
-                        <button class="btn accent" onclick="toast('⏱️ 健身計時開始！加油！')">開始 20 分鐘運動</button>
+                        <p>今日推薦運動：全身高效空腹燃脂運動。每天只需 20 分鐘，活化全身代謝，加速體態雕塑。</p>
+                        <button class="btn accent" onclick="toast('⏱️ 健身計時開始！加油！')">開始運動</button>
                     </div>
                 </div>
 
                 <div id="green-tab" class="tab-pane">
                     <div class="sub-feature-card">
-                        <div class="feature-icon-wrapper"><i class="fa-solid fa-seedling" style="color: #2F8F5B;"></i></div>
+                        <div class="feature-icon-wrapper"><i class="fa-solid fa-seedling" style="color: var(--primary);"></i></div>
                         <h3>綠拿鐵熱量自動計算器</h3>
-                        <p style="margin-bottom: 15px;">調配專屬特調，一鍵精準計算並導入健康餐單：</p>
+                        <p style="margin-bottom: 15px;">調配你的專屬纖體綠拿鐵，一鍵精準計算熱量並導入今日記錄：</p>
                         
                         <div class="select-group">
-                            <label><i class="fa-solid fa-mound"></i> 蔬菜基底</label>
+                            <label>🥬 蔬菜基底</label>
                             <select id="green-veg" class="fancy-select">
                                 <option value="35">有機菠菜 (35 kcal)</option>
                                 <option value="40">嫩地瓜葉 (40 kcal)</option>
@@ -113,7 +113,7 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label><i class="fa-solid fa-apple-whole"></i> 水果風味</label>
+                            <label>🍎 水果風味</label>
                             <select id="green-fruit" class="fancy-select">
                                 <option value="90">富士蘋果 (90 kcal)</option>
                                 <option value="100">熟香蕉 (100 kcal)</option>
@@ -121,7 +121,7 @@
                             </select>
                         </div>
                         <div class="select-group">
-                            <label><i class="fa-solid fa-glass-water"></i> 液體調和</label>
+                            <label>🥛 液體調和</label>
                             <select id="green-liquid" class="fancy-select">
                                 <option value="130">高纖無糖豆漿 (130 kcal)</option>
                                 <option value="180">低脂鮮乳 (180 kcal)</option>
@@ -138,13 +138,13 @@
 
         <aside class="side-panel">
             <div class="panel-card" id="p-water">
-                <h3><i class="fa-solid fa-droplet water-icon"></i> 今日飲水追蹤</h3>
+                <h3><span class="ico">💧</span> 今日飲水追蹤</h3>
                 <div class="water" id="water"></div>
                 <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
             </div>
 
             <div class="panel-card" id="p-tdee">
-                <h3><i class="fa-solid fa-sliders settings-icon"></i> 目標計算小工具</h3>
+                <h3><span class="ico">🎯</span> 目標計算小工具</h3>
                 <div class="row2">
                     <input type="number" id="t-weight" placeholder="體重 kg" min="1">
                     <input type="number" id="t-height" placeholder="身高 cm" min="1">
@@ -154,7 +154,7 @@
             </div>
 
             <div class="panel-card" id="p-lucky">
-                <h3><i class="fa-solid fa-dice title-icon"></i> 今日健康餐推薦</h3>
+                <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
                 <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
                 <div class="result" id="lucky-result"></div>
             </div>
