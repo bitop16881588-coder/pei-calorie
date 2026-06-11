@@ -1,114 +1,255 @@
-let allData = JSON.parse(localStorage.getItem('calorieDataByDate')) || {};
-let waterData = JSON.parse(localStorage.getItem('waterLogByDate')) || {};
-let selectedDate = new Date().toISOString().split('T')[0];
+(function(){
+  "use strict";
+  const KEY="dailycal_v1";
+  const WEEKDAYS=["一","二","三","四","五","六","日"];
+  const FOODS={
+    staple:[["白飯一碗",280],["糙米飯一碗",250],["吐司一片",90],["地瓜一條",120],["麵條一碗",300],["水餃 10顆",420],["蛋餅",250],["飯糰",350]],
+    protein:[["煎雞腿",250],["滷雞腿",230],["水煮蛋",75],["荷包蛋",110],["鮭魚一片",200],["雞胸肉",165],["牛奶一杯",130],["無糖豆漿",80]],
+    veg:[["燙青菜",50],["生菜沙拉",60],["番茄",30],["花椰菜",40],["玉米一根",90],["菇類",35],["海帶",25],["味噌湯",60]],
+    snack:[["蘋果",95],["香蕉",105],["芭樂",70],["珍珠奶茶",500],["洋芋片(小)",150],["黑巧克力",150],["餅乾兩片",100],["無糖優格",90]]
+  };
+  const LUCKY=[
+    {m:"雞胸肉 + 糙米飯 + 燙青菜",c:480},
+    {m:"鮭魚 + 地瓜 + 花椰菜",c:520},
+    {m:"滷雞腿 + 白飯 + 生菜沙拉",c:600},
+    {m:"無糖豆漿 + 全麥吐司 + 水煮蛋",c:360}
+  ];
 
-const presetFoods = {
-    staple: [
-        { name: "🍚 白米飯(一碗)", calories: 280 }, { name: "🍜 水煮麵條(碗)", calories: 220 },
-        { name: "🍱 烤雞腿便當", calories: 750 }, { name: "🍔 麥當勞漢堡", calories: 550 },
-        { name: "🥪 超商三明治", calories: 300 }, { name: "🍙 肉鬆御飯糰", calories: 210 }
-    ],
-    protein: [
-        { name: "🥚 水煮蛋(顆)", calories: 75 }, { name: "🍳 荷包蛋(顆)", calories: 110 },
-        { name: "🍗 煎雞胸肉(100g)", calories: 140 }, { name: "🥩 滷牛肉(100g)", calories: 150 },
-        { name: "🐟 煎鮭魚(100g)", calories: 210 }, { name: "🥛 無糖豆漿(400ml)", calories: 130 }
-    ],
-    veg: [
-        { name: "🥦 水煮綠花椰", calories: 35 }, { name: "🥬 燙青菜(淋油)", calories: 80 },
-        { name: "🍅 大番茄(顆)", calories: 35 }, { name: "🥗 凱薩沙拉(含醬)", calories: 350 }
-    ],
-    snack: [
-        { name: "🍎 蘋果(中型)", calories: 90 }, { name: "🍌 香蕉(中型)", calories: 100 },
-        { name: "☕ 黑咖啡(杯)", calories: 5 }, { name: "🧋 珍奶(全糖)", calories: 650 }
-    ]
-};
+  let data=load();
+  let selected=new Date();
+  let weekStart=startOfWeek(new Date());
+  let curCat="staple";
 
-document.addEventListener("DOMContentLoaded", init);
+  function load(){
+    try{
+      const raw=localStorage.getItem(KEY);
+      if(raw){const d=JSON.parse(raw); d.records=d.records||{}; d.water=d.water||{}; d.goal=d.goal||2000; return d;}
+    }catch(e){}
+    return {records:{},water:{},goal:2000,weight:"",height:""};
+  }
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
 
-function init() {
-    renderCalendar();
-    renderQuickFood('staple');
-    updateUI();
-    renderWaterGrid();
-    renderChart();
-}
+  function key(d){return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+  function startOfWeek(d){const x=new Date(d);const off=(x.getDay()+6)%7;x.setDate(x.getDate()-off);x.setHours(0,0,0,0);return x;}
+  function sameDay(a,b){return key(a)===key(b);}
+  function dayItems(d){return data.records[key(d)]||[];}
+  function dayTotal(d){return dayItems(d).reduce((s,i)=>s+i.cal,0);}
 
-function renderCalendar() {
-    const container = document.getElementById('calendar-days');
-    if(!container) return;
-    container.innerHTML = '';
-    for(let i=-2; i<=2; i++) {
-        let d = new Date(); d.setDate(d.getDate() + i);
-        let dateStr = d.toISOString().split('T')[0];
-        let btn = document.createElement('div');
-        btn.className = `day-card ${dateStr === selectedDate ? 'active' : ''}`;
-        btn.innerHTML = `<span class="month-label">${d.getMonth()+1}月</span><span class="day-number">${d.getDate()}</span>`;
-        btn.onclick = () => { selectedDate = dateStr; document.querySelectorAll('.day-card').forEach(c=>c.classList.remove('active')); btn.classList.add('active'); updateUI(); };
-        container.appendChild(btn);
+  let toastTimer;
+  function toast(msg){
+    const el=document.getElementById("toast");
+    if(!el) return;
+    el.textContent=msg;el.classList.add("show");
+    clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),1800);
+  }
+  window.toast = toast; // 綁定到 window 讓 HTML onclick 可以用
+
+  // 🌟 膠囊主分頁切換邏輯
+  function switchMainTab(tabId, btn) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.app-nav .nav-btn').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById(tabId + '-tab').classList.add('active');
+    btn.classList.add('active');
+  }
+  window.switchMainTab = switchMainTab;
+
+  // 🌟 綠拿鐵一鍵計算與生成
+  function calculateGreenSmoothie() {
+    const veg = parseInt(document.getElementById('green-veg').value) || 0;
+    const fruit = parseInt(document.getElementById('green-fruit').value) || 0;
+    const liquid = parseInt(document.getElementById('green-liquid').value) || 0;
+    const total = veg + fruit + liquid;
+
+    const resBox = document.getElementById('green-result');
+    resBox.innerHTML = `
+      <div class="big">共 ${total} kcal</div>
+      <div class="sub">天然高纖維纖體配方</div>
+      <button class="btn ghost" id="add-green-btn">🧪 導入今日餐單</button>
+    `;
+    resBox.classList.add('show');
+
+    document.getElementById('add-green-btn').onclick = () => {
+      addItem("特調綠拿鐵", total);
+    };
+  }
+  window.calculateGreenSmoothie = calculateGreenSmoothie;
+
+  function renderCalendar(){
+    const box=document.getElementById("days");
+    if(!box) return; box.innerHTML="";
+    const today=new Date();
+    for(let i=0;i<7;i++){
+      const d=new Date(weekStart);d.setDate(d.getDate()+i);
+      const b=document.createElement("button"); b.className="day";
+      if(sameDay(d,today))b.classList.add("today");
+      if(sameDay(d,selected))b.classList.add("sel");
+      b.innerHTML='<div class="wk">'+WEEKDAYS[i]+'</div><div class="dt">'+d.getDate()+'</div>'+(dayTotal(d)>0?'<span class="dot"></span>':'');
+      b.addEventListener("click",()=>{selected=new Date(d);renderAll();});
+      box.appendChild(b);
     }
-}
+  }
 
-function renderQuickFood(cat) {
-    const pool = document.getElementById('quick-food-pool');
-    if(!pool) return;
-    pool.innerHTML = '';
-    presetFoods[cat].forEach(f => {
-        let b = document.createElement('button');
-        b.className = 'quick-food-btn';
-        b.innerHTML = `${f.name} <span>${f.calories}k</span>`;
-        b.onclick = () => { addFood(f.name, f.calories); };
-        pool.appendChild(b);
+  function renderLabel(){
+    const d=selected,today=new Date();
+    const txt=(d.getMonth()+1)+" 月 "+d.getDate()+" 日(週"+WEEKDAYS[(d.getDay()+6)%7]+")";
+    const el = document.getElementById("sel-label");
+    if(el) el.textContent=sameDay(d,today)?("今天 · "+txt):("記錄中 · "+txt);
+  }
+
+  const R=92, C=2*Math.PI*R;
+  function renderRing(){
+    const ringBar=document.getElementById("ring-bar");
+    if(!ringBar) return;
+    ringBar.style.strokeDasharray=C;
+    const total=dayTotal(selected),goal=data.goal||2000;
+    const pct=goal>0?total/goal:0,shown=Math.min(pct,1);
+    ringBar.style.strokeDashoffset=C*(1-shown);
+    ringBar.style.stroke=pct<=0.7?"var(--primary)":(pct<=1?"var(--accent)":"var(--coral)");
+    document.getElementById("ring-num").textContent=total;
+    document.getElementById("ring-of").textContent="/ "+goal+" kcal";
+    document.getElementById("ring-over").textContent=total>goal?("超過 "+(total-goal)+" kcal"):"";
+  }
+
+  function renderList(){
+    const ul=document.getElementById("list");
+    if(!ul) return; const items=dayItems(selected); ul.innerHTML="";
+    if(!items.length){ul.innerHTML='<div class="empty">這天還沒有記錄，試試快捷食物或手動添加吧。</div>';return;}
+    items.forEach(it=>{
+      const li=document.createElement("li");
+      li.innerHTML='<span class="li-name"></span><span class="li-cal">'+it.cal+' kcal</span><button class="del">×</button>';
+      li.querySelector(".li-name").textContent=it.name;
+      li.querySelector(".del").addEventListener("click",()=>{removeItem(it.id);});
+      ul.appendChild(li);
     });
-}
+  }
 
-function addFood(name, cal) {
-    if(!allData[selectedDate]) allData[selectedDate] = [];
-    allData[selectedDate].push({id: Date.now(), name, calories: cal});
-    localStorage.setItem('calorieDataByDate', JSON.stringify(allData));
-    updateUI();
-}
-
-function updateUI() {
-    const list = document.getElementById('food-list');
-    const totalEl = document.getElementById('total-calories');
-    if(!list) return;
-    list.innerHTML = '';
-    let total = 0;
-    (allData[selectedDate] || []).forEach(f => {
-        total += f.calories;
-        let li = document.createElement('li');
-        li.className = 'food-item';
-        li.innerHTML = `<div class="food-info"><span class="name">${f.name}</span><span class="cal">${f.calories} kcal</span></div><button onclick="deleteFood(${f.id})">&times;</button>`;
-        list.appendChild(li);
+  function renderPool(){
+    const pool=document.getElementById("pool");
+    if(!pool) return; pool.innerHTML="";
+    FOODS[curCat].forEach(([nm,kc])=>{
+      const b=document.createElement("button"); b.className="chip";
+      b.innerHTML='<span class="nm"></span><span class="kc">'+kc+' kcal</span>';
+      b.querySelector(".nm").textContent=nm;
+      b.addEventListener("click",()=>addItem(nm,kc));
+      pool.appendChild(b);
     });
-    totalEl.textContent = total;
-    // 繪製圓環
-    const prog = document.querySelector('.progress-circle');
-    let p = Math.min((total/2000)*100, 100);
-    prog.style.background = `radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(#2ec4b6 ${p}%, #e0e0e0 0%)`;
-}
+  }
 
-function deleteFood(id) {
-    allData[selectedDate] = allData[selectedDate].filter(f => f.id !== id);
-    localStorage.setItem('calorieDataByDate', JSON.stringify(allData));
-    updateUI();
-}
-
-function renderWaterGrid() {
-    const grid = document.getElementById('water-cup-grid');
-    if(!grid) return;
-    grid.innerHTML = '';
-    for(let i=1; i<=8; i++) {
-        let b = document.createElement('button');
-        b.className = `cup-btn ${(waterData[selectedDate] || 0) >= i ? 'active' : ''}`;
-        b.textContent = '🥛';
-        b.onclick = () => { waterData[selectedDate] = i; localStorage.setItem('waterLogByDate', JSON.stringify(waterData)); renderWaterGrid(); };
-        grid.appendChild(b);
+  let chart;
+  function weekTotals(){
+    const arr=[];
+    for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(d.getDate()+i);arr.push(dayTotal(d));}
+    return arr;
+  }
+  function renderStats(){
+    const totals=weekTotals(); const recorded=totals.filter(v=>v>0);
+    const avg=recorded.length?Math.round(recorded.reduce((a,b)=>a+b,0)/recorded.length):0;
+    const max=totals.length?Math.max(...totals):0;
+    const avgEl = document.getElementById("s-avg"), daysEl = document.getElementById("s-days"), maxEl = document.getElementById("s-max");
+    if(avgEl) avgEl.innerHTML=avg+'<small>kcal</small>';
+    if(daysEl) daysEl.innerHTML=recorded.length+'<small>天</small>';
+    if(maxEl) maxEl.innerHTML=max+'<small>kcal</small>';
+  }
+  function renderChart(){
+    const canvas = document.getElementById("chart");
+    if(!canvas || !window.Chart)return;
+    const totals=weekTotals(),goal=data.goal||2000;
+    if(!chart){
+      chart=new Chart(canvas,{
+        type:"line",
+        data:{labels:WEEKDAYS.slice(),datasets:[
+          {label:"攝取",data:totals,borderColor:"#2F8F5B",backgroundColor:"rgba(47,143,91,.08)",fill:true,tension:.35,pointRadius:4,pointBackgroundColor:"#2F8F5B",borderWidth:2},
+          {label:"目標",data:totals.map(()=>goal),borderColor:"#FF9F1C",borderDash:[5,5],pointRadius:0,borderWidth:1.5,fill:false}
+        ]},
+        options:{responsive:true,maintainAspectRatio:false,
+          plugins:{legend:{labels:{boxWidth:12,font:{size:11},color:"#6E7B73"}}},
+          scales:{y:{beginAtZero:true,grid:{color:"#EEF2EC"},ticks:{font:{size:11},color:"#6E7B73"}},x:{grid:{display:false},ticks:{font:{size:11},color:"#6E7B73"}}}
+        }
+      });
+    }else{
+      chart.data.datasets[0].data=totals;
+      chart.data.datasets[1].data=totals.map(()=>goal);
+      chart.update();
     }
-}
+  }
 
-function renderChart() {
-    const ctx = document.getElementById('calorieLineChart')?.getContext('2d');
-    if(!ctx) return;
-    new Chart(ctx, { type: 'line', data: { labels: ['一','二','三','四','五','六','日'], datasets: [{ data: [1800, 1500, 1900, 1300, 2000, 1600, 0], borderColor: '#2ec4b6', tension: 0.4 }] }, options: { plugins: { legend: { display: false } } }});
-}
+  function renderWater(){
+    const box=document.getElementById("water");
+    if(!box) return; const cups=8; const count=Math.round((data.water[key(selected)]||0)/250); box.innerHTML="";
+    for(let i=0;i<cups;i++){
+      const c=document.createElement("button"); c.className="cup"+(i<count?" full":""); c.textContent="💧";
+      c.addEventListener("click",()=>{
+        const newCount=(i+1===count)?i:i+1;
+        data.water[key(selected)]=newCount*250;save();renderWater();
+      });
+      box.appendChild(c);
+    }
+    const mlEl = document.getElementById("water-ml");
+    if(mlEl) mlEl.textContent=count*250;
+  }
+
+  function addItem(name,cal){
+    const k=key(selected);
+    if(!data.records[k])data.records[k]=[];
+    data.records[k].push({id:Date.now()+""+Math.floor(Math.random()*1000),name:name,cal:cal});
+    save();renderAll();toast("已添加 "+name+" · "+cal+" kcal");
+  }
+  function removeItem(id){
+    const k=key(selected);
+    data.records[k]=(data.records[k]||[]).filter(i=>i.id!==id);
+    if(!data.records[k].length)delete data.records[k];
+    save();renderAll();
+  }
+
+  function renderAll(){
+    renderCalendar();renderLabel();renderRing();renderList();
+    renderStats();renderChart();renderWater();
+  }
+
+  document.getElementById("prev-week")?.addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()-7);renderAll();});
+  document.getElementById("next-week")?.addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()+7);renderAll();});
+
+  document.getElementById("tabs")?.addEventListener("click",e=>{
+    const t=e.target.closest(".tab");if(!t)return;
+    curCat=t.dataset.cat;
+    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));
+    renderPool();
+  });
+
+  function submitManual(){
+    const nameEl=document.getElementById("f-name"),calEl=document.getElementById("f-cal");
+    const name=nameEl.value.trim(),cal=parseInt(calEl.value,10);
+    if(!name){toast("請輸入食物名稱");nameEl.focus();return;}
+    if(!cal||cal<1){toast("請輸入正確的卡路里");calEl.focus();return;}
+    addItem(name,cal);nameEl.value="";calEl.value="";nameEl.focus();
+  }
+  document.getElementById("add-manual")?.addEventListener("click",submitManual);
+
+  // TDEE 計算
+  document.getElementById("calc-tdee")?.addEventListener("click",()=>{
+    const w=parseFloat(document.getElementById("t-weight").value), h=parseFloat(document.getElementById("t-height").value);
+    if(!w||!h){toast("請先輸入體重與身高");return;}
+    const bmr=Math.round(10*w+6.25*h-5*30+5); const tdee=Math.round(bmr*1.375); const cut=Math.max(1200,tdee-400);
+    const box=document.getElementById("tdee-result");
+    box.innerHTML=`
+      <div class="big">約 ${tdee} kcal</div>
+      <div class="sub">每日消耗粗估 (減脂建議：${cut} kcal)</div>
+      <button class="btn ghost" id="apply-goal" style="margin-top:8px">套用為每日目標</button>
+    `;
+    box.classList.add("show");
+    document.getElementById("apply-goal").onclick=()=>{ data.goal=cut; save(); renderRing(); renderChart(); toast("目標已更新！"); };
+  });
+
+  // 隨機健康餐
+  document.getElementById("lucky-btn")?.addEventListener("click",()=>{
+    const pick=LUCKY[Math.floor(Math.random()*LUCKY.length)];
+    const box=document.getElementById("lucky-result");
+    box.innerHTML=`<div class="meal">${pick.m}</div><div class="sub">約 ${pick.c} kcal</div><button class="btn ghost" id="add-lucky">導入今日餐單</button>`;
+    box.classList.add("show");
+    document.getElementById("add-lucky").onclick=()=>addItem(pick.m,pick.c);
+  });
+
+  renderPool();
+  renderAll();
+})();
