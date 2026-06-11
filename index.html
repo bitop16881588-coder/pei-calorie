@@ -2,45 +2,45 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
+    <title>DailyCal 健身飲食管理</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <nav class="app-nav">
-        <button class="nav-btn active" onclick="showTab('diet')">飲食記錄</button>
-        <button class="nav-btn" onclick="showTab('fitness')">居家健身</button>
-        <button class="nav-btn" onclick="showTab('green')">綠拿鐵</button>
-    </nav>
+    <div class="dashboard-wrapper">
+        <nav class="app-nav">
+            <button class="nav-btn active" onclick="showTab('diet', this)">飲食記錄</button>
+            <button class="nav-btn" onclick="showTab('fitness', this)">居家健身</button>
+            <button class="nav-btn" onclick="showTab('green', this)">綠拿鐵</button>
+        </nav>
 
-    <div id="diet-tab" class="tab-content">
-        <div id="quick-food-pool"></div>
-        <div id="food-list"></div>
-        <div id="total-calories"></div>
-        <canvas id="calorieLineChart"></canvas>
-        <div id="water-cup-grid"></div>
-        <button id="btn-random-food">隨機盲盒</button>
-        <div id="random-food-result"></div>
-    </div>
+        <div id="diet-tab" class="tab-content active">
+            <div id="quick-food-pool"></div>
+            <div id="food-list"></div>
+            <div id="total-calories"></div>
+            <canvas id="calorieLineChart"></canvas>
+            <div id="water-cup-grid"></div>
+        </div>
 
-    <div id="fitness-tab" class="tab-content" style="display:none;">
-        <h3>🏋️ 居家健身計畫</h3>
-        <div class="panel-card">
-            <p>今日推薦：全身燃脂 20 分鐘</p>
-            <button class="btn-submit" onclick="alert('開始計時：20分鐘！')">開始運動</button>
+        <div id="fitness-tab" class="tab-content">
+            <h3>🏋️ 居家健身計畫</h3>
+            <div class="panel-card">
+                <p>今日推薦：全身燃脂 20 分鐘</p>
+                <button onclick="alert('開始計時：20分鐘！')">開始運動</button>
+            </div>
+        </div>
+
+        <div id="green-tab" class="tab-content">
+            <h3>🥬 綠拿鐵自動計算器</h3>
+            <div class="panel-card">
+                <select id="veg-select"><option value="35">菠菜 (35kcal)</option><option value="40">地瓜葉 (40kcal)</option></select>
+                <select id="fruit-select"><option value="90">蘋果 (90kcal)</option><option value="100">香蕉 (100kcal)</option></select>
+                <select id="liquid-select"><option value="130">無糖豆漿 (130kcal)</option><option value="180">鮮奶 (180kcal)</option></select>
+                <button onclick="calculateSmoothie()">計算總熱量</button>
+                <div id="smoothie-result"></div>
+            </div>
         </div>
     </div>
-
-    <div id="green-tab" class="tab-content" style="display:none;">
-        <h3>🥬 綠拿鐵自動計算器</h3>
-        <div class="panel-card">
-            <select id="veg-select" class="form-group-select"><option value="35">菠菜 (35kcal)</option><option value="40">地瓜葉 (40kcal)</option></select>
-            <select id="fruit-select" class="form-group-select"><option value="90">蘋果 (90kcal)</option><option value="100">香蕉 (100kcal)</option></select>
-            <select id="liquid-select" class="form-group-select"><option value="130">無糖豆漿 (130kcal)</option><option value="180">鮮奶 (180kcal)</option></select>
-            <button class="btn-submit" onclick="calculateSmoothie()">計算總熱量</button>
-            <div id="smoothie-result"></div>
-        </div>
-    </div>
-
     <script src="script.js"></script>
 </body>
 </html>
