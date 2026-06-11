@@ -1,221 +1,47 @@
-:root {
-    --primary-color: #2ec4b6;
-    --accent-color: #ff9f1c;
-    --bg-color: #f1f8fc;
-    --card-bg: #ffffff;
-    --text-color: #333333;
-    --text-light: #777777;
-    --danger-color: #e63946;
-    --pink-accent: #ffb7b2;
-    --blue-accent: #38bdf8;
-    --smooth-corner: 16px;
-    --soft-shadow: 0 10px 30px rgba(46, 196, 182, 0.05);
-}
+/* 基礎設定 */
+:root { --primary-color: #2ec4b6; }
+body { font-family: 'Segoe UI', sans-serif; background-color: #f0f7f7; margin: 0; padding: 20px; }
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Microsoft JhengHei", sans-serif;
-}
-
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-}
-
-/* ================= 💕 金句框：字體藝術化大升級 ================= */
-.cute-quote-box {
-    background: #fff5f5;
-    border: 2px dashed var(--pink-accent);
-    border-radius: 12px;
-    
-    /* 🌟 改為更有質感的優雅圓體/手寫感字體排版 */
-    font-family: "BiauKai", "Kaiti TC", "Apple LiGothic", "Microsoft JhengHei", sans-serif;
-    color: #b56576;
-    padding: 12px 24px;
-    font-size: 1.05rem; /* 字體微微放大 */
-    font-weight: 600;
-    letter-spacing: 1.5px; /* 增加字距，使其更有設計感 */
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.8);
-    
-    text-align: center;
-    position: fixed;
-    top: 20px;
-    box-shadow: 0 6px 15px rgba(255, 183, 178, 0.25);
-    z-index: 100;
-    animation: bounceInDown 1s ease-out;
-}
-
-@keyframes bounceInDown {
-    0%, 60%, 75%, 90%, 100% { animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000); }
-    0% { opacity: 0; transform: translate3d(0, -3000px, 0); }
-    60% { opacity: 1; transform: translate3d(0, 25px, 0); }
-    75% { transform: translate3d(0, -10px, 0); }
-    90% { transform: translate3d(0, 5px, 0); }
-    100% { transform: none; }
-}
-
-/* ================= 🌍 儀表板排版 ================= */
+/* Dashboard 三欄式佈局 */
 .dashboard-wrapper {
     display: grid;
-    grid-template-columns: 280px 480px 280px;
-    gap: 25px;
-    width: 100%;
-    max-width: 1120px;
-    margin-top: 60px;
-}
-
-.side-panel {
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: 250px 1fr 250px;
     gap: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.panel-card {
-    background: var(--card-bg);
-    border-radius: var(--smooth-corner);
-    padding: 22px;
-    box-shadow: var(--soft-shadow);
-    border: 1px solid #edf2f7;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.panel-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 35px rgba(46, 196, 182, 0.1);
-}
-
-.panel-card h3 {
-    font-size: 1.05rem;
-    margin-bottom: 18px;
-    color: #4a4a4a;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.chart-icon { color: var(--primary-color); font-size: 1.2rem; }
-.water-icon { color: var(--blue-accent); font-size: 1.2rem; }
-.settings-icon { color: #64748b; font-size: 1.2rem; }
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    padding: 12px 0;
-    border-bottom: 1px dashed #edf2f7;
-}
-.stat-item:last-child { border-bottom: none; }
-.stat-title { font-size: 0.85rem; color: var(--text-light); }
-.stat-value { font-size: 1.6rem; font-weight: bold; color: var(--text-color); }
-.stat-value small { font-size: 0.8rem; }
-
-#calorieLineChart { margin-top: 10px; border-radius: 8px; }
-
-.water-sub { font-size: 0.8rem; color: var(--text-light); margin-top: -10px; margin-bottom: 15px; }
-.water-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.cup-btn {
-    background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 10px;
-    font-size: 1.4rem; padding: 10px 0; cursor: pointer; transition: all 0.3s;
-}
-.cup-btn.active {
-    background: #e0f2fe; border-color: #38bdf8; color: #38bdf8; transform: scale(1.05);
-}
-
-.tdee-row { display: flex; gap: 10px; margin-bottom: 10px; }
-.tdee-row input { width: 50%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; outline: none; }
-.tdee-row input:focus { border-color: var(--primary-color); }
-.btn-calc {
-    width: 100%; background: #475569; color: white; border: none; padding: 12px;
-    border-radius: 8px; font-weight: bold; cursor: pointer; transition: all 0.2s; margin-bottom: 10px;
-}
-.btn-calc:hover { opacity: 0.9; }
-.tdee-result-text { font-size: 0.85rem; color: var(--text-light); background: #f8fafc; padding: 10px; border-radius: 8px; line-height: 1.4; }
-
-/* ================= 中間核心：DailyCal ================= */
-.container {
-    width: 100%; background: var(--card-bg); padding: 30px 20px;
-    border-radius: var(--smooth-corner); box-shadow: 0 15px 40px rgba(46, 196, 182, 0.08); border: 1px solid #edf2f7;
-}
-
-header { text-align: center; margin-bottom: 20px; }
-.header-content { display: flex; justify-content: center; align-items: center; gap: 12px; }
-header h1 {
-    color: var(--primary-color); font-size: 1.8rem;
-    background: linear-gradient(90deg, #2ec4b6 0%, #ff9f1c 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-}
-.main-mascot { width: 32px; height: 32px; animation: swing 2s infinite ease-in-out; }
-
-@keyframes swing {
-    0%, 100% { transform: rotate(0deg); }
-    20% { transform: rotate(10deg); }
-    40% { transform: rotate(-10deg); }
-    60% { transform: rotate(5deg); }
-    80% { transform: rotate(-5deg); }
-}
-
-header p { color: var(--text-light); font-size: 0.9rem; margin-top: 4px; }
-
-.calendar-pagination { display: flex; align-items: center; justify-content: space-between; background: #fcfdfe; padding: 10px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #edf2f7; }
-.pag-arrow { background: none; border: none; font-size: 1rem; color: var(--text-light); cursor: pointer; }
-.pag-arrow:hover { color: var(--primary-color); }
-.days-container { display: flex; gap: 10px; }
-.day-card {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    width: 45px; height: 55px; background: white; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; transition: all 0.2s ease;
-}
-.day-card .month-label { font-size: 0.65rem; color: var(--text-light); }
-.day-card .day-number { font-size: 1.05rem; font-weight: bold; }
-.day-card.active { background: var(--active-bg); color: white; border-color: var(--active-bg); box-shadow: 0 4px 10px rgba(46, 196, 182, 0.3); }
-.day-card.active .month-label { color: rgba(255, 255, 255, 0.8); }
-
-.quick-add-section { margin-bottom: 25px; }
-.category-tabs { display: flex; gap: 5px; margin-bottom: 15px; background: #f1f5f9; padding: 5px; border-radius: 8px; }
-.tab-btn { flex: 1; background: none; border: none; padding: 6px 0; font-size: 0.85rem; cursor: pointer; border-radius: 6px; color: var(--text-light); }
-.tab-btn.active { background: white; color: var(--primary-color); font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-.food-pool { display: flex; flex-wrap: wrap; gap: 8px; min-height: 76px; background: #fcfdfe; border: 1px dashed #e2e8f0; padding: 10px; border-radius: 10px; }
-.quick-food-btn { background: white; border: 1px solid #e2e8f0; padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; }
-.quick-food-btn:hover { border-color: var(--primary-color); background: #f0fdfa; transform: translateY(-1px); }
-.quick-food-btn span { color: var(--text-light); font-size: 0.75rem; }
-
-.dashboard { display: flex; justify-content: center; margin-bottom: 30px; }
-.progress-circle {
-    width: 160px; height: 160px; border-radius: 50%;
-    background: radial-gradient(closest-side, white 79%, transparent 80% 100%), conic-gradient(var(--primary-color) 0%, #e0e0e0 0%);
-    display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(46, 196, 182, 0.15); animation: zoomIn 0.8s ease-out;
-}
-@keyframes zoomIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-#total-calories { font-size: 2.2rem; font-weight: bold; color: var(--text-color); }
-.progress-circle small { color: var(--text-light); font-size: 0.75rem; }
-
-.title-icon { color: var(--accent-color); font-size: 1rem; }
-.form-section h3, .list-section h3, .quick-add-section h3 { font-size: 1.1rem; margin-bottom: 15px; color: #4a4a4a; display: flex; align-items: center; gap: 8px; }
-#food-form { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; }
-.form-group input { width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 1rem; outline: none; }
-.form-group input:focus { border-color: var(--primary-color); }
-.btn-submit { background-color: var(--primary-color); color: white; border: none; padding: 14px; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; }
-.btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
-
-.food-list { list-style: none; }
-.food-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; background-color: #fcfdfe; border: 1px solid #edf2f7; border-radius: 10px; margin-bottom: 10px; animation: fadeInSlideIn 0.3s ease-out; }
-@keyframes fadeInSlideIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-.food-info .name { font-weight: 500; display: block; }
-.food-info .cal { font-size: 0.85rem; color: var(--text-light); }
-.btn-delete { background: none; border: none; color: var(--danger-color); font-size: 1.2rem; cursor: pointer; padding: 5px; opacity: 0.5; }
-.btn-delete:hover { opacity: 1; }
-.empty-msg { text-align: center; color: var(--text-light); font-size: 0.9rem; padding: 20px 0; }
-
-@media (max-width: 1080px) {
-    .dashboard-wrapper { grid-template-columns: 1fr; max-width: 480px; margin-top: 80px; }
-    .side-panel { display: none; }
-    .cute-quote-box { width: 90%; }
-}
+/* 分頁切換導航樣式 */
 .app-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-.nav-btn { padding: 10px 20px; border: none; border-radius: 20px; background: #eee; cursor: pointer; }
-.nav-btn.active { background: #2ec4b6; color: white; }
-.tab-content { padding: 20px; background: white; border-radius: 15px; }
+.nav-btn { 
+    padding: 10px 20px; border: none; border-radius: 20px; 
+    background: #e2e8f0; cursor: pointer; transition: 0.3s;
+}
+.nav-btn.active { background: var(--primary-color); color: white; }
+
+/* 分頁內容控制 */
+.tab-content { display: none; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.tab-content.active { display: block; }
+
+/* 食材按鈕樣式 */
+#quick-food-pool { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 15px; }
+.quick-food-btn { 
+    padding: 10px; border: 1px solid #ddd; border-radius: 8px; 
+    background: #fff; cursor: pointer; text-align: center; 
+}
+.quick-food-btn:hover { background: #f0fdfa; border-color: var(--primary-color); }
+
+/* 綠拿鐵計算器樣式 */
+.form-group-select { 
+    width: 100%; padding: 12px; margin-bottom: 10px; 
+    border-radius: 8px; border: 1px solid #e2e8f0; 
+}
+.btn-submit { 
+    width: 100%; padding: 12px; background: var(--primary-color); 
+    color: white; border: none; border-radius: 8px; cursor: pointer; 
+}
+
+/* 響應式：手機版單欄顯示 */
+@media (max-width: 900px) {
+    .dashboard-wrapper { grid-template-columns: 1fr; }
+}
