@@ -30,29 +30,20 @@ body {
 }
 .cute-quote-box b { color: var(--primary); font-weight: 600; }
 
-/* 三欄式完美網格佈局 */
-.dashboard-wrapper {
-  display: grid; grid-template-columns: 290px minmax(0, 1fr) 290px; gap: 18px; width: 100%; max-width: 1180px; align-items: start;
-}
+.dashboard-wrapper { display: grid; grid-template-columns: 290px minmax(0, 1fr) 290px; gap: 18px; width: 100%; max-width: 1180px; align-items: start; }
 .side-panel { display: flex; flex-direction: column; gap: 18px; }
 
 .container { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
 .panel-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
 .panel-card h3, .container h3 { font-size: 14px; font-weight: 600; color: var(--ink); display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 
-/* 頂部膠囊分頁按鈕 */
 .app-nav { display: flex; background: #eef2eb; padding: 4px; border-radius: 999px; margin-bottom: 18px; gap: 4px; }
-.nav-btn {
-  flex: 1; border: none; padding: 8px 0; font-size: 13px; font-weight: 600; border-radius: 999px;
-  cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s;
-}
+.nav-btn { flex: 1; border: none; padding: 8px 0; font-size: 13px; font-weight: 600; border-radius: 999px; cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s; }
 .nav-btn.active { background: var(--surface); color: var(--primary); box-shadow: var(--shadow-sm); }
 
-/* 分頁切換隱藏邏輯 */
 .tab-pane { display: none; }
 .tab-pane.active { display: block; animation: pop 0.25s ease; }
 
-/* 飲食日誌舊版完美細節 */
 .head { text-align: center; padding: 6px 0 12px; }
 .head h1 { font-family: var(--num); font-weight: 700; font-size: 30px; letter-spacing: .01em; color: var(--ink); }
 .head .tag { color: var(--muted); font-size: 13px; margin-top: 2px; }
@@ -123,15 +114,46 @@ input:focus, .fancy-select:focus { border-color: var(--primary); }
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); background: var(--ink); color: #fff; padding: 11px 20px; border-radius: 999px; font-size: 14px; box-shadow: var(--shadow); opacity: 0; pointer-events: none; transition: .3s; z-index: 200; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* 新功能專屬美化卡片 */
 .sub-feature-card { text-align: center; padding: 15px 5px; }
 .feature-icon-wrapper { width: 56px; height: 56px; border-radius: 50%; background: var(--primary-soft); display: grid; place-items: center; font-size: 24px; margin: 0 auto 14px; }
 .sub-feature-card p { font-size: 13px; color: var(--muted); margin-bottom: 18px; text-align: left; line-height: 1.6; }
 .select-group { text-align: left; margin-bottom: 12px; }
 .select-group label { font-size: 12px; font-weight: 600; color: var(--ink); display: block; margin-bottom: 6px; }
 
-@keyframes pop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-@media (max-width:960px) {
-  body { padding: 70px 12px 50px; }
-  .dashboard-wrapper { grid-template-columns: 1fr; max-width: 480px; }
+/* ================= 🍹 果汁機特效 UI 設計 ================= */
+.blender-container { display: flex; justify-content: center; margin: 25px 0 15px; }
+.blender { width: 90px; position: relative; transition: all 0.1s; }
+.blender-lid { width: 60px; height: 10px; background: #374151; margin: 0 auto; border-radius: 4px 4px 0 0; }
+.blender-cup { 
+    width: 70px; height: 100px; background: rgba(226, 232, 240, 0.4); 
+    border: 3px solid #6b7280; border-top: none; margin: 0 auto; 
+    border-radius: 0 0 12px 12px; position: relative; overflow: hidden; 
 }
+.juice-fluid { 
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 0%; 
+    background: #4CAF50; transition: height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.4s; 
+}
+.blender-blade { 
+    position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); 
+    width: 34px; height: 4px; background: #9ca3af; border-radius: 2px; 
+}
+.blender-base { 
+    width: 84px; height: 45px; background: #4b5563; margin: 0 auto; 
+    border-radius: 8px 8px 16px 16px; position: relative; box-shadow: 0 4px 6px rgba(0,0,0,0.15); 
+}
+.blender-btn { 
+    width: 14px; height: 14px; background: #ef4444; border-radius: 50%; 
+    position: absolute; top: 14px; left: 50%; transform: translateX(-50%); cursor: pointer; border: 2px solid #fff; 
+}
+
+/* 攪拌運轉動畫 */
+.blender.working { animation: blendShake 0.1s infinite alternate; }
+.blender.working .blender-blade { animation: spinBlade 0.1s infinite linear; }
+.blender.working .juice-fluid { animation: liquidWave 0.2s infinite alternate; }
+
+@keyframes blendShake { from { transform: translate(1px, 1px) rotate(0deg); } to { transform: translate(-1px, -1px) rotate(1deg); } }
+@keyframes spinBlade { from { transform: translateX(-50%) rotate(0deg); } to { transform: translateX(-50%) rotate(360deg); } }
+@keyframes liquidWave { from { border-radius: 40% 60% 40% 60% / 50%; } to { border-radius: 60% 40% 60% 40% / 50%; } }
+
+@keyframes pop { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (max-width:960px) { body { padding: 70px 12px 50px; } .dashboard-wrapper { grid-template-columns: 1fr; max-width: 480px; } }
