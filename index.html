@@ -4,159 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DailyCal · 每日健康日誌</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 </head>
 <body>
     <div class="cute-quote-box">“ 健康不是懲罰，而是對身體的<b>投資</b>。 ”</div>
-
     <div class="dashboard-wrapper">
         <aside class="side-panel">
             <div class="panel-card" id="p-stats">
-                <h3><span class="ico">📊</span> 本週攝入統計</h3>
-                <div class="stat-item"><span class="stat-title">本週平均攝入</span><span class="stat-value" id="s-avg">0<small>kcal</small></span></div>
-                <div class="stat-item"><span class="stat-title">已記錄天數</span><span class="stat-value" id="s-days">0<small>天</small></span></div>
-                <div class="stat-item"><span class="stat-title">最高的一天</span><span class="stat-value" id="s-max">0<small>kcal</small></span></div>
+                <h3>📊 本週攝入統計</h3>
+                <div class="stat-item"><span class="stat-title">平均攝入</span><span id="s-avg">0 kcal</span></div>
+                <div class="stat-item"><span class="stat-title">記錄天數</span><span id="s-days">0 天</span></div>
+                <div class="stat-item"><span class="stat-title">最高攝入</span><span id="s-max">0 kcal</span></div>
             </div>
-            
-            <div class="panel-card" id="p-chart">
-                <h3><span class="ico">📈</span> 本週卡路里趨勢</h3>
-                <div class="chart-box"><canvas id="chart"></canvas></div>
-            </div>
-
-            <div class="panel-card" id="p-water">
-                <h3><span class="ico">💧</span> 今日飲水追蹤</h3>
-                <div class="water" id="water"></div>
-                <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
-            </div>
-
-            <div class="panel-card" id="p-tdee">
-                <h3><span class="ico">🎯</span> 目標計算小工具</h3>
-                <div class="row2">
-                    <input type="number" id="t-weight" placeholder="體重 kg" min="1">
-                    <input type="number" id="t-height" placeholder="身高 cm" min="1">
-                </div>
-                <button class="btn ghost" id="calc-tdee">粗估每日消耗</button>
-                <div class="result" id="tdee-result"></div>
-            </div>
-
-            <div class="panel-card" id="p-lucky">
-                <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
-                <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
-                <div class="result" id="lucky-result"></div>
-            </div>
+            <div class="panel-card" id="p-chart"><h3>📈 本週趨勢</h3><div class="chart-box"><canvas id="chart"></canvas></div></div>
+            <div class="panel-card" id="p-water"><h3>💧 飲水追蹤</h3><div class="water" id="water"></div><div class="water-status">已喝 <b id="water-ml">0</b> / 2000 ml</div></div>
+            <div class="panel-card" id="p-tdee"><h3>🎯 目標工具</h3><div class="row2"><input type="number" id="t-weight" placeholder="kg"><input type="number" id="t-height" placeholder="cm"></div><button class="btn ghost" id="calc-tdee">粗估每日消耗</button><div class="result" id="tdee-result"></div></div>
+            <div class="panel-card" id="p-lucky"><h3>🎲 健康餐推薦</h3><button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button><div class="result" id="lucky-result"></div></div>
         </aside>
-
         <main class="main-panel">
             <div class="container">
-                <header class="head">
-                    <h1>🍎 DailyCal</h1>
-                    <div class="tag">記錄每一餐，看見自己的進步</div>
-                    <div class="sel" id="sel-label">今天</div>
-                </header>
-
-                <section class="cal-card" id="p-cal">
-                    <div class="cal">
-                        <button class="arrow" id="prev-week">‹</button>
-                        <div class="days" id="days"></div>
-                        <button class="arrow" id="next-week">›</button>
-                    </div>
-                </section>
-
-                <nav class="app-nav">
-                    <button class="nav-btn active" onclick="switchMainTab('diet', this)"><i class="fa-solid fa-utensils"></i> 飲食日誌</button>
-                    <button class="nav-btn" onclick="switchMainTab('fitness', this)"><i class="fa-solid fa-dumbbell"></i> 居家健身</button>
-                    <button class="nav-btn" onclick="switchMainTab('green', this)"><i class="fa-solid fa-leaf"></i> 綠拿鐵</button>
-                </nav>
-
-                <div id="diet-tab" class="tab-pane active">
-                    <div class="ring-card" id="p-ring">
-                        <div class="ring">
-                            <svg viewBox="0 0 220 220" width="220" height="220">
-                                <circle class="track" cx="110" cy="110" r="92"></circle>
-                                <circle class="bar" id="ring-bar" cx="110" cy="110" r="92"></circle>
-                            </svg>
-                            <div class="center">
-                                <span class="num" id="ring-num">0</span>
-                                <span class="of" id="ring-of">/ 2000 kcal</span>
-                                <span class="over" id="ring-over"></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="p-quick" style="margin-top: 20px;">
-                        <h3><span class="ico">🍪</span> 常用食物快捷添加</h3>
-                        <div class="tabs" id="tabs">
-                            <button class="tab active" data-cat="staple">主食</button>
-                            <button class="tab" data-cat="protein">肉蛋奶</button>
-                            <button class="tab" data-cat="veg">蔬菜</button>
-                            <button class="tab" data-cat="snack">水果零食</button>
-                        </div>
-                        <div class="pool" id="pool"></div>
-                    </div>
-
-                    <div id="p-manual" style="margin-top: 20px;">
-                        <h3><span class="ico">✏️</span> 手動添加飲食</h3>
-                        <div class="field"><input type="text" id="f-name" placeholder="食物名稱(如:煎雞腿)"></div>
-                        <div class="field"><input type="number" id="f-cal" placeholder="卡路里(kcal)" min="1"></div>
-                        <button class="btn" id="add-manual">添加記錄</button>
-                    </div>
-
-                    <div id="p-list" style="margin-top: 20px;">
-                        <h3><span class="ico">📝</span> 當日餐單</h3>
-                        <ul class="list" id="list"></ul>
-                    </div>
-                </div>
-
-                <div id="fitness-tab" class="tab-pane">
-                    <div class="sub-feature-card">
-                        <div class="feature-icon-wrapper"><i class="fa-solid fa-fire-flame-curved" style="color: var(--coral);"></i></div>
-                        <h3>高效燃脂計畫</h3>
-                        <p>今日推薦運動：全身高效空腹燃脂運動。每天只需 20 分鐘，活化全身代謝，加速體態雕塑。</p>
-                        <button class="btn accent" onclick="toast('⏱️ 健身計時開始！加油！')">開始運動</button>
-                    </div>
-                </div>
-
-                <div id="green-tab" class="tab-pane">
-                    <div class="sub-feature-card">
-                        <div class="feature-icon-wrapper"><i class="fa-solid fa-seedling" style="color: var(--primary);"></i></div>
-                        <h3>綠拿鐵熱量自動計算器</h3>
-                        <div class="select-group">
-                            <label>🥬 蔬菜基底</label>
-                            <select id="green-veg" class="fancy-select">
-                                <option value="35">有機菠菜 (35 kcal)</option>
-                                <option value="40">嫩地瓜葉 (40 kcal)</option>
-                                <option value="30">青江菜 (30 kcal)</option>
-                            </select>
-                        </div>
-                        <div class="select-group">
-                            <label>🍎 水果風味</label>
-                            <select id="green-fruit" class="fancy-select">
-                                <option value="90">富士蘋果 (90 kcal)</option>
-                                <option value="100">熟香蕉 (100 kcal)</option>
-                                <option value="60">台灣芭樂 (60 kcal)</option>
-                            </select>
-                        </div>
-                        <div class="select-group">
-                            <label>🥛 液體調和</label>
-                            <select id="green-liquid" class="fancy-select">
-                                <option value="130">高纖無糖豆漿 (130 kcal)</option>
-                                <option value="180">低脂鮮乳 (180 kcal)</option>
-                                <option value="0">純淨水/椰子水 (0 kcal)</option>
-                            </select>
-                        </div>
-                        <button class="btn" onclick="calculateGreenSmoothie()">✨ 啟動果汁機瘋狂攪打！</button>
-                        <div id="green-result" class="result"></div>
-                    </div>
-                </div>
+                <header class="head"><h1>🍎 DailyCal</h1><div class="sel" id="sel-label">今天</div></header>
+                <section class="cal-card"><div class="cal"><button class="arrow" id="prev-week">‹</button><div class="days" id="days"></div><button class="arrow" id="next-week">›</button></div></section>
+                <nav class="app-nav"><button class="nav-btn active" onclick="switchMainTab('diet', this)">飲食日誌</button><button class="nav-btn" onclick="switchMainTab('fitness', this)">居家健身</button><button class="nav-btn" onclick="switchMainTab('green', this)">綠拿鐵</button></nav>
+                <div id="diet-tab" class="tab-pane active"><div class="ring-card"><div class="ring"><svg viewBox="0 0 220 220" width="220" height="220"><circle class="track" cx="110" cy="110" r="92"></circle><circle class="bar" id="ring-bar" cx="110" cy="110" r="92"></circle></svg><div class="center"><span class="num" id="ring-num">0</span></div></div></div><div id="p-quick"><h3>🍪 常用食物</h3><div class="tabs" id="tabs"><button class="tab active" data-cat="staple">主食</button><button class="tab" data-cat="protein">肉蛋奶</button><button class="tab" data-cat="veg">蔬菜</button><button class="tab" data-cat="snack">水果</button></div><div class="pool" id="pool"></div></div><div id="p-manual"><h3>✏️ 手動添加</h3><div class="field"><input type="text" id="f-name" placeholder="食物名稱"><input type="number" id="f-cal" placeholder="kcal"></div><button class="btn" id="add-manual">添加記錄</button></div><ul class="list" id="list"></ul></div>
+                <div id="fitness-tab" class="tab-pane"><div class="sub-feature-card"><h3>高效燃脂</h3><p>推薦：全身空腹燃脂運動。每天 20 分鐘。</p><button class="btn accent" onclick="toast('開始運動！')">開始運動</button></div></div>
+                <div id="green-tab" class="tab-pane"><div class="sub-feature-card"><h3>綠拿鐵計算器</h3><select id="green-veg" class="fancy-select"><option value="35">菠菜</option></select><select id="green-fruit" class="fancy-select"><option value="90">蘋果</option></select><select id="green-liquid" class="fancy-select"><option value="130">豆漿</option></select><div class="blender-container"><div class="blender" id="my-blender"><div class="blender-lid"></div><div class="blender-cup"><div class="juice-fluid" id="juice-layer"></div><div class="blender-blade"></div></div><div class="blender-base"></div></div></div><button class="btn" onclick="calculateGreenSmoothie()">✨ 啟動瘋狂攪打！</button><div id="green-result" class="result"></div></div></div>
             </div>
         </main>
     </div>
-
     <div class="toast" id="toast"></div>
     <script src="script.js"></script>
 </body>
