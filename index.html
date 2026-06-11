@@ -1,45 +1,50 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>DailyCal 健身飲食管理</title>
+    <title>DailyCal · 每日健康日誌</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
     <link rel="stylesheet" href="style.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <div class="dashboard-wrapper">
-        <nav class="app-nav">
-            <button class="nav-btn active" onclick="showTab('diet', this)">飲食記錄</button>
-            <button class="nav-btn" onclick="showTab('fitness', this)">居家健身</button>
-            <button class="nav-btn" onclick="showTab('green', this)">綠拿鐵</button>
-        </nav>
+    <div class="quote">健康不是懲罰,而是對身體的<b>投資</b>。</div>
 
-        <div id="diet-tab" class="tab-content active">
-            <div id="quick-food-pool"></div>
-            <div id="food-list"></div>
-            <div id="total-calories"></div>
-            <canvas id="calorieLineChart"></canvas>
-            <div id="water-cup-grid"></div>
-        </div>
+    <div class="wrap">
+        <div class="col" id="col-left">...</div> 
 
-        <div id="fitness-tab" class="tab-content">
-            <h3>🏋️ 居家健身計畫</h3>
-            <div class="panel-card">
-                <p>今日推薦：全身燃脂 20 分鐘</p>
-                <button onclick="alert('開始計時：20分鐘！')">開始運動</button>
+        <div class="col">
+            <div class="card">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('diet', this)">飲食記錄</button>
+                    <button class="tab" onclick="showTab('fitness', this)">居家健身</button>
+                    <button class="tab" onclick="showTab('green', this)">綠拿鐵</button>
+                </div>
+            </div>
+
+            <div id="diet-tab" class="tab-content active">
+                </div>
+
+            <div id="fitness-tab" class="tab-content" style="display:none;">
+                <div class="card">
+                    <h3>🏋️ 居家健身計畫</h3>
+                    <p style="color:var(--muted); font-size:14px; margin-bottom:15px;">今日推薦：全身燃脂 20 分鐘</p>
+                    <button class="btn" onclick="alert('計時開始！')">開始運動</button>
+                </div>
+            </div>
+
+            <div id="green-tab" class="tab-content" style="display:none;">
+                <div class="card">
+                    <h3>🥬 綠拿鐵計算器</h3>
+                    <select id="veg-s" class="field"><option value="35">菠菜 (35kcal)</option><option value="40">地瓜葉 (40kcal)</option></select>
+                    <select id="fruit-s" class="field"><option value="90">蘋果 (90kcal)</option><option value="100">香蕉 (100kcal)</option></select>
+                    <select id="liq-s" class="field"><option value="130">無糖豆漿 (130kcal)</option><option value="180">鮮奶 (180kcal)</option></select>
+                    <button class="btn accent" onclick="calcSmoothie()">計算總熱量</button>
+                    <div id="smoothie-res" class="result"></div>
+                </div>
             </div>
         </div>
 
-        <div id="green-tab" class="tab-content">
-            <h3>🥬 綠拿鐵自動計算器</h3>
-            <div class="panel-card">
-                <select id="veg-select"><option value="35">菠菜 (35kcal)</option><option value="40">地瓜葉 (40kcal)</option></select>
-                <select id="fruit-select"><option value="90">蘋果 (90kcal)</option><option value="100">香蕉 (100kcal)</option></select>
-                <select id="liquid-select"><option value="130">無糖豆漿 (130kcal)</option><option value="180">鮮奶 (180kcal)</option></select>
-                <button onclick="calculateSmoothie()">計算總熱量</button>
-                <div id="smoothie-result"></div>
-            </div>
-        </div>
+        <div class="col">...</div>
     </div>
     <script src="script.js"></script>
 </body>
