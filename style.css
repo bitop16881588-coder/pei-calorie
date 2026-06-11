@@ -215,3 +215,7 @@ header p { color: var(--text-light); font-size: 0.9rem; margin-top: 4px; }
     .side-panel { display: none; }
     .cute-quote-box { width: 90%; }
 }
+.app-nav { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+.nav-btn { padding: 10px 20px; border: none; border-radius: 20px; background: #eee; cursor: pointer; }
+.nav-btn.active { background: #2ec4b6; color: white; }
+.tab-content { padding: 20px; background: white; border-radius: 15px; }
