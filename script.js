@@ -38,46 +38,34 @@
   let toastTimer;
   function toast(msg){
     const el=document.getElementById("toast");
-    if(!el) return;
-    el.textContent=msg;el.classList.add("show");
+    if(!el) return; el.textContent=msg;el.classList.add("show");
     clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),1800);
   }
-  window.toast = toast; // 綁定到 window 讓 HTML onclick 可以用
+  window.toast = toast;
 
-  // 🌟 膠囊主分頁切換邏輯
+  // 🌟 主導航分頁切換
   function switchMainTab(tabId, btn) {
     document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.app-nav .nav-btn').forEach(el => el.classList.remove('active'));
-    
     document.getElementById(tabId + '-tab').classList.add('active');
     btn.classList.add('active');
   }
   window.switchMainTab = switchMainTab;
 
-  // 🌟 綠拿鐵一鍵計算與生成
+  // 🌟 綠拿鐵計算
   function calculateGreenSmoothie() {
-    const veg = parseInt(document.getElementById('green-veg').value) || 0;
-    const fruit = parseInt(document.getElementById('green-fruit').value) || 0;
-    const liquid = parseInt(document.getElementById('green-liquid').value) || 0;
-    const total = veg + fruit + liquid;
-
+    const total = (parseInt(document.getElementById('green-veg').value) || 0) +
+                  (parseInt(document.getElementById('green-fruit').value) || 0) +
+                  (parseInt(document.getElementById('green-liquid').value) || 0);
     const resBox = document.getElementById('green-result');
-    resBox.innerHTML = `
-      <div class="big">共 ${total} kcal</div>
-      <div class="sub">天然高纖維纖體配方</div>
-      <button class="btn ghost" id="add-green-btn">🧪 導入今日餐單</button>
-    `;
+    resBox.innerHTML = `<div class="big">共 ${total} kcal</div><button class="btn ghost" id="add-green-btn" style="margin-top:8px">🧪 導入今日餐單</button>`;
     resBox.classList.add('show');
-
-    document.getElementById('add-green-btn').onclick = () => {
-      addItem("特調綠拿鐵", total);
-    };
+    document.getElementById('add-green-btn').onclick = () => addItem("特調綠拿鐵", total);
   }
   window.calculateGreenSmoothie = calculateGreenSmoothie;
 
   function renderCalendar(){
-    const box=document.getElementById("days");
-    if(!box) return; box.innerHTML="";
+    const box=document.getElementById("days"); if(!box) return; box.innerHTML="";
     const today=new Date();
     for(let i=0;i<7;i++){
       const d=new Date(weekStart);d.setDate(d.getDate()+i);
@@ -99,8 +87,7 @@
 
   const R=92, C=2*Math.PI*R;
   function renderRing(){
-    const ringBar=document.getElementById("ring-bar");
-    if(!ringBar) return;
+    const ringBar=document.getElementById("ring-bar"); if(!ringBar) return;
     ringBar.style.strokeDasharray=C;
     const total=dayTotal(selected),goal=data.goal||2000;
     const pct=goal>0?total/goal:0,shown=Math.min(pct,1);
@@ -112,9 +99,8 @@
   }
 
   function renderList(){
-    const ul=document.getElementById("list");
-    if(!ul) return; const items=dayItems(selected); ul.innerHTML="";
-    if(!items.length){ul.innerHTML='<div class="empty">這天還沒有記錄，試試快捷食物或手動添加吧。</div>';return;}
+    const ul=document.getElementById("list"); if(!ul) return; const items=dayItems(selected); ul.innerHTML="";
+    if(!items.length){ul.innerHTML='<div class="empty">這天還沒有記錄，點快捷食物或手動添加吧。</div>';return;}
     items.forEach(it=>{
       const li=document.createElement("li");
       li.innerHTML='<span class="li-name"></span><span class="li-cal">'+it.cal+' kcal</span><button class="del">×</button>';
@@ -125,8 +111,7 @@
   }
 
   function renderPool(){
-    const pool=document.getElementById("pool");
-    if(!pool) return; pool.innerHTML="";
+    const pool=document.getElementById("pool"); if(!pool) return; pool.innerHTML="";
     FOODS[curCat].forEach(([nm,kc])=>{
       const b=document.createElement("button"); b.className="chip";
       b.innerHTML='<span class="nm"></span><span class="kc">'+kc+' kcal</span>';
@@ -138,28 +123,24 @@
 
   let chart;
   function weekTotals(){
-    const arr=[];
-    for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(d.getDate()+i);arr.push(dayTotal(d));}
-    return arr;
+    const arr=[]; for(let i=0;i<7;i++){const d=new Date(weekStart);d.setDate(d.getDate()+i);arr.push(dayTotal(d));} return arr;
   }
   function renderStats(){
     const totals=weekTotals(); const recorded=totals.filter(v=>v>0);
     const avg=recorded.length?Math.round(recorded.reduce((a,b)=>a+b,0)/recorded.length):0;
     const max=totals.length?Math.max(...totals):0;
-    const avgEl = document.getElementById("s-avg"), daysEl = document.getElementById("s-days"), maxEl = document.getElementById("s-max");
-    if(avgEl) avgEl.innerHTML=avg+'<small>kcal</small>';
-    if(daysEl) daysEl.innerHTML=recorded.length+'<small>天</small>';
-    if(maxEl) maxEl.innerHTML=max+'<small>kcal</small>';
+    if(document.getElementById("s-avg")) document.getElementById("s-avg").innerHTML=avg+'<small>kcal</small>';
+    if(document.getElementById("s-days")) document.getElementById("s-days").innerHTML=recorded.length+'<small>天</small>';
+    if(document.getElementById("s-max")) document.getElementById("s-max").innerHTML=max+'<small>kcal</small>';
   }
   function renderChart(){
-    const canvas = document.getElementById("chart");
-    if(!canvas || !window.Chart)return;
+    const canvas = document.getElementById("chart"); if(!canvas || !window.Chart)return;
     const totals=weekTotals(),goal=data.goal||2000;
     if(!chart){
       chart=new Chart(canvas,{
         type:"line",
         data:{labels:WEEKDAYS.slice(),datasets:[
-          {label:"攝取",data:totals,borderColor:"#2F8F5B",backgroundColor:"rgba(47,143,91,.08)",fill:true,tension:.35,pointRadius:4,pointBackgroundColor:"#2F8F5B",borderWidth:2},
+          {label:"攝取",data:totals,borderColor:"#2F8F5B",backgroundColor:"rgba(47,143,91,.12)",fill:true,tension:.35,pointRadius:4,pointBackgroundColor:"#2F8F5B",borderWidth:2},
           {label:"目標",data:totals.map(()=>goal),borderColor:"#FF9F1C",borderDash:[5,5],pointRadius:0,borderWidth:1.5,fill:false}
         ]},
         options:{responsive:true,maintainAspectRatio:false,
@@ -168,43 +149,34 @@
         }
       });
     }else{
-      chart.data.datasets[0].data=totals;
-      chart.data.datasets[1].data=totals.map(()=>goal);
-      chart.update();
+      chart.data.datasets[0].data=totals; chart.data.datasets[1].data=totals.map(()=>goal); chart.update();
     }
   }
 
   function renderWater(){
-    const box=document.getElementById("water");
-    if(!box) return; const cups=8; const count=Math.round((data.water[key(selected)]||0)/250); box.innerHTML="";
+    const box=document.getElementById("water"); if(!box) return; const cups=8; const count=Math.round((data.water[key(selected)]||0)/250); box.innerHTML="";
     for(let i=0;i<cups;i++){
       const c=document.createElement("button"); c.className="cup"+(i<count?" full":""); c.textContent="💧";
       c.addEventListener("click",()=>{
-        const newCount=(i+1===count)?i:i+1;
-        data.water[key(selected)]=newCount*250;save();renderWater();
+        const newCount=(i+1===count)?i:i+1; data.water[key(selected)]=newCount*250;save();renderWater();
       });
       box.appendChild(c);
     }
-    const mlEl = document.getElementById("water-ml");
-    if(mlEl) mlEl.textContent=count*250;
+    if(document.getElementById("water-ml")) document.getElementById("water-ml").textContent=count*250;
   }
 
   function addItem(name,cal){
-    const k=key(selected);
-    if(!data.records[k])data.records[k]=[];
+    const k=key(selected); if(!data.records[k])data.records[k]=[];
     data.records[k].push({id:Date.now()+""+Math.floor(Math.random()*1000),name:name,cal:cal});
     save();renderAll();toast("已添加 "+name+" · "+cal+" kcal");
   }
   function removeItem(id){
-    const k=key(selected);
-    data.records[k]=(data.records[k]||[]).filter(i=>i.id!==id);
-    if(!data.records[k].length)delete data.records[k];
-    save();renderAll();
+    const k=key(selected); data.records[k]=(data.records[k]||[]).filter(i=>i.id!==id);
+    if(!data.records[k].length)delete data.records[k]; save();renderAll();
   }
 
   function renderAll(){
-    renderCalendar();renderLabel();renderRing();renderList();
-    renderStats();renderChart();renderWater();
+    renderCalendar();renderLabel();renderRing();renderList();renderStats();renderChart();renderWater();
   }
 
   document.getElementById("prev-week")?.addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()-7);renderAll();});
@@ -212,9 +184,7 @@
 
   document.getElementById("tabs")?.addEventListener("click",e=>{
     const t=e.target.closest(".tab");if(!t)return;
-    curCat=t.dataset.cat;
-    document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t));
-    renderPool();
+    curCat=t.dataset.cat; document.querySelectorAll(".tab").forEach(x=>x.classList.toggle("active",x===t)); renderPool();
   });
 
   function submitManual(){
@@ -226,30 +196,23 @@
   }
   document.getElementById("add-manual")?.addEventListener("click",submitManual);
 
-  // TDEE 計算
   document.getElementById("calc-tdee")?.addEventListener("click",()=>{
-    const w=parseFloat(document.getElementById("t-weight").value), h=parseFloat(document.getElementById("t-height").value);
+    const w=parseFloat(document.getElementById("t-weight").value),h=parseFloat(document.getElementById("t-height").value);
     if(!w||!h){toast("請先輸入體重與身高");return;}
     const bmr=Math.round(10*w+6.25*h-5*30+5); const tdee=Math.round(bmr*1.375); const cut=Math.max(1200,tdee-400);
     const box=document.getElementById("tdee-result");
-    box.innerHTML=`
-      <div class="big">約 ${tdee} kcal</div>
-      <div class="sub">每日消耗粗估 (減脂建議：${cut} kcal)</div>
-      <button class="btn ghost" id="apply-goal" style="margin-top:8px">套用為每日目標</button>
-    `;
+    box.innerHTML=`<div class="big">約 ${tdee} kcal</div><div class="sub">每日消耗粗估</div><button class="btn ghost" id="apply-goal" style="margin-top:8px">套用為目標</button>`;
     box.classList.add("show");
     document.getElementById("apply-goal").onclick=()=>{ data.goal=cut; save(); renderRing(); renderChart(); toast("目標已更新！"); };
   });
 
-  // 隨機健康餐
   document.getElementById("lucky-btn")?.addEventListener("click",()=>{
     const pick=LUCKY[Math.floor(Math.random()*LUCKY.length)];
     const box=document.getElementById("lucky-result");
-    box.innerHTML=`<div class="meal">${pick.m}</div><div class="sub">約 ${pick.c} kcal</div><button class="btn ghost" id="add-lucky">導入今日餐單</button>`;
+    box.innerHTML=`<div class="meal">${pick.m}</div><div class="sub">約 ${pick.c} kcal</div><button class="btn ghost" id="add-lucky">導入餐單</button>`;
     box.classList.add("show");
     document.getElementById("add-lucky").onclick=()=>addItem(pick.m,pick.c);
   });
 
-  renderPool();
-  renderAll();
+  renderPool(); renderAll();
 })();
