@@ -243,6 +243,46 @@
     box.classList.add("show");
     document.getElementById("add-lucky").onclick=()=>addItem(pick.m,pick.c);
   });
+// --- 新增的功能函數 ---
 
+  // 1. 主導航分頁切換
+  window.switchMainTab = function(tabId, btn) {
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.app-nav .nav-btn').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById(tabId + '-tab');
+    if(target) target.classList.add('active');
+    btn.classList.add('active');
+  };
+
+  // 2. 綠拿鐵攪拌與計算
+  window.calculateGreenSmoothie = function() {
+    const vegVal = parseInt(document.getElementById('green-veg').value) || 0;
+    const fruitVal = parseInt(document.getElementById('green-fruit').value) || 0;
+    const liquidVal = parseInt(document.getElementById('green-liquid').value) || 0;
+    const total = vegVal + fruitVal + liquidVal;
+
+    const blender = document.getElementById('my-blender');
+    const juice = document.getElementById('juice-layer');
+    const resBox = document.getElementById('green-result');
+
+    if (blender && juice) {
+        blender.classList.add('working');
+        juice.style.height = '85%';
+        juice.style.backgroundColor = '#7CB342';
+        
+        setTimeout(() => {
+            blender.classList.remove('working');
+            resBox.innerHTML = `
+                <div class="big">共 ${total} kcal</div>
+                <div class="sub">✨ 攪打完成！這杯綠拿鐵非常新鮮</div>
+                <button class="btn ghost" id="add-green-btn" style="margin-top:8px">🧪 導入今日餐單</button>
+            `;
+            resBox.classList.add('show');
+            document.getElementById('add-green-btn').onclick = () => addItem("特調綠拿鐵", total);
+        }, 2000);
+    }
+  };
+
+  // --- 結束新增 ---
   renderPool(); renderAll();
 })();
