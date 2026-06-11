@@ -1,12 +1,14 @@
 :root { --bg: #F4F6F0; --primary: #2F8F5B; --ink: #21302A; }
 * { box-sizing: border-box; }
-body { font-family: system-ui; background: var(--bg); padding: 40px 20px; display: flex; justify-content: center; }
+body { font-family: 'Fredoka', system-ui, sans-serif; background: var(--bg); padding: 40px 20px; display: flex; justify-content: center; }
 .dashboard-wrapper { display: grid; grid-template-columns: 320px 1fr; gap: 24px; width: 100%; max-width: 1200px; }
 .side-panel { display: flex; flex-direction: column; gap: 18px; }
 .main-panel { min-width: 0; }
 .panel-card, .container { background: #fff; padding: 20px; border-radius: 18px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
+/* 優化趨勢圖容器 */
+.chart-box { height: 220px; width: 100%; position: relative; margin-top: 10px; }
 /* 果汁機 CSS */
 .blender-container { display: flex; justify-content: center; margin: 20px 0; }
 .blender { width: 80px; }
