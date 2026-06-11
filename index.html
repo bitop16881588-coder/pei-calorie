@@ -107,29 +107,42 @@
                         <div class="select-group">
                             <label>🥬 蔬菜基底</label>
                             <select id="green-veg" class="fancy-select">
-                                <option value="35">有機菠菜 (35 kcal)</option>
-                                <option value="40">嫩地瓜葉 (40 kcal)</option>
-                                <option value="30">青江菜 (30 kcal)</option>
+                                <option value="35" data-color="#4CAF50">有機菠菜 (35 kcal)</option>
+                                <option value="40" data-color="#8BC34A">嫩地瓜葉 (40 kcal)</option>
+                                <option value="30" data-color="#2E7D32">青江菜 (30 kcal)</option>
                             </select>
                         </div>
                         <div class="select-group">
                             <label>🍎 水果風味</label>
                             <select id="green-fruit" class="fancy-select">
-                                <option value="90">富士蘋果 (90 kcal)</option>
-                                <option value="100">熟香蕉 (100 kcal)</option>
-                                <option value="60">台灣芭樂 (60 kcal)</option>
+                                <option value="90" data-color="#FF5252">富士蘋果 (90 kcal)</option>
+                                <option value="100" data-color="#FFEB3B">熟香蕉 (100 kcal)</option>
+                                <option value="60" data-color="#81C784">台灣芭樂 (60 kcal)</option>
                             </select>
                         </div>
                         <div class="select-group">
                             <label>🥛 液體調和</label>
                             <select id="green-liquid" class="fancy-select">
-                                <option value="130">高纖無糖豆漿 (130 kcal)</option>
-                                <option value="180">低脂鮮乳 (180 kcal)</option>
-                                <option value="0">純淨水/椰子水 (0 kcal)</option>
+                                <option value="130" data-color="#FFF9C4">高纖無糖豆漿 (130 kcal)</option>
+                                <option value="180" data-color="#FFFFFF">低脂鮮乳 (180 kcal)</option>
+                                <option value="0" data-color="#E0F7FA">純淨水/椰子水 (0 kcal)</option>
                             </select>
                         </div>
+
+                        <div class="blender-container">
+                            <div class="blender" id="my-blender">
+                                <div class="blender-lid"></div>
+                                <div class="blender-cup">
+                                    <div class="juice-fluid" id="juice-layer"></div>
+                                    <div class="blender-blade"></div>
+                                </div>
+                                <div class="blender-base">
+                                    <div class="blender-btn"></div>
+                                </div>
+                            </div>
+                        </div>
                         
-                        <button class="btn" onclick="calculateGreenSmoothie()">✨ 智能計算總熱量</button>
+                        <button class="btn" onclick="calculateGreenSmoothie()">✨ 啟動果汁機瘋狂攪打！</button>
                         <div id="green-result" class="result"></div>
                     </div>
                 </div>
