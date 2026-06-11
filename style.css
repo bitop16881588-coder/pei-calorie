@@ -45,3 +45,11 @@ body { font-family: 'Segoe UI', sans-serif; background-color: #f0f7f7; margin: 0
 @media (max-width: 900px) {
     .dashboard-wrapper { grid-template-columns: 1fr; }
 }
+/* 確保分頁隱藏與顯示 */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+.tab { padding: 8px 16px; border-radius: 20px; border: 1px solid var(--line); background: #fff; cursor: pointer; }
+.tab.active { background: var(--ink); color: #fff; }
+.result { margin-top: 15px; padding: 10px; background: var(--bg); border-radius: 10px; display: none; }
+.result.show { display: block; }
