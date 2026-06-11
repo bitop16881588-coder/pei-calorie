@@ -30,8 +30,21 @@ body {
 }
 .cute-quote-box b { color: var(--primary); font-weight: 600; }
 
-.dashboard-wrapper { display: grid; grid-template-columns: 290px minmax(0, 1fr) 290px; gap: 18px; width: 100%; max-width: 1180px; align-items: start; }
+/* 調整為兩欄式佈局，左欄放置所有工具與統計，右欄作為主操作區 */
+.dashboard-wrapper {
+  display: grid;
+  grid-template-columns: 320px 1fr; /* 左側變寬，右側自動擴展 */
+  gap: 24px;
+  width: 100%;
+  max-width: 1200px;
+  align-items: start;
+}
+
+/* 確保左側欄位可以堆疊更多卡片 */
 .side-panel { display: flex; flex-direction: column; gap: 18px; }
+
+/* 主區域往右側延展 */
+.main-panel { min-width: 0; }
 
 .container { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
 .panel-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
