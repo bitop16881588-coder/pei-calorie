@@ -43,7 +43,7 @@
   }
   window.toast = toast;
 
-  // 🌟 主導航分頁切換
+  // 主導航分頁切換
   function switchMainTab(tabId, btn) {
     document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.app-nav .nav-btn').forEach(el => el.classList.remove('active'));
@@ -52,15 +52,45 @@
   }
   window.switchMainTab = switchMainTab;
 
-  // 🌟 綠拿鐵計算
+  // 🌟 綠拿鐵「生動攪拌與精確色彩對接」核心邏輯
   function calculateGreenSmoothie() {
-    const total = (parseInt(document.getElementById('green-veg').value) || 0) +
-                  (parseInt(document.getElementById('green-fruit').value) || 0) +
-                  (parseInt(document.getElementById('green-liquid').value) || 0);
+    const vegSelect = document.getElementById('green-veg');
+    const fruitSelect = document.getElementById('green-fruit');
+    const liquidSelect = document.getElementById('green-liquid');
+
+    const total = (parseInt(vegSelect.value) || 0) + (parseInt(fruitSelect.value) || 0) + (parseInt(liquidSelect.value) || 0);
+
+    // 抓取被選擇食材的特色顏色
+    const vegColor = vegSelect.options[vegSelect.selectedIndex].getAttribute('data-color');
+    const fruitColor = fruitSelect.options[fruitSelect.selectedIndex].getAttribute('data-color');
+
+    const blender = document.getElementById('my-blender');
+    const juice = document.getElementById('juice-layer');
     const resBox = document.getElementById('green-result');
-    resBox.innerHTML = `<div class="big">共 ${total} kcal</div><button class="btn ghost" id="add-green-btn" style="margin-top:8px">🧪 導入今日餐單</button>`;
-    resBox.classList.add('show');
-    document.getElementById('add-green-btn').onclick = () => addItem("特調綠拿鐵", total);
+
+    // 1. 食材倒入果汁機 (重置高度、上色)
+    blender.classList.remove('working');
+    juice.style.height = '40%';
+    juice.style.backgroundColor = vegColor; // 初始為蔬菜顏色
+
+    toast('🥬 食材已丟入果汁機，準備攪拌...');
+
+    // 2. 啟動果汁機攪拌動畫
+    setTimeout(() => {
+        blender.classList.add('working');
+        juice.style.height = '85%';
+        // 攪打混合後的調和色 (固定成好看的微黃綠拿鐵色，完美調和)
+        juice.style.backgroundColor = '#7CB342'; 
+    }, 800);
+
+    // 3. 攪拌完成，顯示報告
+    setTimeout(() => {
+        blender.classList.remove('working');
+        resBox.innerHTML = `<div class="big">共 ${total} kcal</div><div class="sub">✨ 攪打完成！這杯綠拿鐵非常新鮮</div><button class="btn ghost" id="add-green-btn" style="margin-top:8px">🧪 導入今日餐單</button>`;
+        resBox.classList.add('show');
+        
+        document.getElementById('add-green-btn').onclick = () => addItem("自製綠拿鐵特調", total);
+    }, 2200);
   }
   window.calculateGreenSmoothie = calculateGreenSmoothie;
 
