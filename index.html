@@ -22,9 +22,32 @@
                 <div class="stat-item"><span class="stat-title">已記錄天數</span><span class="stat-value" id="s-days">0<small>天</small></span></div>
                 <div class="stat-item"><span class="stat-title">最高的一天</span><span class="stat-value" id="s-max">0<small>kcal</small></span></div>
             </div>
+            
             <div class="panel-card" id="p-chart">
                 <h3><span class="ico">📈</span> 本週卡路里趨勢</h3>
                 <div class="chart-box"><canvas id="chart"></canvas></div>
+            </div>
+
+            <div class="panel-card" id="p-water">
+                <h3><span class="ico">💧</span> 今日飲水追蹤</h3>
+                <div class="water" id="water"></div>
+                <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
+            </div>
+
+            <div class="panel-card" id="p-tdee">
+                <h3><span class="ico">🎯</span> 目標計算小工具</h3>
+                <div class="row2">
+                    <input type="number" id="t-weight" placeholder="體重 kg" min="1">
+                    <input type="number" id="t-height" placeholder="身高 cm" min="1">
+                </div>
+                <button class="btn ghost" id="calc-tdee">粗估每日消耗</button>
+                <div class="result" id="tdee-result"></div>
+            </div>
+
+            <div class="panel-card" id="p-lucky">
+                <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
+                <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
+                <div class="result" id="lucky-result"></div>
             </div>
         </aside>
 
@@ -102,76 +125,36 @@
                     <div class="sub-feature-card">
                         <div class="feature-icon-wrapper"><i class="fa-solid fa-seedling" style="color: var(--primary);"></i></div>
                         <h3>綠拿鐵熱量自動計算器</h3>
-                        <p style="margin-bottom: 15px;">調配你的專屬纖體綠拿鐵，一鍵精準計算熱量並導入今日記錄：</p>
-                        
                         <div class="select-group">
                             <label>🥬 蔬菜基底</label>
                             <select id="green-veg" class="fancy-select">
-                                <option value="35" data-color="#4CAF50">有機菠菜 (35 kcal)</option>
-                                <option value="40" data-color="#8BC34A">嫩地瓜葉 (40 kcal)</option>
-                                <option value="30" data-color="#2E7D32">青江菜 (30 kcal)</option>
+                                <option value="35">有機菠菜 (35 kcal)</option>
+                                <option value="40">嫩地瓜葉 (40 kcal)</option>
+                                <option value="30">青江菜 (30 kcal)</option>
                             </select>
                         </div>
                         <div class="select-group">
                             <label>🍎 水果風味</label>
                             <select id="green-fruit" class="fancy-select">
-                                <option value="90" data-color="#FF5252">富士蘋果 (90 kcal)</option>
-                                <option value="100" data-color="#FFEB3B">熟香蕉 (100 kcal)</option>
-                                <option value="60" data-color="#81C784">台灣芭樂 (60 kcal)</option>
+                                <option value="90">富士蘋果 (90 kcal)</option>
+                                <option value="100">熟香蕉 (100 kcal)</option>
+                                <option value="60">台灣芭樂 (60 kcal)</option>
                             </select>
                         </div>
                         <div class="select-group">
                             <label>🥛 液體調和</label>
                             <select id="green-liquid" class="fancy-select">
-                                <option value="130" data-color="#FFF9C4">高纖無糖豆漿 (130 kcal)</option>
-                                <option value="180" data-color="#FFFFFF">低脂鮮乳 (180 kcal)</option>
-                                <option value="0" data-color="#E0F7FA">純淨水/椰子水 (0 kcal)</option>
+                                <option value="130">高纖無糖豆漿 (130 kcal)</option>
+                                <option value="180">低脂鮮乳 (180 kcal)</option>
+                                <option value="0">純淨水/椰子水 (0 kcal)</option>
                             </select>
                         </div>
-
-                        <div class="blender-container">
-                            <div class="blender" id="my-blender">
-                                <div class="blender-lid"></div>
-                                <div class="blender-cup">
-                                    <div class="juice-fluid" id="juice-layer"></div>
-                                    <div class="blender-blade"></div>
-                                </div>
-                                <div class="blender-base">
-                                    <div class="blender-btn"></div>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <button class="btn" onclick="calculateGreenSmoothie()">✨ 啟動果汁機瘋狂攪打！</button>
                         <div id="green-result" class="result"></div>
                     </div>
                 </div>
             </div>
         </main>
-
-        <aside class="side-panel">
-            <div class="panel-card" id="p-water">
-                <h3><span class="ico">💧</span> 今日飲水追蹤</h3>
-                <div class="water" id="water"></div>
-                <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
-            </div>
-
-            <div class="panel-card" id="p-tdee">
-                <h3><span class="ico">🎯</span> 目標計算小工具</h3>
-                <div class="row2">
-                    <input type="number" id="t-weight" placeholder="體重 kg" min="1">
-                    <input type="number" id="t-height" placeholder="身高 cm" min="1">
-                </div>
-                <button class="btn ghost" id="calc-tdee">粗估每日消耗</button>
-                <div class="result" id="tdee-result"></div>
-            </div>
-
-            <div class="panel-card" id="p-lucky">
-                <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
-                <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
-                <div class="result" id="lucky-result"></div>
-            </div>
-        </aside>
     </div>
 
     <div class="toast" id="toast"></div>
