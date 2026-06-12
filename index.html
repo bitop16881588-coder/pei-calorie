@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DailyCal · 每日健康日誌</title>
+<meta name="theme-color" content="#5DA67C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="DailyCal">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%235DA67C'/%3E%3Ctext x='50' y='70' font-size='54' text-anchor='middle'%3E🍎%3C/text%3E%3C/svg%3E">
+<link rel="manifest" id="manifest-link">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Huninn&display=swap" rel="stylesheet">
@@ -43,7 +49,7 @@ body{
 }
 .cute-quote-box b{color:var(--primary)}
 
-.dashboard-wrapper{display:grid;grid-template-columns:320px 1fr;gap:22px;width:100%;max-width:1180px;align-items:start}
+.dashboard-wrapper{display:grid;grid-template-columns:300px minmax(0,1fr) 300px;gap:22px;width:100%;max-width:1380px;align-items:start}
 .side-panel{display:flex;flex-direction:column;gap:18px}
 .main-panel{min-width:0}
 .container,.panel-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
@@ -52,7 +58,7 @@ body{
 
 /* nav */
 .app-nav{display:flex;background:#EAEFE7;padding:5px;border-radius:999px;margin-bottom:18px;gap:4px}
-.nav-btn{flex:1;border:none;padding:9px 2px;font-family:var(--num);font-size:13px;border-radius:999px;cursor:pointer;background:transparent;color:var(--muted);transition:.2s;display:flex;align-items:center;justify-content:center;gap:4px}
+.nav-btn{flex:1;border:none;padding:8px 2px;font-family:var(--num);font-size:12px;border-radius:999px;cursor:pointer;background:transparent;color:var(--muted);transition:.2s;display:flex;align-items:center;justify-content:center;gap:3px}
 .nav-btn.active{background:var(--surface);color:var(--primary);box-shadow:var(--shadow-sm)}
 .tab-pane{display:none}
 .tab-pane.active{display:block;animation:pop .25s ease}
@@ -176,6 +182,59 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .recipe-detail ol{margin:0;padding-left:18px;font-size:13px;line-height:1.75}
 .recipe-detail ol li{margin-bottom:2px}
 
+/* healthy plate */
+.plate-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;margin:2px 0 16px}
+.plate-svg{width:270px;max-width:82%;height:auto;filter:drop-shadow(0 8px 18px rgba(44,52,46,.1))}
+.plate-svg .slice{stroke:#fff;stroke-width:2}
+.plate-svg .slice-label{font-family:var(--sans);font-size:9px;fill:#fff;font-weight:700;text-anchor:middle}
+.plate-side{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.plate-side .ps{display:flex;align-items:center;gap:6px;background:var(--bg);border-radius:999px;padding:6px 14px;font-size:12px;color:var(--muted)}
+.portion-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:4px}
+.portion{display:flex;gap:10px;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:11px 12px;text-align:left}
+.portion .pe{font-size:22px;flex:0 0 auto;line-height:1.2}
+.portion .pn{font-family:var(--num);font-size:14px}
+.portion .ph{font-size:12px;color:var(--muted);margin-top:1px}
+.plate-check{margin-top:18px;background:var(--primary-soft);border-radius:16px;padding:16px}
+.pc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:11px}
+.pc-title{font-family:var(--num);font-size:15px;color:var(--ink)}
+.pc-score{font-family:var(--num);font-size:14px;color:var(--primary)}
+.pc-grid{display:flex;flex-wrap:wrap;gap:8px}
+.pc-chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 13px;font-size:13px;cursor:pointer;transition:.15s}
+.pc-chip.on{background:var(--primary);border-color:var(--primary);color:#fff}
+.pc-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.65);margin-top:12px;overflow:hidden}
+.pc-bar i{display:block;height:100%;width:0;background:var(--primary);border-radius:999px;transition:width .5s cubic-bezier(.22,1,.36,1)}
+/* mini plate widget (right column) */
+.mini-plate{display:flex;align-items:center;gap:14px}
+.mini-ring{position:relative;width:78px;height:78px;flex:0 0 auto}
+.mini-ring svg{transform:rotate(-90deg)}
+.mp-track{fill:none;stroke:var(--line);stroke-width:7}
+.mp-bar{fill:none;stroke:var(--primary);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .5s cubic-bezier(.22,1,.36,1)}
+.mp-center{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--num);font-size:18px;color:var(--primary)}
+.mini-dots{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;flex:1}
+.mp-dot{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 0;font-size:16px;cursor:pointer;transition:.15s;filter:grayscale(1) opacity(.45);text-align:center}
+.mp-dot.on{filter:none;background:var(--primary-soft);border-color:var(--primary-soft)}
+.mp-dot:hover{border-color:var(--primary)}
+
+/* streak / badges */
+.streak-row{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
+.streak-num{font-family:var(--num);font-size:42px;color:var(--coral);line-height:1}
+.streak-label{font-size:14px;color:var(--ink)}
+.streak-label small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
+.badges{display:flex;flex-wrap:wrap;gap:6px;justify-content:space-between}
+.badge{display:flex;flex-direction:column;align-items:center;gap:2px;width:46px;text-align:center;filter:grayscale(1) opacity(.4);transition:.2s}
+.badge.on{filter:none}
+.badge .be{font-size:21px}
+.badge .bl{font-size:9px;color:var(--muted);line-height:1.2}
+/* macros + weight legends */
+.macro-legend{font-size:12px;color:var(--muted);text-align:center;margin-top:8px}
+.remind{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);margin-top:12px;cursor:pointer}
+.remind input{width:auto;margin:0}
+.weight-row{display:flex;gap:8px}
+.weight-row input{flex:1}
+/* backup */
+.backup-note{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:10px}
+.backup-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
 /* ===== blender ===== */
 .blender-stage{display:flex;justify-content:center;margin:6px 0 18px}
 .blender{width:120px;position:relative}
@@ -211,11 +270,12 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .timer-note{font-size:12px;color:var(--muted);margin-top:10px}
 
 @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
-@media (max-width:960px){
+@media (max-width:1180px){
   body{padding:68px 12px 50px}
-  .dashboard-wrapper{grid-template-columns:1fr;max-width:520px}
+  .dashboard-wrapper{display:flex;flex-direction:column;max-width:560px}
+  .main-panel{order:-1}
 }
-@media (max-width:560px){.ex-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:560px){.ex-grid{grid-template-columns:repeat(2,1fr)}.portion-grid{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -240,31 +300,28 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       </div>
     </div>
 
+    <div class="panel-card" id="p-streak">
+      <h3><span class="ico">🔥</span> 連續紀錄</h3>
+      <div class="streak-row"><span class="streak-num" id="streak-num">0</span><span class="streak-label">天<small id="streak-total">共記錄 0 天</small></span></div>
+      <div class="badges" id="badges"></div>
+    </div>
+
     <div class="panel-card" id="p-chart">
       <h3><span class="ico">📈</span> 本週卡路里趨勢</h3>
       <div class="chart-box"><canvas id="chart"></canvas></div>
+    </div>
+
+    <div class="panel-card" id="p-macro">
+      <h3><span class="ico">🥗</span> 今日營養素</h3>
+      <div class="chart-box" style="height:150px"><canvas id="macro-chart"></canvas></div>
+      <div class="macro-legend" id="macro-legend">今天還沒有記錄</div>
     </div>
 
     <div class="panel-card" id="p-water">
       <h3><span class="ico">💧</span> 今日飲水追蹤</h3>
       <div class="water" id="water"></div>
       <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
-    </div>
-
-    <div class="panel-card" id="p-tdee">
-      <h3><span class="ico">🎯</span> 目標計算小工具</h3>
-      <div class="row2">
-        <input type="number" id="t-weight" placeholder="體重 kg" min="1">
-        <input type="number" id="t-height" placeholder="身高 cm" min="1">
-      </div>
-      <button class="btn ghost" id="calc-tdee">粗估每日消耗</button>
-      <div class="result" id="tdee-result"></div>
-    </div>
-
-    <div class="panel-card" id="p-lucky">
-      <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
-      <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
-      <div class="result" id="lucky-result"></div>
+      <label class="remind"><input type="checkbox" id="remind-toggle"> 💧 開啟喝水提醒(每 60 分鐘)</label>
     </div>
   </aside>
 
@@ -289,6 +346,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
         <button class="nav-btn" onclick="switchMainTab('fitness', this)"><i class="fa-solid fa-dumbbell"></i> 健身</button>
         <button class="nav-btn" onclick="switchMainTab('green', this)"><i class="fa-solid fa-leaf"></i> 綠拿鐵</button>
         <button class="nav-btn" onclick="switchMainTab('recipe', this)"><i class="fa-solid fa-bowl-food"></i> 食譜</button>
+        <button class="nav-btn" onclick="switchMainTab('plate', this)"><i class="fa-solid fa-plate-wheat"></i> 餐盤</button>
       </nav>
 
       <!-- DIET -->
@@ -493,8 +551,108 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
           <div id="recipe-card"></div>
         </div>
       </div>
+
+      <!-- PLATE -->
+      <div id="plate-tab" class="tab-pane">
+        <div class="sub-feature-card">
+          <div class="f-head">
+            <div class="feature-icon-wrapper">🍽️</div>
+            <h3>我的健康餐盤</h3>
+            <p class="desc">一餐這樣配最均衡:半盤蔬菜水果、¼ 全榖雜糧、¼ 豆魚蛋肉,搭一杯奶與一茶匙堅果。用「手」就能抓份量。</p>
+          </div>
+
+          <div class="plate-wrap">
+            <svg class="plate-svg" viewBox="0 0 220 220">
+              <circle cx="110" cy="110" r="100" fill="#fff" stroke="#E8ECE3" stroke-width="6"/>
+              <path class="slice" d="M110,110 L110,18 A92,92 0 0 1 197.5,138.4 Z" fill="#79B17A"/>
+              <path class="slice" d="M110,110 L197.5,138.4 A92,92 0 0 1 110,202 Z" fill="#E89B7B"/>
+              <path class="slice" d="M110,110 L110,202 A92,92 0 0 1 18,110 Z" fill="#E7C97D"/>
+              <path class="slice" d="M110,110 L18,110 A92,92 0 0 1 110,18 Z" fill="#C98E6E"/>
+              <text x="152" y="74" font-size="16" text-anchor="middle">🥬</text>
+              <text class="slice-label" x="152" y="90">蔬菜</text>
+              <text x="140" y="146" font-size="16" text-anchor="middle">🍎</text>
+              <text class="slice-label" x="140" y="162">水果</text>
+              <text x="72" y="141" font-size="16" text-anchor="middle">🍚</text>
+              <text class="slice-label" x="72" y="157">全榖雜糧</text>
+              <text x="72" y="67" font-size="16" text-anchor="middle">🍗</text>
+              <text class="slice-label" x="72" y="83">豆魚蛋肉</text>
+            </svg>
+            <div class="plate-side">
+              <span class="ps">🥛 一杯乳品</span>
+              <span class="ps">🥜 一茶匙堅果好油</span>
+            </div>
+          </div>
+
+          <div class="portion-grid">
+            <div class="portion"><span class="pe">🍚</span><div><div class="pn">全榖雜糧</div><div class="ph">跟蔬菜一樣多</div></div></div>
+            <div class="portion"><span class="pe">🍗</span><div><div class="pn">豆魚蛋肉</div><div class="ph">一個掌心大、約手掌厚</div></div></div>
+            <div class="portion"><span class="pe">🥬</span><div><div class="pn">蔬菜</div><div class="ph">比水果多一點,煮熟約 1 拳頭</div></div></div>
+            <div class="portion"><span class="pe">🍎</span><div><div class="pn">水果</div><div class="ph">一個拳頭大</div></div></div>
+            <div class="portion"><span class="pe">🥛</span><div><div class="pn">乳品</div><div class="ph">早晚各一杯(約 240ml)</div></div></div>
+            <div class="portion"><span class="pe">🥜</span><div><div class="pn">堅果好油</div><div class="ph">一茶匙(約大拇指節)</div></div></div>
+          </div>
+
+          <div class="plate-check">
+            <div class="pc-head">
+              <span class="pc-title">今天均衡了嗎?</span>
+              <span class="pc-score" id="pc-score">0/6 · 0%</span>
+            </div>
+            <div class="pc-grid" id="pc-grid"></div>
+            <div class="pc-bar"><i id="pc-bar-i"></i></div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
+
+  <aside class="side-panel side-right">
+    <div class="panel-card" id="p-plate-mini">
+      <h3><span class="ico">🍽️</span> 今日餐盤均衡度</h3>
+      <div class="mini-plate">
+        <div class="mini-ring">
+          <svg viewBox="0 0 78 78"><circle class="mp-track" cx="39" cy="39" r="34"></circle><circle class="mp-bar" id="mp-bar" cx="39" cy="39" r="34"></circle></svg>
+          <div class="mp-center" id="mp-pct">0%</div>
+        </div>
+        <div class="mini-dots" id="mp-dots"></div>
+      </div>
+      <button class="btn ghost" id="mp-goto" style="margin-top:12px">去餐盤打勾 →</button>
+    </div>
+
+    <div class="panel-card" id="p-weight">
+      <h3><span class="ico">⚖️</span> 體重追蹤</h3>
+      <div class="weight-row">
+        <input type="number" id="w-input" placeholder="今天體重 kg" step="0.1" min="1">
+        <button class="btn" id="w-save" style="width:auto;padding:11px 18px">記錄</button>
+      </div>
+      <div class="chart-box" style="height:140px;margin-top:10px"><canvas id="weight-chart"></canvas></div>
+    </div>
+
+    <div class="panel-card" id="p-tdee">
+      <h3><span class="ico">🎯</span> 目標計算小工具</h3>
+      <div class="row2">
+        <input type="number" id="t-weight" placeholder="體重 kg" min="1">
+        <input type="number" id="t-height" placeholder="身高 cm" min="1">
+      </div>
+      <button class="btn ghost" id="calc-tdee">粗估每日消耗</button>
+      <div class="result" id="tdee-result"></div>
+    </div>
+
+    <div class="panel-card" id="p-lucky">
+      <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
+      <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
+      <div class="result" id="lucky-result"></div>
+    </div>
+
+    <div class="panel-card" id="p-backup">
+      <h3><span class="ico">💾</span> 資料備份</h3>
+      <p class="backup-note">資料只存在這台裝置,建議定期匯出備份;換手機可匯入還原。</p>
+      <div class="backup-btns">
+        <button class="btn ghost" id="exp-json">匯出 JSON</button>
+        <button class="btn ghost" id="exp-csv">匯出 CSV</button>
+      </div>
+      <label class="btn accent" for="import-file" style="margin-top:8px;display:block;text-align:center">匯入備份<input type="file" id="import-file" accept="application/json" hidden></label>
+    </div>
+  </aside>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -505,10 +663,10 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   const KEY="dailycal_v1";
   const WEEKDAYS=["一","二","三","四","五","六","日"];
   const FOODS={
-    staple:[["白飯一碗",280],["糙米飯一碗",250],["吐司一片",90],["地瓜一條",120],["麵條一碗",300],["水餃 10顆",420],["蛋餅",250],["飯糰",350]],
-    protein:[["煎雞腿",250],["滷雞腿",230],["水煮蛋",75],["荷包蛋",110],["鮭魚一片",200],["雞胸肉",165],["牛奶一杯",130],["無糖豆漿",80]],
-    veg:[["燙青菜",50],["生菜沙拉",60],["番茄",30],["花椰菜",40],["玉米一根",90],["菇類",35],["海帶",25],["味噌湯",60]],
-    snack:[["蘋果",95],["香蕉",105],["芭樂",70],["珍珠奶茶",500],["洋芋片(小)",150],["黑巧克力",150],["餅乾兩片",100],["無糖優格",90]]
+    staple:[["白飯一碗",280,5,62,0.5],["糙米飯一碗",250,5,52,2],["吐司一片",90,3,15,1.5],["地瓜一條",120,2,28,0.2],["麵條一碗",300,10,58,3],["水餃 10顆",420,18,45,18],["蛋餅",250,9,25,12],["飯糰",350,8,60,8]],
+    protein:[["煎雞腿",250,22,0,18],["滷雞腿",230,23,2,14],["水煮蛋",75,6,0.5,5],["荷包蛋",110,7,0.5,9],["鮭魚一片",200,22,0,12],["雞胸肉",165,31,0,3.6],["牛奶一杯",130,8,12,5],["無糖豆漿",80,7,3,4]],
+    veg:[["燙青菜",50,3,6,1],["生菜沙拉",60,2,5,3],["番茄",30,1.5,6,0.3],["花椰菜",40,3,7,0.4],["玉米一根",90,3,19,1.2],["菇類",35,3,5,0.4],["海帶",25,1.5,5,0.2],["味噌湯",60,4,6,2]],
+    snack:[["蘋果",95,0.5,25,0.3],["香蕉",105,1.3,27,0.4],["芭樂",70,2.6,14,1],["珍珠奶茶",500,6,90,12],["洋芋片(小)",150,2,15,10],["黑巧克力",150,2,15,10],["餅乾兩片",100,1.5,14,4.5],["無糖優格",90,9,12,1]]
   };
   const LUCKY=[
     {m:"雞胸肉 + 糙米飯 + 燙青菜",c:480},{m:"鮭魚 + 地瓜 + 花椰菜",c:520},
@@ -524,9 +682,9 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
   function load(){
     try{const raw=localStorage.getItem(KEY);
-      if(raw){const d=JSON.parse(raw);d.records=d.records||{};d.water=d.water||{};d.goal=d.goal||2000;return d;}
+      if(raw){const d=JSON.parse(raw);d.records=d.records||{};d.water=d.water||{};d.goal=d.goal||2000;d.plate=d.plate||{};d.weights=d.weights||{};d.settings=d.settings||{};return d;}
     }catch(e){}
-    return {records:{},water:{},goal:2000,weight:"",height:""};
+    return {records:{},water:{},goal:2000,weight:"",height:"",plate:{},weights:{},settings:{}};
   }
   function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
 
@@ -633,11 +791,11 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   }
   function renderPool(){
     const pool=$("pool");if(!pool)return;pool.innerHTML="";
-    FOODS[curCat].forEach(([nm,kc])=>{
+    FOODS[curCat].forEach(([nm,kc,p,c,f])=>{
       const b=document.createElement("button");b.className="chip";
       b.innerHTML='<span class="nm"></span><span class="kc">'+kc+' kcal</span>';
       b.querySelector(".nm").textContent=nm;
-      b.addEventListener("click",()=>addItem(nm,kc));
+      b.addEventListener("click",()=>addItem(nm,kc,{p:p,c:c,f:f}));
       pool.appendChild(b);
     });
   }
@@ -690,16 +848,18 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     if($("water-ml"))$("water-ml").textContent=count*250;
   }
 
-  function addItem(name,cal){
+  function addItem(name,cal,macros){
     const k=key(selected);if(!data.records[k])data.records[k]=[];
-    data.records[k].push({id:Date.now()+""+Math.floor(Math.random()*1000),name:name,cal:cal});
+    const e={id:Date.now()+""+Math.floor(Math.random()*1000),name:name,cal:cal};
+    if(macros){e.p=macros.p;e.c=macros.c;e.f=macros.f;}
+    data.records[k].push(e);
     save();renderAll();toast("已添加 "+name+" · "+cal+" kcal");
   }
   function removeItem(id){
     const k=key(selected);data.records[k]=(data.records[k]||[]).filter(i=>i.id!==id);
     if(!data.records[k].length)delete data.records[k];save();renderAll();
   }
-  function renderAll(){renderCalendar();renderLabel();renderRing();renderList();renderStats();renderChart();renderWater();}
+  function renderAll(){renderCalendar();renderLabel();renderRing();renderList();renderStats();renderChart();renderWater();renderPlate();renderStreak();renderMacros();renderWeightChart();}
 
   $("prev-week")?.addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()-7);renderAll();});
   $("next-week")?.addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()+7);renderAll();});
@@ -771,6 +931,145 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     }
     recSel.addEventListener("change",renderRecipe);renderRecipe();
   }
+
+  // ---- healthy plate checklist ----
+  const PLATE_GROUPS=[["grains","🍚 全榖雜糧"],["protein","🍗 豆魚蛋肉"],["veg","🥬 蔬菜"],["fruit","🍎 水果"],["dairy","🥛 乳品"],["nuts","🥜 堅果好油"]];
+  function togglePlate(id){const k=key(selected);const s=data.plate[k]||{};s[id]=!s[id];data.plate[k]=s;save();renderPlate();}
+  function renderPlate(){
+    const k=key(selected);const state=data.plate[k]||{};
+    let done=PLATE_GROUPS.reduce((n,g)=>n+(state[g[0]]?1:0),0);
+    const pct=Math.round(done/6*100);
+    // full checklist (餐盤分頁)
+    const grid=$("pc-grid");
+    if(grid){
+      grid.innerHTML="";
+      PLATE_GROUPS.forEach(([id,label])=>{
+        const on=!!state[id];
+        const b=document.createElement("button");b.className="pc-chip"+(on?" on":"");
+        b.textContent=(on?"✓ ":"")+label;b.onclick=()=>togglePlate(id);
+        grid.appendChild(b);
+      });
+      if($("pc-score"))$("pc-score").textContent=done+"/6 · "+pct+"%";
+      if($("pc-bar-i"))$("pc-bar-i").style.width=pct+"%";
+    }
+    // mini widget (右欄)
+    const dots=$("mp-dots");
+    if(dots){
+      dots.innerHTML="";
+      PLATE_GROUPS.forEach(([id,label])=>{
+        const on=!!state[id];
+        const b=document.createElement("button");b.className="mp-dot"+(on?" on":"");
+        b.textContent=label.split(" ")[0];b.title=label;b.onclick=()=>togglePlate(id);
+        dots.appendChild(b);
+      });
+      const bar=$("mp-bar");
+      if(bar){const MC=2*Math.PI*34;bar.style.strokeDasharray=MC;bar.style.strokeDashoffset=MC*(1-pct/100);}
+      if($("mp-pct"))$("mp-pct").textContent=pct+"%";
+    }
+  }
+  $("mp-goto")?.addEventListener("click",()=>{
+    const btn=[...document.querySelectorAll('.app-nav .nav-btn')].find(b=>(b.getAttribute('onclick')||'').includes("'plate'"));
+    if(btn)btn.click();
+  });
+
+  // ---- 今日營養素(蛋白/碳水/脂肪) ----
+  function macrosOf(e){
+    if(e.p!=null)return {p:e.p,c:e.c,f:e.f};
+    const cal=e.cal||0;                 // 沒有營養素資料時,用 P20/C50/F30 粗估
+    return {p:cal*0.20/4,c:cal*0.50/4,f:cal*0.30/9};
+  }
+  let macroChart;
+  function renderMacros(){
+    const canvas=$("macro-chart");if(!canvas||!window.Chart)return;
+    let P=0,Cc=0,F=0;
+    dayItems(selected).forEach(e=>{const m=macrosOf(e);P+=m.p;Cc+=m.c;F+=m.f;});
+    P=Math.round(P);Cc=Math.round(Cc);F=Math.round(F);
+    const total=P+Cc+F;
+    if($("macro-legend"))$("macro-legend").textContent=total?("蛋白 "+P+"g · 碳水 "+Cc+"g · 脂肪 "+F+"g"):"今天還沒有記錄";
+    const arr=total?[P,Cc,F]:[1,1,1];
+    if(!macroChart){
+      macroChart=new Chart(canvas,{type:"doughnut",data:{labels:["蛋白質","碳水","脂肪"],datasets:[{data:arr,backgroundColor:["#5DA67C","#E7C97D","#E6A368"],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:"60%",plugins:{legend:{display:false}}}});
+    }else{macroChart.data.datasets[0].data=arr;macroChart.update();}
+  }
+
+  // ---- 連續紀錄 + 徽章 ----
+  function currentStreak(){
+    let cur=new Date();cur.setHours(0,0,0,0);
+    if(dayTotal(cur)===0)cur.setDate(cur.getDate()-1);
+    let s=0,guard=0;
+    while(dayTotal(cur)>0&&guard<3660){s++;cur.setDate(cur.getDate()-1);guard++;}
+    return s;
+  }
+  function renderStreak(){
+    const streak=currentStreak(),total=Object.keys(data.records).length;
+    if($("streak-num"))$("streak-num").textContent=streak;
+    if($("streak-total"))$("streak-total").textContent="共記錄 "+total+" 天";
+    const plateFull=Object.values(data.plate||{}).some(s=>PLATE_GROUPS.every(g=>s[g[0]]));
+    const waterFull=Object.values(data.water||{}).some(v=>v>=2000);
+    const B=[["🌱","起步",total>=1],["🔥","連 7 天",streak>=7],["🏆","連 30 天",streak>=30],["📅","記滿 30 天",total>=30],["🥗","均衡達人",plateFull],["💧","喝水達標",waterFull]];
+    const box=$("badges");if(box)box.innerHTML=B.map(g=>`<div class="badge${g[2]?" on":""}"><span class="be">${g[0]}</span><span class="bl">${g[1]}</span></div>`).join("");
+  }
+
+  // ---- 體重追蹤 ----
+  let wChart;
+  function renderWeightChart(){
+    const canvas=$("weight-chart");if(!canvas||!window.Chart)return;
+    const keys=Object.keys(data.weights||{}).sort();
+    const labels=keys.map(k=>k.slice(5)),vals=keys.map(k=>data.weights[k]);
+    if(!wChart){
+      wChart=new Chart(canvas,{type:"line",data:{labels:labels,datasets:[{data:vals,borderColor:"#5DA67C",backgroundColor:"rgba(93,166,124,.12)",fill:true,tension:.35,pointRadius:3,pointBackgroundColor:"#5DA67C",borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{font:{size:10},color:"#8C948B"},grid:{color:"#EDF1EA"}},x:{grid:{display:false},ticks:{font:{size:10},color:"#8C948B"}}}}});
+    }else{wChart.data.labels=labels;wChart.data.datasets[0].data=vals;wChart.update();}
+  }
+  const wInput=$("w-input");
+  if(wInput){
+    const tk=key(new Date());if(data.weights[tk]!=null)wInput.value=data.weights[tk];
+    $("w-save")?.addEventListener("click",()=>{
+      const v=parseFloat(wInput.value);if(!v||v<1){toast("請輸入正確體重");return;}
+      data.weights[key(new Date())]=v;save();renderWeightChart();renderStreak();toast("⚖️ 已記錄 "+v+" kg");
+    });
+  }
+
+  // ---- 匯出 / 匯入備份 ----
+  function dl(blob,name){const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500);}
+  $("exp-json")?.addEventListener("click",()=>{dl(new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),"dailycal-backup.json");toast("已匯出 JSON 備份");});
+  $("exp-csv")?.addEventListener("click",()=>{
+    const rows=[["日期","食物","卡路里"]];
+    Object.keys(data.records).sort().forEach(k=>data.records[k].forEach(e=>rows.push([k,e.name,e.cal])));
+    const csv=rows.map(r=>r.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(",")).join("\n");
+    dl(new Blob(["\uFEFF"+csv],{type:"text/csv"}),"dailycal-food.csv");toast("已匯出 CSV");
+  });
+  $("import-file")?.addEventListener("change",function(){
+    const file=this.files[0];if(!file)return;const r=new FileReader();
+    r.onload=()=>{try{const d=JSON.parse(r.result);
+      data={records:d.records||{},water:d.water||{},goal:d.goal||2000,weight:d.weight||"",height:d.height||"",plate:d.plate||{},weights:d.weights||{},settings:d.settings||{}};
+      save();renderAll();toast("✅ 匯入成功!");
+    }catch(e){toast("匯入失敗:檔案格式不對");}};
+    r.readAsText(file);this.value="";
+  });
+
+  // ---- 喝水提醒(瀏覽器通知) ----
+  let remindTimer;
+  function startRemind(){if(remindTimer)clearInterval(remindTimer);remindTimer=setInterval(()=>{try{new Notification("DailyCal",{body:"💧 該喝水囉,順便起來動一動!"});}catch(e){}},60*60*1000);}
+  const remindToggle=$("remind-toggle");
+  if(remindToggle){
+    if(data.settings.remind&&"Notification"in window&&Notification.permission==="granted"){remindToggle.checked=true;startRemind();}
+    remindToggle.addEventListener("change",function(){
+      if(this.checked){
+        if(!("Notification"in window)){toast("此瀏覽器不支援通知");this.checked=false;return;}
+        Notification.requestPermission().then(p=>{
+          if(p==="granted"){data.settings.remind=true;save();startRemind();toast("💧 已開啟喝水提醒");}
+          else{this.checked=false;toast("未授權通知");}
+        });
+      }else{data.settings.remind=false;save();if(remindTimer)clearInterval(remindTimer);toast("已關閉提醒");}
+    });
+  }
+
+  // ---- PWA manifest(可加到主畫面) ----
+  try{
+    const icon="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='#5DA67C'/><text x='50' y='70' font-size='54' text-anchor='middle'>🍎</text></svg>");
+    const manifest={name:"DailyCal 每日健康日誌",short_name:"DailyCal",start_url:".",display:"standalone",background_color:"#F3F4ED",theme_color:"#5DA67C",icons:[{src:icon,sizes:"512x512",type:"image/svg+xml"}]};
+    const ml=$("manifest-link");if(ml)ml.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"}));
+  }catch(e){}
 
   renderPool();renderAll();
 })();
