@@ -52,7 +52,7 @@ body{
 
 /* nav */
 .app-nav{display:flex;background:#EAEFE7;padding:5px;border-radius:999px;margin-bottom:18px;gap:4px}
-.nav-btn{flex:1;border:none;padding:9px 0;font-family:var(--num);font-size:14px;border-radius:999px;cursor:pointer;background:transparent;color:var(--muted);transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.nav-btn{flex:1;border:none;padding:9px 2px;font-family:var(--num);font-size:13px;border-radius:999px;cursor:pointer;background:transparent;color:var(--muted);transition:.2s;display:flex;align-items:center;justify-content:center;gap:4px}
 .nav-btn.active{background:var(--surface);color:var(--primary);box-shadow:var(--shadow-sm)}
 .tab-pane{display:none}
 .tab-pane.active{display:block;animation:pop .25s ease}
@@ -133,7 +133,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
 /* water */
 .water{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
-.cup{aspect-ratio:1;border:1px solid var(--line);border-radius:12px;background:#fff;display:grid;place-items:center;font-size:20px;cursor:pointer;filter:grayscale(1) opacity(.4);transition:.15s}
+.cup{position:relative;aspect-ratio:1;border:1px solid var(--line);border-radius:12px;background:#fff;display:grid;place-items:center;font-size:20px;cursor:pointer;filter:grayscale(1) opacity(.4);transition:.15s}
 .cup.full{filter:none;background:#EAF4F4;border-color:#C8E0E0}
 .water-status{font-size:13px;color:var(--muted);text-align:center}
 .water-status b{font-family:var(--num);font-size:16px;color:#5FA0A0}
@@ -157,6 +157,25 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .select-group{text-align:left;margin-bottom:12px}
 .select-group label{font-size:12px;color:var(--ink);display:block;margin-bottom:6px}
 
+/* water splash */
+.splash{position:absolute;left:50%;top:50%;pointer-events:none;z-index:5}
+.splash .drop{position:absolute;left:0;top:0;width:7px;height:7px;border-radius:50% 50% 50% 0;background:#7FC4D6;transform:translate(-50%,-50%) rotate(45deg);animation:dropFly .55s ease-out forwards}
+.splash .ripple{position:absolute;left:0;top:0;width:12px;height:12px;border:2px solid #9AD3E0;border-radius:50%;transform:translate(-50%,-50%);animation:rippleOut .5s ease-out forwards}
+@keyframes dropFly{0%{opacity:1;transform:translate(-50%,-50%) translate(0,0) scale(1) rotate(45deg)}100%{opacity:0;transform:translate(-50%,-50%) translate(var(--dx),var(--dy)) scale(.3) rotate(45deg)}}
+@keyframes rippleOut{0%{opacity:.85;transform:translate(-50%,-50%) scale(.4)}100%{opacity:0;transform:translate(-50%,-50%) scale(2.8)}}
+
+/* recipe */
+.recipe-detail{background:var(--bg);border-radius:14px;padding:14px 16px;margin-top:8px;text-align:left;animation:pop .25s ease}
+.recipe-detail .r-top{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.recipe-detail .r-emoji{font-size:30px}
+.recipe-detail .r-name{font-family:var(--num);font-size:17px}
+.recipe-detail .r-kcal{font-size:12px;color:var(--muted)}
+.recipe-detail h4{font-size:12px;color:var(--muted);margin:12px 0 6px}
+.recipe-detail ul.ing{list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.recipe-detail ul.ing li{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:12px}
+.recipe-detail ol{margin:0;padding-left:18px;font-size:13px;line-height:1.75}
+.recipe-detail ol li{margin-bottom:2px}
+
 /* ===== blender ===== */
 .blender-stage{display:flex;justify-content:center;margin:6px 0 18px}
 .blender{width:120px;position:relative}
@@ -178,52 +197,12 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
 /* ===== fitness ===== */
 .ex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:6px}
-.ex-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px 8px 12px;text-align:center;box-shadow:var(--shadow-sm)}
-.ex-svg{width:78px;height:86px;margin:0 auto 8px;display:block;overflow:visible}
-.ex-svg line,.ex-svg circle{stroke:var(--primary);stroke-width:5;stroke-linecap:round;fill:none}
-.ex-svg .head{fill:var(--primary-soft)}
+.ex-card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px 8px;text-align:center;box-shadow:var(--shadow-sm)}
+.ex-svg{width:90px;height:98px;margin:0 auto 4px;display:block;overflow:visible}
+.fig2 polyline,.fig2 line{fill:none;stroke:var(--primary);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.fig2 .head{fill:var(--primary-soft);stroke:var(--primary);stroke-width:5}
 .ex-name{font-family:var(--num);font-size:14px}
 .ex-target{font-size:11px;color:var(--muted);margin-top:1px}
-.ex-svg .armL,.ex-svg .armR{transform-box:view-box;transform-origin:40px 30px}
-.ex-svg .legL,.ex-svg .legR{transform-box:view-box;transform-origin:40px 54px}
-.ex-svg .fig{transform-box:view-box;transform-origin:40px 46px}
-/* jumping jack */
-.ex-jack .fig{animation:jackJump .7s infinite alternate}
-.ex-jack .armL{animation:jackAL .7s infinite alternate}
-.ex-jack .armR{animation:jackAR .7s infinite alternate}
-.ex-jack .legL{animation:jackLL .7s infinite alternate}
-.ex-jack .legR{animation:jackLR .7s infinite alternate}
-@keyframes jackJump{from{transform:translateY(2px)}to{transform:translateY(-4px)}}
-@keyframes jackAL{from{transform:rotate(0)}to{transform:rotate(-145deg)}}
-@keyframes jackAR{from{transform:rotate(0)}to{transform:rotate(145deg)}}
-@keyframes jackLL{from{transform:rotate(0)}to{transform:rotate(-18deg)}}
-@keyframes jackLR{from{transform:rotate(0)}to{transform:rotate(18deg)}}
-/* high knees */
-.ex-knees .legL{animation:knUp .5s infinite alternate}
-.ex-knees .legR{animation:knDown .5s infinite alternate}
-.ex-knees .armL{animation:knAUp .5s infinite alternate;transform-box:view-box;transform-origin:40px 30px}
-.ex-knees .armR{animation:knADown .5s infinite alternate;transform-box:view-box;transform-origin:40px 30px}
-@keyframes knUp{from{transform:rotate(-48deg)}to{transform:rotate(0)}}
-@keyframes knDown{from{transform:rotate(0)}to{transform:rotate(-48deg)}}
-@keyframes knAUp{from{transform:rotate(30deg)}to{transform:rotate(-20deg)}}
-@keyframes knADown{from{transform:rotate(-20deg)}to{transform:rotate(30deg)}}
-/* squat */
-.ex-squat .fig{animation:squatMove .85s infinite alternate}
-.ex-squat .armL{transform:rotate(-78deg);transform-box:view-box;transform-origin:40px 30px}
-.ex-squat .armR{transform:rotate(78deg);transform-box:view-box;transform-origin:40px 30px}
-@keyframes squatMove{from{transform:translateY(-2px) scaleY(1)}to{transform:translateY(9px) scaleY(.88)}}
-/* lunge */
-.ex-lunge .fig{animation:lungeMove .9s infinite alternate}
-.ex-lunge .legR{transform:rotate(30deg);transform-box:view-box;transform-origin:40px 54px}
-.ex-lunge .legL{transform:rotate(-16deg);transform-box:view-box;transform-origin:40px 54px}
-.ex-lunge .armL{transform:rotate(-25deg);transform-box:view-box;transform-origin:40px 30px}
-.ex-lunge .armR{transform:rotate(25deg);transform-box:view-box;transform-origin:40px 30px}
-@keyframes lungeMove{from{transform:translateY(-2px)}to{transform:translateY(8px)}}
-/* push-up & plank (horizontal) */
-.ex-pushup .fig{animation:pushMove .8s infinite alternate;transform-box:view-box;transform-origin:58px 30px}
-@keyframes pushMove{from{transform:translateY(0)}to{transform:translateY(11px)}}
-.ex-plank .fig{animation:plankShake .28s infinite alternate;transform-box:view-box;transform-origin:55px 30px}
-@keyframes plankShake{from{transform:translate(0,0)}to{transform:translate(1px,-1.5px)}}
 
 /* timer */
 .timer-card{margin-top:18px;text-align:center;background:var(--primary-soft);border-radius:18px;padding:18px}
@@ -306,9 +285,10 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       </section>
 
       <nav class="app-nav">
-        <button class="nav-btn active" onclick="switchMainTab('diet', this)"><i class="fa-solid fa-utensils"></i> 飲食日誌</button>
-        <button class="nav-btn" onclick="switchMainTab('fitness', this)"><i class="fa-solid fa-dumbbell"></i> 居家健身</button>
+        <button class="nav-btn active" onclick="switchMainTab('diet', this)"><i class="fa-solid fa-utensils"></i> 飲食</button>
+        <button class="nav-btn" onclick="switchMainTab('fitness', this)"><i class="fa-solid fa-dumbbell"></i> 健身</button>
         <button class="nav-btn" onclick="switchMainTab('green', this)"><i class="fa-solid fa-leaf"></i> 綠拿鐵</button>
+        <button class="nav-btn" onclick="switchMainTab('recipe', this)"><i class="fa-solid fa-bowl-food"></i> 食譜</button>
       </nav>
 
       <!-- DIET -->
@@ -362,48 +342,61 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
           <div class="ex-grid">
             <div class="ex-card">
-              <svg class="ex-svg ex-jack" viewBox="0 0 80 90"><g class="fig">
-                <circle class="head" cx="40" cy="14" r="8"/><line class="torso" x1="40" y1="22" x2="40" y2="54"/>
-                <line class="armL" x1="40" y1="30" x2="25" y2="46"/><line class="armR" x1="40" y1="30" x2="55" y2="46"/>
-                <line class="legL" x1="40" y1="54" x2="31" y2="80"/><line class="legR" x1="40" y1="54" x2="49" y2="80"/>
+              <svg class="ex-svg fig2" viewBox="0 0 100 120"><g>
+                <animateTransform attributeName="transform" type="translate" values="0,2;0,-7;0,2" dur="0.7s" repeatCount="indefinite"/>
+                <circle class="head" cx="50" cy="18" r="11"/><line x1="50" y1="29" x2="50" y2="64"/>
+                <polyline points="50,34 40,50 34,64"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,34 40,50 34,64;50,34 40,28 34,12;50,34 40,50 34,64"/></polyline>
+                <polyline points="50,34 60,50 66,64"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,34 60,50 66,64;50,34 60,28 66,12;50,34 60,50 66,64"/></polyline>
+                <polyline points="50,64 46,90 44,113"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,64 46,90 44,113;50,64 38,92 28,113;50,64 46,90 44,113"/></polyline>
+                <polyline points="50,64 54,90 56,113"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,64 54,90 56,113;50,64 62,92 72,113;50,64 54,90 56,113"/></polyline>
               </g></svg>
               <div class="ex-name">開合跳</div><div class="ex-target">30 秒 / 暖身</div>
             </div>
             <div class="ex-card">
-              <svg class="ex-svg ex-knees" viewBox="0 0 80 90"><g class="fig">
-                <circle class="head" cx="40" cy="14" r="8"/><line class="torso" x1="40" y1="22" x2="40" y2="54"/>
-                <line class="armL" x1="40" y1="30" x2="26" y2="42"/><line class="armR" x1="40" y1="30" x2="54" y2="42"/>
-                <line class="legL" x1="40" y1="54" x2="32" y2="80"/><line class="legR" x1="40" y1="54" x2="48" y2="80"/>
-              </g></svg>
+              <svg class="ex-svg fig2" viewBox="0 0 100 120">
+                <circle class="head" cx="50" cy="18" r="11"/><line x1="50" y1="29" x2="50" y2="64"/>
+                <polyline points="50,34 42,48 40,62"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,34 42,48 40,62;50,34 44,44 50,34;50,34 42,48 40,62"/></polyline>
+                <polyline points="50,34 58,48 60,62"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,34 58,48 60,62;50,34 56,44 50,34;50,34 58,48 60,62"/></polyline>
+                <polyline points="50,64 44,88 44,113"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,64 40,74 52,88;50,64 44,88 44,113;50,64 40,74 52,88"/></polyline>
+                <polyline points="50,64 56,88 56,113"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,64 56,88 56,113;50,64 60,74 48,88;50,64 56,88 56,113"/></polyline>
+              </svg>
               <div class="ex-name">高抬腿</div><div class="ex-target">30 秒 / 心肺</div>
             </div>
             <div class="ex-card">
-              <svg class="ex-svg ex-squat" viewBox="0 0 80 90"><g class="fig">
-                <circle class="head" cx="40" cy="14" r="8"/><line class="torso" x1="40" y1="22" x2="40" y2="54"/>
-                <line class="armL" x1="40" y1="30" x2="25" y2="34"/><line class="armR" x1="40" y1="30" x2="55" y2="34"/>
-                <line class="legL" x1="40" y1="54" x2="32" y2="80"/><line class="legR" x1="40" y1="54" x2="48" y2="80"/>
-              </g></svg>
+              <svg class="ex-svg fig2" viewBox="0 0 100 120">
+                <circle class="head" cx="50" cy="18" r="11"><animate attributeName="cy" dur="0.85s" repeatCount="indefinite" values="18;30;18"/></circle>
+                <line x1="50" y1="29" x2="50" y2="64"><animate attributeName="y1" dur="0.85s" repeatCount="indefinite" values="29;41;29"/><animate attributeName="y2" dur="0.85s" repeatCount="indefinite" values="64;76;64"/></line>
+                <polyline points="50,34 40,50 34,64"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,34 40,50 34,64;50,40 36,40 30,33;50,34 40,50 34,64"/></polyline>
+                <polyline points="50,34 60,50 66,64"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,34 60,50 66,64;50,40 64,40 70,33;50,34 60,50 66,64"/></polyline>
+                <polyline points="50,64 44,90 44,113"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,64 44,90 44,113;50,76 33,94 44,113;50,64 44,90 44,113"/></polyline>
+                <polyline points="50,64 56,90 56,113"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,64 56,90 56,113;50,76 67,94 56,113;50,64 56,90 56,113"/></polyline>
+              </svg>
               <div class="ex-name">深蹲</div><div class="ex-target">15 下 / 臀腿</div>
             </div>
             <div class="ex-card">
-              <svg class="ex-svg ex-lunge" viewBox="0 0 80 90"><g class="fig">
-                <circle class="head" cx="40" cy="14" r="8"/><line class="torso" x1="40" y1="22" x2="40" y2="54"/>
-                <line class="armL" x1="40" y1="30" x2="27" y2="44"/><line class="armR" x1="40" y1="30" x2="53" y2="44"/>
-                <line class="legL" x1="40" y1="54" x2="33" y2="80"/><line class="legR" x1="40" y1="54" x2="47" y2="80"/>
-              </g></svg>
+              <svg class="ex-svg fig2" viewBox="0 0 100 120">
+                <circle class="head" cx="50" cy="18" r="11"><animate attributeName="cy" dur="0.9s" repeatCount="indefinite" values="18;27;18"/></circle>
+                <line x1="50" y1="29" x2="50" y2="64"><animate attributeName="y2" dur="0.9s" repeatCount="indefinite" values="64;71;64"/></line>
+                <polyline points="50,34 41,48 38,62"/><polyline points="50,34 59,48 62,62"/>
+                <polyline points="50,64 40,88 34,113"><animate attributeName="points" dur="0.9s" repeatCount="indefinite" values="50,64 40,88 34,113;50,71 34,86 34,113;50,64 40,88 34,113"/></polyline>
+                <polyline points="50,64 60,92 70,113"><animate attributeName="points" dur="0.9s" repeatCount="indefinite" values="50,64 60,92 70,113;50,71 64,98 78,113;50,64 60,92 70,113"/></polyline>
+              </svg>
               <div class="ex-name">弓箭步</div><div class="ex-target">左右各 10 下</div>
             </div>
             <div class="ex-card">
-              <svg class="ex-svg ex-pushup" viewBox="0 0 100 62"><g class="fig">
-                <circle class="head" cx="20" cy="26" r="7"/><line class="torso" x1="27" y1="28" x2="74" y2="32"/>
-                <line x1="44" y1="30" x2="44" y2="50"/><line x1="74" y1="32" x2="90" y2="50"/><line x1="74" y1="32" x2="86" y2="52"/>
-              </g></svg>
+              <svg class="ex-svg fig2" viewBox="0 0 120 80">
+                <polyline points="78,40 96,54 108,70"/>
+                <circle class="head" cx="26" cy="38" r="10"><animate attributeName="cy" dur="0.8s" repeatCount="indefinite" values="38;49;38"/></circle>
+                <line x1="36" y1="40" x2="80" y2="42"><animate attributeName="y1" dur="0.8s" repeatCount="indefinite" values="40;51;40"/></line>
+                <polyline points="42,42 42,56 42,70"><animate attributeName="points" dur="0.8s" repeatCount="indefinite" values="42,42 42,56 42,70;42,52 30,60 42,70;42,42 42,56 42,70"/></polyline>
+              </svg>
               <div class="ex-name">伏地挺身</div><div class="ex-target">10 下 / 上肢</div>
             </div>
             <div class="ex-card">
-              <svg class="ex-svg ex-plank" viewBox="0 0 100 62"><g class="fig">
-                <circle class="head" cx="20" cy="28" r="7"/><line class="torso" x1="27" y1="30" x2="78" y2="34"/>
-                <line x1="40" y1="32" x2="40" y2="52"/><line x1="78" y1="34" x2="92" y2="52"/>
+              <svg class="ex-svg fig2" viewBox="0 0 120 80"><g>
+                <animateTransform attributeName="transform" type="translate" values="0,0;0.8,-1;0,0" dur="0.22s" repeatCount="indefinite"/>
+                <circle class="head" cx="26" cy="42" r="10"/><line x1="34" y1="44" x2="86" y2="48"/>
+                <polyline points="42,46 42,66 58,66"/><polyline points="86,48 102,60 112,68"/>
               </g></svg>
               <div class="ex-name">棒式</div><div class="ex-target">撐 40 秒 / 核心</div>
             </div>
@@ -482,6 +475,22 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
           </div>
           <button class="btn" onclick="calculateGreenSmoothie()"><i class="fa-solid fa-blender"></i> 啟動果汁機瘋狂攪打!</button>
           <div id="green-result" class="result"></div>
+        </div>
+      </div>
+
+      <!-- RECIPE -->
+      <div id="recipe-tab" class="tab-pane">
+        <div class="sub-feature-card">
+          <div class="f-head">
+            <div class="feature-icon-wrapper">🍳</div>
+            <h3>健康烹飪食譜</h3>
+            <p class="desc">從下拉選單挑一道菜,看食材與做法,一鍵把熱量加入今日餐單。</p>
+          </div>
+          <div class="select-group">
+            <label>🍽️ 選擇食譜</label>
+            <select id="recipe-select" class="fancy-select"></select>
+          </div>
+          <div id="recipe-card"></div>
         </div>
       </div>
     </div>
@@ -675,7 +684,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     const box=$("water");if(!box)return;const cups=8;const count=Math.round((data.water[key(selected)]||0)/250);box.innerHTML="";
     for(let i=0;i<cups;i++){
       const c=document.createElement("button");c.className="cup"+(i<count?" full":"");c.textContent="💧";c.setAttribute("aria-label","第"+(i+1)+"杯水");
-      c.addEventListener("click",()=>{const nc=(i+1===count)?i:i+1;data.water[key(selected)]=nc*250;save();renderWater();});
+      c.addEventListener("click",()=>{const nc=(i+1===count)?i:i+1;data.water[key(selected)]=nc*250;save();renderWater();const cups=box.querySelectorAll('.cup');if(cups[i])splash(cups[i]);});
       box.appendChild(c);
     }
     if($("water-ml"))$("water-ml").textContent=count*250;
@@ -721,6 +730,47 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     box.classList.add("show");
     $("add-lucky").onclick=()=>addItem(pick.m,pick.c);
   });
+
+  // ---- water splash ----
+  function splash(cup){
+    const s=document.createElement("div");s.className="splash";
+    const rp=document.createElement("div");rp.className="ripple";s.appendChild(rp);
+    for(let i=0;i<7;i++){
+      const d=document.createElement("div");d.className="drop";
+      const a=Math.random()*Math.PI*2,dist=14+Math.random()*16;
+      d.style.setProperty("--dx",(Math.cos(a)*dist).toFixed(1)+"px");
+      d.style.setProperty("--dy",(Math.sin(a)*dist-7).toFixed(1)+"px");
+      d.style.animationDelay=(Math.random()*.05)+"s";
+      s.appendChild(d);
+    }
+    cup.appendChild(s);setTimeout(()=>s.remove(),650);
+  }
+
+  // ---- recipes ----
+  const RECIPES=[
+    {n:"雞胸肉時蔬沙拉",e:"🥗",c:320,ing:["雞胸肉","生菜","小番茄","小黃瓜","橄欖油","檸檬"],s:["雞胸肉抹鹽煎熟、放涼切片","蔬菜洗淨切好鋪碗","淋橄欖油與檸檬汁拌勻"]},
+    {n:"鮭魚親子丼",e:"🍱",c:540,ing:["鮭魚","雞蛋","洋蔥","白飯","醬油","味醂"],s:["洋蔥炒軟,加醬油味醂煮滾","放鮭魚煮熟","淋蛋液、半熟關火,鋪到白飯上"]},
+    {n:"蔬菜起司蛋餅",e:"🫓",c:280,ing:["蛋餅皮","雞蛋","起司","高麗菜","蔥"],s:["蛋液拌入高麗菜絲、蔥花","下鍋鋪餅皮、倒蛋液","放起司,捲起切塊"]},
+    {n:"番茄牛肉湯",e:"🍲",c:380,ing:["牛肋條","番茄","洋蔥","紅蘿蔔","薑"],s:["牛肉汆燙去血水","番茄洋蔥炒香","加水與材料燉煮 40 分鐘"]},
+    {n:"香煎雞腿排佐時蔬",e:"🍗",c:460,ing:["去骨雞腿","綠花椰","彩椒","蒜","黑胡椒"],s:["雞腿抹鹽胡椒,皮朝下煎到金黃","翻面煎熟","旁邊燙青菜,一起擺盤"]},
+    {n:"莓果燕麥優格碗",e:"🥣",c:300,ing:["燕麥","無糖優格","藍莓","香蕉","蜂蜜","堅果"],s:["燕麥用牛奶或熱水泡軟","鋪上一層優格","擺水果堅果、淋少許蜂蜜"]},
+    {n:"味噌豆腐湯",e:"🍵",c:150,ing:["嫩豆腐","味噌","海帶芽","蔥","柴魚"],s:["煮柴魚高湯","放豆腐與海帶芽","關小火拌入味噌,撒蔥花"]},
+    {n:"蒜炒蝦仁花椰菜",e:"🍤",c:290,ing:["蝦仁","綠花椰","蒜","橄欖油","鹽"],s:["花椰菜汆燙備用","蒜爆香、下蝦仁炒到變色","加花椰菜拌炒、調味起鍋"]}
+  ];
+  const recSel=$("recipe-select");
+  if(recSel){
+    RECIPES.forEach((r,i)=>{const o=document.createElement("option");o.value=i;o.textContent=`${r.e} ${r.n}（${r.c} kcal）`;recSel.appendChild(o);});
+    function renderRecipe(){
+      const r=RECIPES[parseInt(recSel.value)||0];const card=$("recipe-card");
+      card.innerHTML=`<div class="recipe-detail">
+        <div class="r-top"><span class="r-emoji">${r.e}</span><div><div class="r-name">${r.n}</div><div class="r-kcal">約 ${r.c} kcal</div></div></div>
+        <h4>食材</h4><ul class="ing">${r.ing.map(x=>`<li>${x}</li>`).join("")}</ul>
+        <h4>做法</h4><ol>${r.s.map(x=>`<li>${x}</li>`).join("")}</ol>
+        <button class="btn ghost" id="add-recipe" style="margin-top:12px">🍽️ 加入今日餐單（${r.c} kcal）</button></div>`;
+      $("add-recipe").onclick=()=>addItem(r.n,r.c);
+    }
+    recSel.addEventListener("change",renderRecipe);renderRecipe();
+  }
 
   renderPool();renderAll();
 })();
