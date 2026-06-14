@@ -320,10 +320,24 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .ex-target{font-size:11px;color:var(--muted);margin-top:1px}
 
 /* timer */
-.timer-card{margin-top:18px;text-align:center;background:var(--primary-soft);border-radius:18px;padding:18px}
-.timer-disp{font-family:var(--num);font-size:42px;color:var(--primary);letter-spacing:.04em}
-.timer-controls{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:10px}
+.timer-card{margin-top:18px;text-align:center;background:var(--primary-soft);border-radius:18px;padding:18px;transition:background .35s}
+.timer-card.work{background:#E3F0E6}
+.timer-card.rest{background:#FBEEDD}
+.timer-phase{font-size:12px;color:var(--muted);letter-spacing:.12em;font-weight:600}
+.timer-disp{font-family:var(--num);font-size:42px;color:var(--primary);letter-spacing:.04em;line-height:1.1}
+.timer-card.work .timer-disp{color:#3C8C5C}
+.timer-card.rest .timer-disp{color:#CC8A3A}
+.timer-now{font-family:var(--num);font-size:16px;color:var(--ink);margin-top:2px;min-height:22px}
+.timer-rounds{display:flex;align-items:center;justify-content:center;gap:6px;margin-top:12px;font-size:12px;color:var(--muted)}
+.rbtn{font-family:var(--num);width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:14px}
+.rbtn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.timer-controls{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:12px}
+.timer-progress{height:6px;border-radius:999px;background:rgba(0,0,0,.08);margin-top:13px;overflow:hidden}
+.timer-bar{height:100%;width:0;background:var(--primary);border-radius:999px;transition:width .25s linear}
 .timer-note{font-size:12px;color:var(--muted);margin-top:10px}
+.ex-card{transition:transform .2s,box-shadow .2s,opacity .2s}
+.ex-card.active{outline:2.5px solid var(--primary);outline-offset:1px;box-shadow:0 6px 16px rgba(93,166,124,.3);transform:translateY(-2px)}
+.ex-card.rest-dim{opacity:.45}
 
 @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media (max-width:1180px){
@@ -423,6 +437,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
             <button class="tab" data-cat="veg">蔬菜</button>
             <button class="tab" data-cat="snack">水果零食</button>
             <button class="tab" data-cat="drink">手搖飲</button>
+            <button class="tab" data-cat="waishi">外食</button>
           </div>
           <div class="pool" id="pool"></div>
         </div>
@@ -446,7 +461,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
           <div class="f-head">
             <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="3" y="9.5" width="3" height="5" rx="1.3" fill="#5DA67C"/><rect x="18" y="9.5" width="3" height="5" rx="1.3" fill="#5DA67C"/><rect x="5.5" y="7.5" width="3.2" height="9" rx="1.5" fill="#E6A368"/><rect x="15.3" y="7.5" width="3.2" height="9" rx="1.5" fill="#E6A368"/><rect x="8.5" y="10.7" width="7" height="2.6" rx="1.3" fill="#79B17A"/></svg></div>
             <h3>居家燃脂・基礎動作</h3>
-            <p class="desc">跟著下面的小人示範做。每個動作 30 秒、循環 3–4 輪,在家 20 分鐘活化全身代謝。</p>
+            <p class="desc">跟著下面的小人示範做。按開始後,計時器會自動帶你輪流完成每個動作,並標示「現在做哪個」、安排休息與進度,結束還會估算消耗熱量。</p>
           </div>
 
           <div class="ex-grid">
@@ -511,13 +526,22 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
             </div>
           </div>
 
-          <div class="timer-card">
-            <div class="timer-disp" id="timer-disp">20:00</div>
+          <div class="timer-card" id="timer-card">
+            <div class="timer-phase" id="timer-phase">準備開始</div>
+            <div class="timer-disp" id="timer-disp">00:30</div>
+            <div class="timer-now" id="timer-now">按下開始,跟著動作做</div>
+            <div class="timer-rounds">
+              <span>輪數</span>
+              <button class="rbtn" data-r="3">3</button>
+              <button class="rbtn active" data-r="4">4</button>
+              <button class="rbtn" data-r="5">5</button>
+            </div>
             <div class="timer-controls">
-              <button class="btn accent" id="timer-toggle">▶ 開始計時</button>
+              <button class="btn accent" id="timer-toggle">▶ 開始訓練</button>
               <button class="btn ghost" id="timer-reset">重設</button>
             </div>
-            <p class="timer-note">按開始,跟著上面動作循環做,加油 💪</p>
+            <div class="timer-progress"><div class="timer-bar" id="timer-bar"></div></div>
+            <p class="timer-note" id="timer-note">每動作 30 秒、休息 15 秒,共 4 輪 ≈ 18 分鐘</p>
           </div>
         </div>
       </div>
@@ -732,7 +756,8 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     protein:[["煎雞腿",250,22,0,18],["滷雞腿",230,23,2,14],["水煮蛋",75,6,0.5,5],["荷包蛋",110,7,0.5,9],["鮭魚一片",200,22,0,12],["雞胸肉",165,31,0,3.6],["牛奶一杯",130,8,12,5],["無糖豆漿",80,7,3,4]],
     veg:[["燙青菜",50,3,6,1],["生菜沙拉",60,2,5,3],["番茄",30,1.5,6,0.3],["花椰菜",40,3,7,0.4],["玉米一根",90,3,19,1.2],["菇類",35,3,5,0.4],["海帶",25,1.5,5,0.2],["味噌湯",60,4,6,2]],
     snack:[["蘋果",95,0.5,25,0.3],["香蕉",105,1.3,27,0.4],["芭樂",70,2.6,14,1],["珍珠奶茶",500,6,90,12],["洋芋片(小)",150,2,15,10],["黑巧克力",150,2,15,10],["餅乾兩片",100,1.5,14,4.5],["無糖優格",90,9,12,1]],
-    drink:[["珍珠奶茶(全糖)",550,6,95,14],["微糖珍奶",430,6,72,12],["黑糖珍珠鮮奶",520,9,76,16],["鮮奶茶(無糖)",200,7,16,11],["紅茶拿鐵",300,7,40,12],["芋頭鮮奶",470,8,72,15],["奶蓋綠茶",330,4,46,14],["四季春(無糖)",10,0,2,0],["多多綠",260,1,64,0],["檸檬綠茶",185,0,46,0],["百香果綠茶",215,0,53,0],["冬瓜茶",235,0,59,0],["仙草凍奶茶",400,6,72,10],["抹茶拿鐵",350,8,48,13],["波霸奶茶",580,6,100,15],["布丁奶茶",520,7,85,15],["梅子綠茶",210,0,52,0],["阿華田巧克力",430,8,70,12],["鮮百香QQ綠",285,0,70,0],["燕麥奶茶",420,8,64,13],["椰果奶茶",450,6,78,12],["蜂蜜檸檬",200,0,50,0],["烏龍鮮奶茶",280,7,30,13],["冰淇淋紅茶",330,4,58,9]]
+    drink:[["珍珠奶茶(全糖)",550,6,95,14],["微糖珍奶",430,6,72,12],["黑糖珍珠鮮奶",520,9,76,16],["鮮奶茶(無糖)",200,7,16,11],["紅茶拿鐵",300,7,40,12],["芋頭鮮奶",470,8,72,15],["奶蓋綠茶",330,4,46,14],["四季春(無糖)",10,0,2,0],["多多綠",260,1,64,0],["檸檬綠茶",185,0,46,0],["百香果綠茶",215,0,53,0],["冬瓜茶",235,0,59,0],["仙草凍奶茶",400,6,72,10],["抹茶拿鐵",350,8,48,13],["波霸奶茶",580,6,100,15],["布丁奶茶",520,7,85,15],["梅子綠茶",210,0,52,0],["阿華田巧克力",430,8,70,12],["鮮百香QQ綠",285,0,70,0],["燕麥奶茶",420,8,64,13],["椰果奶茶",450,6,78,12],["蜂蜜檸檬",200,0,50,0],["烏龍鮮奶茶",280,7,30,13],["冰淇淋紅茶",330,4,58,9]],
+    waishi:[["滷肉飯",480,14,60,18],["雞腿便當",800,35,90,30],["排骨便當",850,30,95,35],["牛肉麵",650,35,70,22],["炸雞排",550,28,35,32],["鹽酥雞(一份)",500,25,30,30],["蚵仔煎",450,14,50,20],["大腸麵線",350,12,55,8],["滷味(一份)",400,25,30,18],["臭豆腐",420,14,38,24],["肉圓",420,10,55,16],["控肉飯",600,18,65,28],["鹹水雞(一份)",300,28,12,14],["陽春麵",350,10,60,7],["乾麵",420,12,62,12],["餛飩湯",200,12,18,8],["蔥油餅",350,6,40,18],["胡椒餅",380,14,38,18],["燒餅油條",450,11,48,23],["關東煮(3樣)",200,12,20,7],["蝦仁炒飯",650,18,85,22],["麻辣燙(一份)",500,22,40,26],["鍋貼 10顆",520,18,48,28],["小籠包 8顆",480,18,46,24]]
   };
   const LUCKY=[
     {m:"雞胸肉 + 糙米飯 + 燙青菜",c:480},{m:"鮭魚 + 地瓜 + 花椰菜",c:520},
@@ -858,18 +883,106 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     },3100);
   };
 
-  // ---- fitness timer ----
-  let tLeft=20*60,tTimer=null;
-  function fmt(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");}
-  $("timer-toggle")?.addEventListener("click",function(){
-    if(tTimer){clearInterval(tTimer);tTimer=null;this.textContent="▶ 繼續";return;}
-    this.textContent="⏸ 暫停";
-    tTimer=setInterval(()=>{
-      tLeft--;$("timer-disp").textContent=fmt(tLeft);
-      if(tLeft<=0){clearInterval(tTimer);tTimer=null;$("timer-toggle").textContent="▶ 開始計時";toast("🎉 完成!你超棒!");tLeft=20*60;setTimeout(()=>$("timer-disp").textContent="20:00",1500);}
-    },1000);
-  });
-  $("timer-reset")?.addEventListener("click",()=>{if(tTimer){clearInterval(tTimer);tTimer=null;}tLeft=20*60;$("timer-disp").textContent="20:00";$("timer-toggle").textContent="▶ 開始計時";});
+  // ---- fitness interval timer ----
+  (function(){
+    const tg=$("timer-toggle"); if(!tg) return;
+    const card=$("timer-card");
+    const EXS=[
+      {n:"開合跳",t:30},{n:"高抬腿",t:30},{n:"深蹲",t:30},
+      {n:"弓箭步",t:30},{n:"伏地挺身",t:30},{n:"棒式",t:40}
+    ];
+    const REST=15;
+    let rounds=4, timer=null, running=false;
+    let queue=[], qi=0, left=0, totalSec=0, doneSec=0;
+    const cards=Array.from(document.querySelectorAll("#fitness-tab .ex-card"));
+    const ftFmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+
+    function buildQueue(){
+      queue=[];
+      for(let r=0;r<rounds;r++){
+        EXS.forEach((e,i)=>{
+          queue.push({type:"work",name:e.n,idx:i,sec:e.t,round:r+1});
+          queue.push({type:"rest",name:"休息",idx:i,sec:REST,round:r+1});
+        });
+      }
+      if(queue.length && queue[queue.length-1].type==="rest") queue.pop();
+      totalSec=queue.reduce((a,b)=>a+b.sec,0); doneSec=0;
+    }
+    function beep(freq,dur){
+      try{
+        const ac=window._ac||(window._ac=new (window.AudioContext||window.webkitAudioContext)());
+        const o=ac.createOscillator(),g=ac.createGain();
+        o.connect(g);g.connect(ac.destination);o.type="sine";o.frequency.value=freq;
+        g.gain.setValueAtTime(0.0001,ac.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.25,ac.currentTime+0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+dur);
+        o.start();o.stop(ac.currentTime+dur);
+      }catch(e){}
+    }
+    function highlight(idx,resting){
+      cards.forEach((c,i)=>{
+        c.classList.toggle("active", i===idx && !resting);
+        c.classList.toggle("rest-dim", resting);
+      });
+    }
+    function clearHi(){cards.forEach(c=>c.classList.remove("active","rest-dim"));}
+    function bar(){ $("timer-bar").style.width = totalSec? Math.min(100,(doneSec/totalSec)*100)+"%" : "0%"; }
+    function showPhase(){
+      const ph=queue[qi];
+      card.classList.toggle("work",ph.type==="work");
+      card.classList.toggle("rest",ph.type==="rest");
+      $("timer-phase").textContent = ph.type==="work" ? ("第 "+ph.round+"/"+rounds+" 輪 · 運動") : "休息一下";
+      $("timer-disp").textContent = ftFmt(left);
+      $("timer-now").textContent = ph.type==="work" ? ("▶ "+ph.name) : ("下一個:"+(queue[qi+1]?queue[qi+1].name:"完成"));
+      highlight(ph.idx, ph.type==="rest");
+      bar();
+    }
+    function tick(){
+      left--; doneSec++;
+      if(left<=3 && left>0) beep(880,0.1);
+      if(left<=0){
+        qi++;
+        if(qi>=queue.length){ finish(); return; }
+        left=queue[qi].sec;
+        beep(queue[qi].type==="work"?1046:660,0.18);
+        showPhase(); return;
+      }
+      $("timer-disp").textContent=ftFmt(left); bar();
+    }
+    function start(){
+      if(!queue.length||qi>=queue.length){ buildQueue(); qi=0; left=queue[0].sec; }
+      running=true; tg.textContent="⏸ 暫停"; beep(1046,0.18); showPhase();
+      timer=setInterval(tick,1000);
+    }
+    function pause(){ running=false; clearInterval(timer); timer=null; tg.textContent="▶ 繼續"; }
+    function reset(){
+      running=false; clearInterval(timer); timer=null; buildQueue(); qi=0; left=0;
+      tg.textContent="▶ 開始訓練"; card.classList.remove("work","rest");
+      $("timer-phase").textContent="準備開始"; $("timer-disp").textContent=ftFmt(EXS[0].t);
+      $("timer-now").textContent="按下開始,跟著動作做"; $("timer-bar").style.width="0%"; clearHi();
+    }
+    function finish(){
+      running=false; clearInterval(timer); timer=null; clearHi();
+      card.classList.remove("work","rest");
+      const mins=Math.round(totalSec/60), kcal=Math.round(totalSec/60*8);
+      $("timer-phase").textContent="完成 🎉"; $("timer-disp").textContent="DONE";
+      $("timer-now").textContent="做了 "+mins+" 分鐘,約消耗 "+kcal+" kcal";
+      $("timer-bar").style.width="100%"; tg.textContent="▶ 再來一次"; qi=queue.length;
+      beep(1318,0.2); setTimeout(()=>beep(1568,0.25),180);
+      toast("🎉 完成!你超棒!約 "+kcal+" kcal");
+    }
+    tg.addEventListener("click",()=>{ running?pause():start(); });
+    $("timer-reset").addEventListener("click",reset);
+    document.querySelectorAll(".rbtn").forEach(b=>b.addEventListener("click",function(){
+      if(running) return;
+      document.querySelectorAll(".rbtn").forEach(x=>x.classList.remove("active"));
+      this.classList.add("active"); rounds=+this.dataset.r;
+      const est=Math.round((EXS.reduce((a,e)=>a+e.t,0)*rounds + REST*(EXS.length*rounds-1))/60);
+      $("timer-note").textContent="每動作 30 秒、休息 15 秒,共 "+rounds+" 輪 ≈ "+est+" 分鐘";
+      reset();
+    }));
+    buildQueue();
+  })();
 
   // ---- renders ----
   function renderCalendar(){
