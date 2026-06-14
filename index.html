@@ -220,6 +220,24 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .mp-dot{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 0;font-size:16px;cursor:pointer;transition:.15s;filter:grayscale(1) opacity(.45);text-align:center}
 .mp-dot.on{filter:none;background:var(--primary-soft);border-color:var(--primary-soft)}
 .mp-dot:hover{border-color:var(--primary)}
+.mp-intro{font-size:11.5px;color:var(--muted);line-height:1.6;margin-bottom:13px}
+.mp-summary{font-family:var(--num);font-size:12.5px;color:var(--muted);line-height:1.55;flex:1}
+.mp-summary b{font-size:21px;color:var(--primary)}
+.mp-list{display:flex;flex-direction:column;gap:7px;margin-top:14px}
+.mp-row{display:flex;align-items:center;gap:9px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 11px;cursor:pointer;transition:.15s}
+.mp-row:hover{border-color:var(--primary)}
+.mp-row.on{background:var(--primary-soft);border-color:var(--primary)}
+.mr-emoji{font-size:17px;flex:0 0 auto}
+.mr-name{font-size:13px;font-family:var(--num);flex:0 0 auto}
+.mr-hint{font-size:11px;color:var(--muted);flex:1}
+.mp-row.on .mr-hint{color:var(--primary)}
+.mr-check{font-family:var(--num);color:var(--primary);font-weight:700;flex:0 0 auto;min-width:14px;text-align:center}
+.mp-compact .mp-list{flex-direction:row;flex-wrap:wrap;gap:7px}
+.mp-compact .mp-row{width:auto;flex:0 0 auto;padding:7px 11px;gap:6px}
+.mp-compact .mr-hint{display:none}
+.mp-compact .mr-name{font-size:12.5px}
+.mp-compact .mr-check{min-width:0}
+.mp-compact .mr-check:empty{display:none}
 
 /* streak / badges */
 .streak-row{display:flex;align-items:baseline;gap:10px;margin-bottom:14px}
@@ -370,6 +388,33 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .sexbtn.active[data-sex="m"]{background:#5B86C4}
 .sexbtn.active[data-sex="f"]{background:#D98AA0}
 .mode-note{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.5}
+.diet-intro{font-size:12.5px;color:var(--muted);line-height:1.6;margin:2px 0 12px}
+.diet-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:12px}
+.dchip{font-family:var(--num);font-size:13px;padding:7px 15px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.dchip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.diet-mode{display:flex;gap:8px;justify-content:center;margin-bottom:12px}
+.mchip{font-family:var(--num);font-size:13.5px;padding:8px 16px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.mchip.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.mp-hint{font-size:11.5px;color:var(--muted);text-align:center;margin-top:10px;line-height:1.5}
+.diet-tip{font-size:12px;color:var(--accent);background:var(--accent-soft);border-radius:10px;padding:9px 12px;margin-top:9px;line-height:1.55}
+.diet-tip:empty{display:none}
+.diet-day{background:var(--primary-soft);border-radius:16px;padding:6px 14px}
+.diet-meal{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px dashed rgba(0,0,0,.09)}
+.diet-meal:last-child{border-bottom:0}
+.dm-l{display:flex;gap:9px;align-items:flex-start}
+.dm-t{font-family:var(--num);font-size:11.5px;color:#fff;background:var(--primary);border-radius:7px;padding:3px 8px;flex:0 0 auto;margin-top:1px}
+.dm-n{font-size:13px;line-height:1.5}
+.dm-k{font-family:var(--num);font-size:12.5px;color:var(--muted);white-space:nowrap}
+.diet-foot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px}
+.diet-total{font-family:var(--num);font-size:14px}
+.diet-total b{color:var(--primary);font-size:18px}
+.diet-note{font-size:12px;color:var(--muted);margin-top:9px;line-height:1.5}
+.diet-src{margin-top:14px;border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface)}
+.diet-src summary{font-family:var(--num);font-size:13.5px;cursor:pointer;color:var(--ink)}
+.diet-src ul{list-style:none;margin:11px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.diet-src li{font-size:12px;color:var(--muted);line-height:1.6}
+.diet-src b{color:var(--ink)}
+.diet-src .src-from{color:var(--primary)}
 
 @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media (max-width:1180px){
@@ -493,6 +538,17 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
         <div id="p-list" style="margin-top:20px">
           <h3><span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="3.2" fill="#A7CDB0"/><rect x="8.6" y="2.6" width="6.8" height="3.6" rx="1.6" fill="#5DA67C"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5" stroke="#FBFBF7" stroke-width="1.6" stroke-linecap="round"/></svg></span> 當日餐單</h3>
           <ul class="list" id="list"></ul>
+        </div>
+        <div class="panel-card mp-card mp-compact" id="p-plate-diet" style="margin-top:20px">
+          <h3><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="#A7CDB0"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="#E6A368"/><path d="M12 3.6V12M12 12 4.6 14.2" stroke="#FBFBF7" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="12" r="2.4" fill="#5DA67C"/></svg></span> 今日餐盤均衡度</h3>
+          <div class="mini-plate">
+            <div class="mini-ring">
+              <svg viewBox="0 0 78 78"><circle class="mp-track" cx="39" cy="39" r="34"></circle><circle class="mp-bar" cx="39" cy="39" r="34"></circle></svg>
+              <div class="mp-center mp-pct">0%</div>
+            </div>
+            <div class="mp-summary">今天吃到 <b class="mp-done">0</b>/6 大類<br><span class="mp-tip">開始打勾吧</span></div>
+          </div>
+          <div class="mp-list mp-dots"></div>
         </div>
       </div>
 
@@ -645,50 +701,41 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       <div id="plate-tab" class="tab-pane">
         <div class="sub-feature-card">
           <div class="f-head">
-            <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#A7CDB0"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="#E6A368"/><path d="M12 3v9M12 12 4.1 14.5" stroke="#FBFBF7" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="2.6" fill="#5DA67C"/></svg></div>
-            <h3>我的健康餐盤</h3>
-            <p class="desc">一餐這樣配最均衡:半盤蔬菜水果、¼ 全榖雜糧、¼ 豆魚蛋肉,搭一杯奶與一茶匙堅果。用「手」就能抓份量。</p>
+            <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="3.5" fill="#A7CDB0"/><rect x="3.5" y="5" width="17" height="4.5" rx="2.2" fill="#5DA67C"/><path d="M12 12.5c1.6-1.6 4-1.2 4-1.2 0 2.4-2.4 3-4 1.2Z" fill="#E6A368"/><path d="M12 12.5c-1.6-1.6-4-1.2-4-1.2 0 2.4 2.4 3 4 1.2Z" fill="#79B17A"/><rect x="11.3" y="12" width="1.3" height="5" rx=".6" fill="#7A5A3A"/></svg></div>
+            <h3>一週七天・健康減重菜單</h3>
+            <p class="desc">依「我的餐盤」與哈佛健康餐盤比例設計,採溫和熱量赤字,高蛋白、高纖、好飽足。</p>
           </div>
-
-          <div class="plate-wrap">
-            <svg class="plate-svg" viewBox="0 0 220 220">
-              <circle cx="110" cy="110" r="100" fill="#fff" stroke="#E8ECE3" stroke-width="6"/>
-              <path class="slice" d="M110,110 L110,18 A92,92 0 0 1 197.5,138.4 Z" fill="#79B17A"/>
-              <path class="slice" d="M110,110 L197.5,138.4 A92,92 0 0 1 110,202 Z" fill="#E89B7B"/>
-              <path class="slice" d="M110,110 L110,202 A92,92 0 0 1 18,110 Z" fill="#E7C97D"/>
-              <path class="slice" d="M110,110 L18,110 A92,92 0 0 1 110,18 Z" fill="#C98E6E"/>
-              <text x="152" y="74" font-size="16" text-anchor="middle">🥬</text>
-              <text class="slice-label" x="152" y="90">蔬菜</text>
-              <text x="140" y="146" font-size="16" text-anchor="middle">🍎</text>
-              <text class="slice-label" x="140" y="162">水果</text>
-              <text x="72" y="141" font-size="16" text-anchor="middle">🍚</text>
-              <text class="slice-label" x="72" y="157">全榖雜糧</text>
-              <text x="72" y="67" font-size="16" text-anchor="middle">🍗</text>
-              <text class="slice-label" x="72" y="83">豆魚蛋肉</text>
-            </svg>
-            <div class="plate-side">
-              <span class="ps">🥛 一杯乳品</span>
-              <span class="ps">🥜 一茶匙堅果好油</span>
-            </div>
+          <p class="diet-intro">以下為一般成人參考範例(每日約 1400–1500 大卡,可切換自煮版／外食族版)。實際熱量請用右側「目標計算小工具」估算;有疾病、孕哺或特殊飲食需求,請先諮詢醫師或營養師。</p>
+          <div class="diet-mode" id="diet-mode">
+            <button class="mchip active" data-mode="0">🍳 自煮版</button>
+            <button class="mchip" data-mode="1">🏪 外食族版</button>
           </div>
-
-          <div class="portion-grid">
-            <div class="portion"><span class="pe">🍚</span><div><div class="pn">全榖雜糧</div><div class="ph">跟蔬菜一樣多</div></div></div>
-            <div class="portion"><span class="pe">🍗</span><div><div class="pn">豆魚蛋肉</div><div class="ph">一個掌心大、約手掌厚</div></div></div>
-            <div class="portion"><span class="pe">🥬</span><div><div class="pn">蔬菜</div><div class="ph">比水果多一點,煮熟約 1 拳頭</div></div></div>
-            <div class="portion"><span class="pe">🍎</span><div><div class="pn">水果</div><div class="ph">一個拳頭大</div></div></div>
-            <div class="portion"><span class="pe">🥛</span><div><div class="pn">乳品</div><div class="ph">早晚各一杯(約 240ml)</div></div></div>
-            <div class="portion"><span class="pe">🥜</span><div><div class="pn">堅果好油</div><div class="ph">一茶匙(約大拇指節)</div></div></div>
+          <div class="diet-chips" id="diet-chips">
+            <button class="dchip active" data-d="0">週一</button>
+            <button class="dchip" data-d="1">週二</button>
+            <button class="dchip" data-d="2">週三</button>
+            <button class="dchip" data-d="3">週四</button>
+            <button class="dchip" data-d="4">週五</button>
+            <button class="dchip" data-d="5">週六</button>
+            <button class="dchip" data-d="6">週日</button>
           </div>
-
-          <div class="plate-check">
-            <div class="pc-head">
-              <span class="pc-title">今天均衡了嗎?</span>
-              <span class="pc-score" id="pc-score">0/6 · 0%</span>
-            </div>
-            <div class="pc-grid" id="pc-grid"></div>
-            <div class="pc-bar"><i id="pc-bar-i"></i></div>
+          <div class="diet-day" id="diet-day"></div>
+          <div class="diet-foot">
+            <div class="diet-total">這天合計 <b id="diet-total">0</b> kcal</div>
+            <button class="btn ghost" id="diet-apply">＋ 套用整天到今日餐單</button>
           </div>
+          <p class="diet-note" id="diet-plate"></p>
+          <p class="diet-tip" id="diet-tip"></p>
+          <details class="diet-src">
+            <summary>📚 醫學根據與來源</summary>
+            <ul>
+              <li><b>餐盤比例</b>:半盤蔬菜水果(菜比水果多)、¼ 全榖雜糧、¼ 豆魚蛋肉,搭配早晚一杯奶與一茶匙堅果。<span class="src-from">來源:衛生福利部國民健康署「我的餐盤」(hpa.gov.tw)。</span></li>
+              <li><b>食物選擇</b>:多蔬果與原態全穀、優質蛋白(魚、雞、豆、蛋),少精緻澱粉與紅肉/加工肉,好油適量。<span class="src-from">來源:哈佛大學公共衛生學院 The Nutrition Source「Healthy Eating Plate」(nutritionsource.hsph.harvard.edu)。</span></li>
+              <li><b>減重速率</b>:安全又可持續的速度約每週 0.5–1 公斤(1–2 磅),通常透過每日約 500–1000 大卡的溫和熱量赤字達成。<span class="src-from">來源:美國疾病管制與預防中心 CDC「Healthy Weight」(cdc.gov)。</span></li>
+              <li><b>高蛋白・高纖</b>:足量蛋白質(約每公斤體重 1.2–1.6 克)與膳食纖維,有助增加飽足感、減重時保留肌肉。<span class="src-from">來源:綜合上述國健署、哈佛與 CDC 指引。</span></li>
+              <li><b>外食族原則</b>:同樣依「我的餐盤」比例選購——半盤蔬菜、¼ 全穀(飯吃半碗)、¼ 優質蛋白(去皮、非油炸),少醬、少糖、少勾芡;一餐熱量控制約 650–850 大卡。<span class="src-from">來源:衛生福利部國民健康署「我的餐盤」一餐建議熱量(hpa.gov.tw)。</span></li>
+            </ul>
+          </details>
         </div>
       </div>
     </div>
@@ -701,16 +748,17 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
       <label class="remind"><input type="checkbox" id="remind-toggle"> 💧 開啟喝水提醒(每 60 分鐘)</label>
     </div>
-    <div class="panel-card" id="p-plate-mini">
+    <div class="panel-card mp-card" id="p-plate-mini">
       <h3><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="#A7CDB0"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="#E6A368"/><path d="M12 3.6V12M12 12 4.6 14.2" stroke="#FBFBF7" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="12" r="2.4" fill="#5DA67C"/></svg></span> 今日餐盤均衡度</h3>
+      <p class="mp-intro">一餐這樣配:半盤蔬果、¼ 全榖雜糧、¼ 豆魚蛋肉,再加一杯奶和一茶匙堅果。點下面類別,記錄今天吃到的 ✓</p>
       <div class="mini-plate">
         <div class="mini-ring">
-          <svg viewBox="0 0 78 78"><circle class="mp-track" cx="39" cy="39" r="34"></circle><circle class="mp-bar" id="mp-bar" cx="39" cy="39" r="34"></circle></svg>
-          <div class="mp-center" id="mp-pct">0%</div>
+          <svg viewBox="0 0 78 78"><circle class="mp-track" cx="39" cy="39" r="34"></circle><circle class="mp-bar" cx="39" cy="39" r="34"></circle></svg>
+          <div class="mp-center mp-pct">0%</div>
         </div>
-        <div class="mini-dots" id="mp-dots"></div>
+        <div class="mp-summary">今天吃到 <b class="mp-done">0</b>/6 大類<br><span class="mp-tip">開始打勾吧</span></div>
       </div>
-      <button class="btn ghost" id="mp-goto" style="margin-top:12px">去餐盤打勾 →</button>
+      <div class="mp-list mp-dots"></div>
     </div>
 
     <div class="panel-card" id="p-weight">
@@ -1029,6 +1077,111 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     renderRoutine();buildQueue();note();reset();
   })();
 
+  // ---- 一週七天健康減重菜單 ----
+  (function(){
+    const DIET=[
+      {day:"週一",note:"半盤蔬果・¼ 全榖・¼ 優質蛋白",meals:[
+        {t:"早餐",n:"燕麥鮮奶粥＋水煮蛋＋藍莓一把",kcal:360},
+        {t:"午餐",n:"糙米飯半碗＋嫩煎雞胸＋雙色花椰菜＋味噌湯",kcal:470},
+        {t:"點心",n:"無糖優格＋杏仁 5 粒",kcal:130},
+        {t:"晚餐",n:"烤鯖魚＋蒸地瓜＋燙青菜＋番茄豆腐湯",kcal:480}]},
+      {day:"週二",note:"半盤蔬果・¼ 全榖・¼ 優質蛋白",meals:[
+        {t:"早餐",n:"全麥吐司 2 片＋酪梨蛋＋無糖豆漿",kcal:400},
+        {t:"午餐",n:"五穀飯半碗＋去皮滷雞腿＋炒時蔬＋海帶湯",kcal:500},
+        {t:"點心",n:"蘋果 1 顆＋核桃 3 粒",kcal:150},
+        {t:"晚餐",n:"清蒸鱸魚＋糙米飯半碗＋燙花椰＋豆腐味噌湯",kcal:470}]},
+      {day:"週三",note:"半盤蔬果・¼ 全榖・¼ 植物蛋白",meals:[
+        {t:"早餐",n:"無糖優格燕麥碗＋香蕉＋奇亞籽",kcal:360},
+        {t:"午餐",n:"全麥雞胸蔬菜捲＋生菜沙拉(橄欖油)＋無糖綠茶",kcal:450},
+        {t:"點心",n:"水煮毛豆一份",kcal:120},
+        {t:"晚餐",n:"番茄豆腐燉雞＋藜麥半碗＋炒菠菜",kcal:500}]},
+      {day:"週四",note:"半盤蔬果・¼ 全榖・¼ 優質蛋白",meals:[
+        {t:"早餐",n:"蒸地瓜 1 條＋水煮蛋 2 顆＋鮮奶 240ml",kcal:390},
+        {t:"午餐",n:"糙米飯半碗＋香煎鮭魚＋彩椒花椰＋蛤蜊湯",kcal:520},
+        {t:"點心",n:"芭樂半顆＋無糖優格",kcal:120},
+        {t:"晚餐",n:"豆腐蔬菜味噌鍋＋少量冬粉＋燙青菜",kcal:450}]},
+      {day:"週五",note:"半盤蔬果・¼ 全榖・¼ 優質蛋白",meals:[
+        {t:"早餐",n:"燕麥香蕉鮮奶昔＋水煮蛋",kcal:380},
+        {t:"午餐",n:"五穀飯半碗＋清淡滷味(豆乾、蛋、青菜)＋紫菜湯",kcal:470},
+        {t:"點心",n:"綜合堅果一小把(約 10 粒)",kcal:150},
+        {t:"晚餐",n:"清燙鮮蝦＋糙米飯半碗＋蒜炒地瓜葉＋味噌湯",kcal:470}]},
+      {day:"週六",note:"半盤蔬果・¼ 全榖・¼ 優質蛋白",meals:[
+        {t:"早餐",n:"全麥蔬菜蛋餅＋無糖豆漿＋小番茄",kcal:370},
+        {t:"午餐",n:"糙米飯半碗＋蒜香雞胸＋炒雙色花椰＋海帶芽湯",kcal:480},
+        {t:"點心",n:"奇異果 2 顆＋無糖優格",kcal:140},
+        {t:"晚餐",n:"去皮烤雞腿＋藜麥半碗＋燙地瓜葉＋味噌湯",kcal:470}]},
+      {day:"週日",note:"半盤蔬果・¼ 全榖・¼ 優質蛋白",meals:[
+        {t:"早餐",n:"地瓜燕麥粥＋水煮蛋＋藍莓",kcal:360},
+        {t:"午餐",n:"五穀飯半碗＋清蒸鯛魚＋炒時蔬＋豆腐湯",kcal:470},
+        {t:"點心",n:"蘋果 1 顆＋核桃 3 粒",kcal:150},
+        {t:"晚餐",n:"番茄蔬菜燉雞胸＋糙米飯半碗＋燙青花菜",kcal:500}]}
+    ];
+    const DIET_OUT=[
+      {day:"週一",note:"超商速配・半盤蔬果・¼ 全穀・¼ 蛋白",meals:[
+        {t:"早餐",n:"超商:茶葉蛋 2 顆＋無糖豆漿大杯＋蒸地瓜一條",kcal:410},
+        {t:"午餐",n:"超商:舒肥雞胸沙拉盒＋無糖優格",kcal:420},
+        {t:"點心",n:"香蕉 1 根＋無糖黑咖啡",kcal:120},
+        {t:"晚餐",n:"關東煮:白蘿蔔、玉米、雞肉串、海帶、豆腐＋鮪魚御飯糰 1 個",kcal:500}]},
+      {day:"週二",note:"早餐店＋自助餐・多菜半飯",meals:[
+        {t:"早餐",n:"早餐店:鮪魚蛋三明治(少美乃滋)＋無糖豆漿",kcal:380},
+        {t:"午餐",n:"自助餐:半碗飯＋滷雞腿去皮＋燙青菜 2 樣＋滷蛋",kcal:560},
+        {t:"點心",n:"無糖優格＋藍莓",kcal:120},
+        {t:"晚餐",n:"自助餐:半碗飯＋清蒸魚＋炒時蔬＋味噌湯",kcal:460}]},
+      {day:"週三",note:"便當控制版・飯吃半碗",meals:[
+        {t:"早餐",n:"超商:御飯糰 1 個＋茶葉蛋 1 顆＋無糖豆漿",kcal:390},
+        {t:"午餐",n:"雞腿便當:去皮、飯只吃半碗、配菜多夾青菜",kcal:620},
+        {t:"點心",n:"超商水煮毛豆一份",kcal:120},
+        {t:"晚餐",n:"超商:舒肥雞胸沙拉盒＋味噌湯",kcal:350}]},
+      {day:"週四",note:"麵店＋超商・去油蔥",meals:[
+        {t:"早餐",n:"超商:蒸地瓜一條＋茶葉蛋 2 顆＋無糖豆漿",kcal:400},
+        {t:"午餐",n:"麵店:陽春湯麵(去油蔥)＋燙青菜＋滷豆乾＋滷蛋",kcal:520},
+        {t:"點心",n:"蘋果 1 顆",kcal:95},
+        {t:"晚餐",n:"超商:舒肥雞胸 2 片＋和風沙拉＋無糖優格",kcal:430}]},
+      {day:"週五",note:"小火鍋＋超商・清湯多菜",meals:[
+        {t:"早餐",n:"超商:無糖優格燕麥杯＋香蕉",kcal:360},
+        {t:"午餐",n:"超商:雞胸肉沙拉盒＋茶葉蛋 1 顆＋無糖豆漿",kcal:430},
+        {t:"點心",n:"綜合堅果小包(約 10 粒)",kcal:150},
+        {t:"晚餐",n:"小火鍋:清湯、多菜、豆腐、海鮮,不加飯或半碗冬粉",kcal:560}]},
+      {day:"週六",note:"早餐店＋自助餐＋超商",meals:[
+        {t:"早餐",n:"早餐店:蔬菜蛋餅(少醬)＋無糖豆漿",kcal:360},
+        {t:"午餐",n:"自助餐:半碗飯＋烤魚＋燙青菜 2 樣＋滷豆腐",kcal:520},
+        {t:"點心",n:"香蕉 1 根＋茶葉蛋 1 顆",kcal:175},
+        {t:"晚餐",n:"超商:舒肥雞胸沙拉盒＋味噌湯",kcal:400}]},
+      {day:"週日",note:"超商＋自助餐＋小火鍋",meals:[
+        {t:"早餐",n:"超商:御飯糰 1 個＋無糖優格＋無糖豆漿",kcal:400},
+        {t:"午餐",n:"自助餐:半碗飯＋滷雞腿去皮＋三色蔬菜",kcal:540},
+        {t:"點心",n:"綜合堅果小包(約 10 粒)",kcal:150},
+        {t:"晚餐",n:"小火鍋:清湯、多菜、海鮮、豆腐,不加飯",kcal:420}]}
+    ];
+    const MENUS=[DIET,DIET_OUT];
+    const TIPS=["","🏪 外食小撇步:飯吃半碗、去皮去炸(改滷/蒸/烤)、青菜多夾一份、醬料分開沾、飲料選無糖、湯避免勾芡濃湯。"];
+    let mode=0,di=0;
+    const chips=document.querySelectorAll(".dchip");
+    const mchips=document.querySelectorAll(".mchip");
+    function render(){
+      const d=MENUS[mode][di],box=$("diet-day");if(!box)return;
+      box.innerHTML=d.meals.map(m=>'<div class="diet-meal"><div class="dm-l"><span class="dm-t">'+m.t+'</span><span class="dm-n">'+m.n+'</span></div><span class="dm-k">'+m.kcal+' kcal</span></div>').join("");
+      const tot=d.meals.reduce((s,m)=>s+m.kcal,0);
+      const te=$("diet-total");if(te)te.textContent=tot;
+      const pe=$("diet-plate");if(pe)pe.textContent="餐盤比例:"+d.note+"(全日約 "+tot+" kcal)";
+      chips.forEach((ch,i)=>ch.classList.toggle("active",i===di));
+      mchips.forEach((ch,i)=>ch.classList.toggle("active",i===mode));
+      const tip=$("diet-tip");if(tip)tip.textContent=TIPS[mode];
+    }
+    chips.forEach(ch=>ch.addEventListener("click",function(){di=+this.dataset.d;render();}));
+    mchips.forEach(ch=>ch.addEventListener("click",function(){mode=+this.dataset.mode;render();}));
+    const ap=$("diet-apply");
+    if(ap)ap.addEventListener("click",function(){
+      const d=MENUS[mode][di],k=key(selected);
+      data.records[k]=data.records[k]||[];
+      d.meals.forEach((m,i)=>data.records[k].push({id:Date.now()+""+i+Math.floor(Math.random()*1000),name:"["+m.t+"] "+m.n,cal:m.kcal}));
+      save();renderAll();
+      const tot=d.meals.reduce((s,m)=>s+m.kcal,0);
+      toast("已套用 "+(mode?"外食版 ":"自煮版 ")+d.day+" 菜單 · 共 "+tot+" kcal");
+    });
+    render();
+  })();
+
   // ---- renders ----
   function renderCalendar(){
     const box=$("days");if(!box)return;box.innerHTML="";const today=new Date();
@@ -1252,7 +1405,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   }
 
   // ---- healthy plate checklist ----
-  const PLATE_GROUPS=[["grains","🍚 全榖雜糧"],["protein","🍗 豆魚蛋肉"],["veg","🥬 蔬菜"],["fruit","🍎 水果"],["dairy","🥛 乳品"],["nuts","🥜 堅果好油"]];
+  const PLATE_GROUPS=[["grains","🍚 全榖雜糧","跟蔬菜一樣多"],["protein","🍗 豆魚蛋肉","一個掌心大"],["veg","🥬 蔬菜","比水果多一點"],["fruit","🍎 水果","一個拳頭大"],["dairy","🥛 乳品","早晚各一杯"],["nuts","🥜 堅果好油","一茶匙"]];
   function togglePlate(id){const k=key(selected);const s=data.plate[k]||{};s[id]=!s[id];data.plate[k]=s;save();renderPlate();}
   function renderPlate(){
     const k=key(selected);const state=data.plate[k]||{};
@@ -1272,24 +1425,26 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       if($("pc-bar-i"))$("pc-bar-i").style.width=pct+"%";
     }
     // mini widget (右欄)
-    const dots=$("mp-dots");
-    if(dots){
-      dots.innerHTML="";
-      PLATE_GROUPS.forEach(([id,label])=>{
-        const on=!!state[id];
-        const b=document.createElement("button");b.className="mp-dot"+(on?" on":"");
-        b.textContent=label.split(" ")[0];b.title=label;b.onclick=()=>togglePlate(id);
-        dots.appendChild(b);
-      });
-      const bar=$("mp-bar");
-      if(bar){const MC=2*Math.PI*34;bar.style.strokeDasharray=MC;bar.style.strokeDashoffset=MC*(1-pct/100);}
-      if($("mp-pct"))$("mp-pct").textContent=pct+"%";
-    }
+    const MC=2*Math.PI*34;
+    document.querySelectorAll(".mp-card").forEach(card=>{
+      const dots=card.querySelector(".mp-dots");
+      if(dots){
+        dots.innerHTML="";
+        PLATE_GROUPS.forEach(([id,label,hint])=>{
+          const on=!!state[id];const em=label.split(" ")[0],nm=label.split(" ").slice(1).join(" ");
+          const b=document.createElement("button");b.className="mp-row"+(on?" on":"");
+          b.innerHTML='<span class="mr-emoji">'+em+'</span><span class="mr-name">'+nm+'</span><span class="mr-hint">'+(hint||"")+'</span><span class="mr-check">'+(on?"✓":"")+'</span>';
+          b.onclick=()=>togglePlate(id);
+          dots.appendChild(b);
+        });
+      }
+      const bar=card.querySelector(".mp-bar");
+      if(bar){bar.style.strokeDasharray=MC;bar.style.strokeDashoffset=MC*(1-pct/100);}
+      const pe=card.querySelector(".mp-pct");if(pe)pe.textContent=pct+"%";
+      const de=card.querySelector(".mp-done");if(de)de.textContent=done;
+      const te=card.querySelector(".mp-tip");if(te)te.textContent=done>=6?"太棒了,六大類都吃到!":(done>=4?"快完成囉!":"開始打勾吧");
+    });
   }
-  $("mp-goto")?.addEventListener("click",()=>{
-    const btn=[...document.querySelectorAll('.app-nav .nav-btn')].find(b=>(b.getAttribute('onclick')||'').includes("'plate'"));
-    if(btn)btn.click();
-  });
 
   // ---- 今日營養素(蛋白/碳水/脂肪) ----
   function macrosOf(e){
