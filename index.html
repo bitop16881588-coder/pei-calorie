@@ -3,17 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DailyCal · 每日健康日誌</title>
+<title>食光日記 · DailyCal</title>
 <meta name="theme-color" content="#5DA67C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="DailyCal">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%235DA67C'/%3E%3Ctext x='50' y='70' font-size='54' text-anchor='middle'%3E🍎%3C/text%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-title" content="食光日記">
+<link rel="apple-touch-icon" id="touch-icon">
 <link rel="manifest" id="manifest-link">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jua&family=Huninn&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <style>
 :root{
@@ -55,18 +54,22 @@ body{
 .container,.panel-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
 .container{box-shadow:var(--shadow)}
 .panel-card h3,.container h3{font-family:var(--num);font-size:16px;font-weight:400;color:var(--ink);display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.ico{display:inline-flex;width:21px;height:21px;flex:0 0 auto}
+.ico svg{width:100%;height:100%;display:block}
 
 /* nav */
-.app-nav{display:flex;background:#EAEFE7;padding:5px;border-radius:999px;margin-bottom:18px;gap:4px}
-.nav-btn{flex:1;border:none;padding:8px 2px;font-family:var(--num);font-size:12px;border-radius:999px;cursor:pointer;background:transparent;color:var(--muted);transition:.2s;display:flex;align-items:center;justify-content:center;gap:3px}
-.nav-btn.active{background:var(--surface);color:var(--primary);box-shadow:var(--shadow-sm)}
+.app-nav{display:flex;background:#EAEFE7;padding:6px;border-radius:999px;margin-bottom:18px;gap:5px}
+.nav-btn{flex:1;border:none;padding:11px 4px;font-family:var(--num);font-size:14.5px;border-radius:999px;cursor:pointer;background:transparent;color:#6E776C;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.nav-btn svg{width:15px;height:15px;flex:0 0 auto}
+.nav-btn.active{background:var(--surface);color:var(--primary);box-shadow:0 3px 10px rgba(44,52,46,.12)}
 .tab-pane{display:none}
 .tab-pane.active{display:block;animation:pop .25s ease}
 
 /* header */
 .head{text-align:center;padding:4px 0 12px}
-.head h1{font-family:var(--num);font-weight:400;font-size:34px;letter-spacing:.04em;color:var(--ink)}
-.head .tag{color:var(--muted);font-size:13px;margin-top:4px}
+.head h1{font-family:var(--num);font-weight:400;font-size:42px;letter-spacing:.06em;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:9px}
+.head h1 .logo{width:42px;height:42px;flex:0 0 auto;margin-top:-2px}
+.head .brand-sub{color:var(--muted);font-size:13px;letter-spacing:.08em;margin-top:8px}
 .head .sel{display:inline-block;margin-top:12px;font-size:12px;color:var(--primary);background:var(--primary-soft);padding:5px 16px;border-radius:999px}
 
 /* calendar */
@@ -111,6 +114,7 @@ body{
 input,.fancy-select{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;font-size:14px;color:var(--ink);background:#fff;outline:none;font-family:var(--sans);transition:.15s}
 input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px var(--primary-soft)}
 .btn{width:100%;border:none;border-radius:12px;padding:12px;font-family:var(--num);font-size:14px;cursor:pointer;color:#fff;background:var(--primary);transition:.15s;letter-spacing:.02em}
+.btn svg{width:15px;height:15px;vertical-align:-2px;margin-right:3px}
 .btn:hover{filter:brightness(1.04)}
 .btn:active{transform:translateY(1px)}
 .btn.accent{background:var(--accent)}
@@ -158,6 +162,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .sub-feature-card{padding:6px 4px}
 .sub-feature-card>.f-head{text-align:center;margin-bottom:16px}
 .feature-icon-wrapper{width:54px;height:54px;border-radius:16px;background:var(--primary-soft);display:grid;place-items:center;font-size:22px;margin:0 auto 12px;color:var(--primary)}
+.feature-icon-wrapper svg{width:32px;height:32px;display:block}
 .sub-feature-card h3{font-family:var(--num);font-size:18px;justify-content:center}
 .sub-feature-card .desc{font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.6}
 .select-group{text-align:left;margin-bottom:12px}
@@ -275,7 +280,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   .dashboard-wrapper{display:flex;flex-direction:column;max-width:560px}
   .main-panel{order:-1}
 }
-@media (max-width:560px){.ex-grid{grid-template-columns:repeat(2,1fr)}.portion-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.ex-grid{grid-template-columns:repeat(2,1fr)}.portion-grid{grid-template-columns:1fr}.nav-btn{font-size:13.5px;padding:10px 2px;gap:0}.nav-btn svg{display:none}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -285,7 +290,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 <div class="dashboard-wrapper">
   <aside class="side-panel">
     <div class="panel-card" id="p-stats">
-      <h3><span class="ico">📊</span> 本週攝入統計</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="13" width="4.5" height="8" rx="2" fill="#A7CDB0"/><rect x="9.75" y="8" width="4.5" height="13" rx="2" fill="#5DA67C"/><rect x="16.5" y="4" width="4.5" height="17" rx="2" fill="#E6A368"/></svg></span> 本週攝入統計</h3>
       <div class="stat">
         <span class="stat-ic" style="background:var(--primary-soft)">📈</span>
         <div class="stat-body"><span class="t">本週平均攝入</span><span class="v" id="s-avg">0<small>kcal</small></span><div class="bar"><i id="bar-avg" style="background:var(--primary)"></i></div></div>
@@ -301,24 +306,24 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     </div>
 
     <div class="panel-card" id="p-streak">
-      <h3><span class="ico">🔥</span> 連續紀錄</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><path d="M12.5 2c1 3-1 4.3-2.2 6.2C9 11 11 13 11 13c-2.6 0-3.6-2-3.6-2-1 4 1.6 9 7.1 9 4 0 6.5-3 6.5-6.6 0-4-3-5.2-3-8.4 0 0-.9 2-2.4 2C12 7 12.8 4 12.5 2Z" fill="#E08A5B"/><path d="M12 21c2.4 0 3.8-1.6 3.8-3.6 0-2.3-1.9-3-2.6-4.9-1.2 1.6-2.1 2.2-2.1 3.6 0 0-1.1-.6-1.1-1.9-1 .9-1.5 2.2-1.5 3.2C8.4 19.5 9.8 21 12 21Z" fill="#F2C98E"/></svg></span> 連續紀錄</h3>
       <div class="streak-row"><span class="streak-num" id="streak-num">0</span><span class="streak-label">天<small id="streak-total">共記錄 0 天</small></span></div>
       <div class="badges" id="badges"></div>
     </div>
 
     <div class="panel-card" id="p-chart">
-      <h3><span class="ico">📈</span> 本週卡路里趨勢</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><path d="M3.5 16.5l5-5 4 3 6.5-7.5V20h-15.5z" fill="#A7CDB0"/><path d="M3.5 16.5l5-5 4 3 6.5-7.5" fill="none" stroke="#5DA67C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span> 本週卡路里趨勢</h3>
       <div class="chart-box"><canvas id="chart"></canvas></div>
     </div>
 
     <div class="panel-card" id="p-macro">
-      <h3><span class="ico">🥗</span> 今日營養素</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="#A7CDB0"/><path d="M12 3.5a8.5 8.5 0 0 1 7.4 4.3L12 12Z" fill="#E6A368"/><path d="M12 12 4.7 8.6A8.5 8.5 0 0 1 9 4.2Z" fill="#5DA67C"/><circle cx="12" cy="12" r="3.4" fill="#FBFBF7"/></svg></span> 今日營養素</h3>
       <div class="chart-box" style="height:150px"><canvas id="macro-chart"></canvas></div>
       <div class="macro-legend" id="macro-legend">今天還沒有記錄</div>
     </div>
 
     <div class="panel-card" id="p-water">
-      <h3><span class="ico">💧</span> 今日飲水追蹤</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3c4.2 5.2 6.2 8.3 6.2 11.2a6.2 6.2 0 0 1-12.4 0C5.8 11.3 7.8 8.2 12 3Z" fill="#8FBEC4"/><path d="M9 13.4c0 2 1.4 3.4 3 3.7" fill="none" stroke="#E8F1F2" stroke-width="1.6" stroke-linecap="round"/></svg></span> 今日飲水追蹤</h3>
       <div class="water" id="water"></div>
       <div class="water-status">今日已喝 <b id="water-ml">0</b> / 2000 ml</div>
       <label class="remind"><input type="checkbox" id="remind-toggle"> 💧 開啟喝水提醒(每 60 分鐘)</label>
@@ -328,8 +333,8 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   <main class="main-panel">
     <div class="container">
       <header class="head">
-        <h1>🍎 DailyCal</h1>
-        <div class="tag">記錄每一餐,看見自己的進步</div>
+        <h1 class="brand"><svg class="logo" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="21" r="12" fill="#F5DBB8"/><rect x="22.7" y="9" width="2.6" height="18" rx="1.3" fill="#5DA67C"/><path d="M24 15C28 9 34 10 34 10 33 16 27 17.5 24 15Z" fill="#79B17A"/><path d="M23 18.5C18.5 13.5 13 15 13 15 13.5 20.5 19 21.5 23 18.5Z" fill="#5DA67C"/><path d="M7 27A17 17 0 0 0 41 27Z" fill="#5DA67C"/><ellipse cx="24" cy="27" rx="17" ry="3.4" fill="#6FB088"/></svg>食光日記</h1>
+        <div class="brand-sub">DailyCal · 記錄每一餐,看見自己的進步</div>
         <div class="sel" id="sel-label">今天</div>
       </header>
 
@@ -342,11 +347,11 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       </section>
 
       <nav class="app-nav">
-        <button class="nav-btn active" onclick="switchMainTab('diet', this)"><i class="fa-solid fa-utensils"></i> 飲食</button>
-        <button class="nav-btn" onclick="switchMainTab('fitness', this)"><i class="fa-solid fa-dumbbell"></i> 健身</button>
-        <button class="nav-btn" onclick="switchMainTab('green', this)"><i class="fa-solid fa-leaf"></i> 綠拿鐵</button>
-        <button class="nav-btn" onclick="switchMainTab('recipe', this)"><i class="fa-solid fa-bowl-food"></i> 食譜</button>
-        <button class="nav-btn" onclick="switchMainTab('plate', this)"><i class="fa-solid fa-plate-wheat"></i> 餐盤</button>
+        <button class="nav-btn active" onclick="switchMainTab('diet', this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8.2 2.5c.4 0 .7.3.7.7V8a2.2 2.2 0 0 1-1.5 2.1V21a.9.9 0 0 1-1.8 0V10.1A2.2 2.2 0 0 1 4.1 8V3.2a.7.7 0 0 1 1.4 0V7h.5V3.2a.7.7 0 0 1 1.4 0V7h.5V3.2c0-.4.2-.7.6-.7Z"/><path d="M15.6 2.5c2 0 3.1 2.6 3.1 5.6 0 2.2-.8 3.7-2.1 4.2V21a.9.9 0 0 1-1.8 0V3.4c0-.5.3-.9.8-.9Z"/></svg> 飲食</button>
+        <button class="nav-btn" onclick="switchMainTab('fitness', this)"><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2.4" y="9.5" width="2.6" height="5" rx="1.1"/><rect x="19" y="9.5" width="2.6" height="5" rx="1.1"/><rect x="5" y="7.8" width="2.6" height="8.4" rx="1.2"/><rect x="16.4" y="7.8" width="2.6" height="8.4" rx="1.2"/><rect x="7.4" y="10.8" width="9.2" height="2.4" rx="1.2"/></svg> 健身</button>
+        <button class="nav-btn" onclick="switchMainTab('green', this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4C9 4 4 11 4 18c0 .8.1 1.5.3 2.2.6-.2 1.1-.6 1.5-1.2C7.2 15.8 10.6 11.4 17 9c-4.4 3-7.4 7-8.9 11.5.8.3 1.7.5 2.5.5 6 0 10-6 9.4-17Z"/></svg> 綠拿鐵</button>
+        <button class="nav-btn" onclick="switchMainTab('recipe', this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 6C10 4.6 7.2 4.1 4.7 4.3c-.5 0-.9.4-.9.9v12.1c0 .6.5 1 1.1.9 2.2-.2 5.3.3 7.1 1.7V6Z"/><path d="M12 6c2-1.4 4.8-1.9 7.3-1.7.5 0 .9.4.9.9v12.1c0 .6-.5 1-1.1.9-2.2-.2-5.3.3-7.1 1.7V6Z" opacity=".5"/></svg> 食譜</button>
+        <button class="nav-btn" onclick="switchMainTab('plate', this)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm0 2.4A6.6 6.6 0 1 1 5.4 12 6.6 6.6 0 0 1 12 5.4Z"/><circle cx="12" cy="12" r="2.9"/></svg> 餐盤</button>
       </nav>
 
       <!-- DIET -->
@@ -366,25 +371,26 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
         </div>
 
         <div id="p-quick" style="margin-top:20px">
-          <h3><span class="ico">🍪</span> 常用食物快捷添加</h3>
+          <h3><span class="ico"><svg viewBox="0 0 24 24"><rect x="11.2" y="3" width="1.6" height="7.5" rx=".8" fill="#5DA67C"/><path d="M12 6.5c1.7-2.2 4.4-1.7 4.4-1.7 0 2.7-2.4 3.3-4.4 1.7Z" fill="#79B17A"/><path d="M4 12h16a8 8 0 0 1-16 0Z" fill="#5DA67C"/><ellipse cx="12" cy="12" rx="8" ry="1.5" fill="#79B17A"/></svg></span> 常用食物快捷添加</h3>
           <div class="tabs" id="tabs">
             <button class="tab active" data-cat="staple">主食</button>
             <button class="tab" data-cat="protein">肉蛋奶</button>
             <button class="tab" data-cat="veg">蔬菜</button>
             <button class="tab" data-cat="snack">水果零食</button>
+            <button class="tab" data-cat="drink">手搖飲</button>
           </div>
           <div class="pool" id="pool"></div>
         </div>
 
         <div id="p-manual" style="margin-top:20px">
-          <h3><span class="ico">✏️</span> 手動添加飲食</h3>
+          <h3><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 19l1.3-4.3L15.5 5.5l3 3-9.2 9.2L5 19Z" fill="#F2C98E"/><path d="M14.5 6.5l3 3" stroke="#E6A368" stroke-width="1.6" stroke-linecap="round"/><path d="M5 19l1.3-4.3 3 3L5 19Z" fill="#5DA67C"/></svg></span> 手動添加飲食</h3>
           <div class="field"><input type="text" id="f-name" placeholder="食物名稱(如:煎雞腿)"></div>
           <div class="field"><input type="number" id="f-cal" placeholder="卡路里(kcal)" min="1"></div>
           <button class="btn" id="add-manual">添加記錄</button>
         </div>
 
         <div id="p-list" style="margin-top:20px">
-          <h3><span class="ico">📝</span> 當日餐單</h3>
+          <h3><span class="ico"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="3.2" fill="#A7CDB0"/><rect x="8.6" y="2.6" width="6.8" height="3.6" rx="1.6" fill="#5DA67C"/><path d="M8.5 11h7M8.5 14.5h7M8.5 18h4.5" stroke="#FBFBF7" stroke-width="1.6" stroke-linecap="round"/></svg></span> 當日餐單</h3>
           <ul class="list" id="list"></ul>
         </div>
       </div>
@@ -393,7 +399,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       <div id="fitness-tab" class="tab-pane">
         <div class="sub-feature-card">
           <div class="f-head">
-            <div class="feature-icon-wrapper"><i class="fa-solid fa-fire-flame-curved" style="color:var(--coral)"></i></div>
+            <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="3" y="9.5" width="3" height="5" rx="1.3" fill="#5DA67C"/><rect x="18" y="9.5" width="3" height="5" rx="1.3" fill="#5DA67C"/><rect x="5.5" y="7.5" width="3.2" height="9" rx="1.5" fill="#E6A368"/><rect x="15.3" y="7.5" width="3.2" height="9" rx="1.5" fill="#E6A368"/><rect x="8.5" y="10.7" width="7" height="2.6" rx="1.3" fill="#79B17A"/></svg></div>
             <h3>居家燃脂・基礎動作</h3>
             <p class="desc">跟著下面的小人示範做。每個動作 30 秒、循環 3–4 輪,在家 20 分鐘活化全身代謝。</p>
           </div>
@@ -475,7 +481,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       <div id="green-tab" class="tab-pane">
         <div class="sub-feature-card">
           <div class="f-head">
-            <div class="feature-icon-wrapper"><i class="fa-solid fa-blender" style="color:var(--primary)"></i></div>
+            <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="13.4" y="2.8" width="2" height="9" rx="1" transform="rotate(20 14.4 7)" fill="#E6A368"/><path d="M11 6.6C8.9 4 5.3 4.7 5.3 4.7 5.6 8 8.5 8.8 11 6.6Z" fill="#79B17A"/><path d="M6.8 7.5h10.4l-1.3 13.1a1.7 1.7 0 0 1-1.7 1.5h-4.4a1.7 1.7 0 0 1-1.7-1.5L6.8 7.5Z" fill="#A7CDB0"/><path d="M7.2 11h9.6l-1 9.6a1.7 1.7 0 0 1-1.7 1.5h-4.2a1.7 1.7 0 0 1-1.7-1.5L7.2 11Z" fill="#5DA67C"/></svg></div>
             <h3>綠拿鐵熱量計算機</h3>
             <p class="desc">選好食材,按下按鈕讓果汁機瘋狂攪打,算出這杯的總熱量。</p>
           </div>
@@ -531,7 +537,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
               <option value="150">無糖優格 (150 kcal)</option>
             </select>
           </div>
-          <button class="btn" onclick="calculateGreenSmoothie()"><i class="fa-solid fa-blender"></i> 啟動果汁機瘋狂攪打!</button>
+          <button class="btn" onclick="calculateGreenSmoothie()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 7h11l-1.2 12.2a2 2 0 0 1-2 1.8h-3.6a2 2 0 0 1-2-1.8L6.5 7Z"/><rect x="5.5" y="4.5" width="13" height="2.6" rx="1.3"/></svg> 啟動果汁機瘋狂攪打!</button>
           <div id="green-result" class="result"></div>
         </div>
       </div>
@@ -540,7 +546,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       <div id="recipe-tab" class="tab-pane">
         <div class="sub-feature-card">
           <div class="f-head">
-            <div class="feature-icon-wrapper">🍳</div>
+            <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="17.5" y="11.6" width="6" height="2.8" rx="1.4" fill="#5DA67C"/><ellipse cx="11" cy="13" rx="7.8" ry="6.8" fill="#A7CDB0"/><ellipse cx="11" cy="13" rx="5.4" ry="4.6" fill="#FBFBF7"/><circle cx="11" cy="13" r="2.4" fill="#E6A368"/></svg></div>
             <h3>健康烹飪食譜</h3>
             <p class="desc">從下拉選單挑一道菜,看食材與做法,一鍵把熱量加入今日餐單。</p>
           </div>
@@ -556,7 +562,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       <div id="plate-tab" class="tab-pane">
         <div class="sub-feature-card">
           <div class="f-head">
-            <div class="feature-icon-wrapper">🍽️</div>
+            <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#A7CDB0"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="#E6A368"/><path d="M12 3v9M12 12 4.1 14.5" stroke="#FBFBF7" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="12" r="2.6" fill="#5DA67C"/></svg></div>
             <h3>我的健康餐盤</h3>
             <p class="desc">一餐這樣配最均衡:半盤蔬菜水果、¼ 全榖雜糧、¼ 豆魚蛋肉,搭一杯奶與一茶匙堅果。用「手」就能抓份量。</p>
           </div>
@@ -607,7 +613,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
   <aside class="side-panel side-right">
     <div class="panel-card" id="p-plate-mini">
-      <h3><span class="ico">🍽️</span> 今日餐盤均衡度</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="#A7CDB0"/><path d="M12 3.5a8.5 8.5 0 0 1 0 17Z" fill="#E6A368"/><path d="M12 3.6V12M12 12 4.6 14.2" stroke="#FBFBF7" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="12" r="2.4" fill="#5DA67C"/></svg></span> 今日餐盤均衡度</h3>
       <div class="mini-plate">
         <div class="mini-ring">
           <svg viewBox="0 0 78 78"><circle class="mp-track" cx="39" cy="39" r="34"></circle><circle class="mp-bar" id="mp-bar" cx="39" cy="39" r="34"></circle></svg>
@@ -619,7 +625,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     </div>
 
     <div class="panel-card" id="p-weight">
-      <h3><span class="ico">⚖️</span> 體重追蹤</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><rect x="3.5" y="6.5" width="17" height="14" rx="4.5" fill="#A7CDB0"/><rect x="9" y="3.5" width="6" height="3.4" rx="1.7" fill="#5DA67C"/><circle cx="12" cy="13.8" r="5" fill="#FBFBF7"/><path d="M12 13.8l2.7-2.3" stroke="#E6A368" stroke-width="1.7" stroke-linecap="round"/></svg></span> 體重追蹤</h3>
       <div class="weight-row">
         <input type="number" id="w-input" placeholder="今天體重 kg" step="0.1" min="1">
         <button class="btn" id="w-save" style="width:auto;padding:11px 18px">記錄</button>
@@ -628,7 +634,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     </div>
 
     <div class="panel-card" id="p-tdee">
-      <h3><span class="ico">🎯</span> 目標計算小工具</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="#A7CDB0"/><circle cx="12" cy="12" r="6" fill="#FBFBF7"/><circle cx="12" cy="12" r="3.2" fill="#E6A368"/><circle cx="12" cy="12" r="1" fill="#fff"/></svg></span> 目標計算小工具</h3>
       <div class="row2">
         <input type="number" id="t-weight" placeholder="體重 kg" min="1">
         <input type="number" id="t-height" placeholder="身高 cm" min="1">
@@ -638,13 +644,13 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     </div>
 
     <div class="panel-card" id="p-lucky">
-      <h3><span class="ico">🎲</span> 今日健康餐推薦</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4.5" fill="#A7CDB0"/><circle cx="9" cy="9" r="1.6" fill="#5DA67C"/><circle cx="15" cy="9" r="1.6" fill="#5DA67C"/><circle cx="9" cy="15" r="1.6" fill="#5DA67C"/><circle cx="15" cy="15" r="1.6" fill="#E6A368"/></svg></span> 今日健康餐推薦</h3>
       <button class="btn accent" id="lucky-btn">🍳 抽一份幸運健康餐</button>
       <div class="result" id="lucky-result"></div>
     </div>
 
     <div class="panel-card" id="p-backup">
-      <h3><span class="ico">💾</span> 資料備份</h3>
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4" fill="#A7CDB0"/><path d="M12 8v6m0 0-2.6-2.6M12 14l2.6-2.6" stroke="#FBFBF7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><rect x="8.4" y="16.4" width="7.2" height="1.7" rx=".85" fill="#5DA67C"/></svg></span> 資料備份</h3>
       <p class="backup-note">資料只存在這台裝置,建議定期匯出備份;換手機可匯入還原。</p>
       <div class="backup-btns">
         <button class="btn ghost" id="exp-json">匯出 JSON</button>
@@ -666,7 +672,8 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     staple:[["白飯一碗",280,5,62,0.5],["糙米飯一碗",250,5,52,2],["吐司一片",90,3,15,1.5],["地瓜一條",120,2,28,0.2],["麵條一碗",300,10,58,3],["水餃 10顆",420,18,45,18],["蛋餅",250,9,25,12],["飯糰",350,8,60,8]],
     protein:[["煎雞腿",250,22,0,18],["滷雞腿",230,23,2,14],["水煮蛋",75,6,0.5,5],["荷包蛋",110,7,0.5,9],["鮭魚一片",200,22,0,12],["雞胸肉",165,31,0,3.6],["牛奶一杯",130,8,12,5],["無糖豆漿",80,7,3,4]],
     veg:[["燙青菜",50,3,6,1],["生菜沙拉",60,2,5,3],["番茄",30,1.5,6,0.3],["花椰菜",40,3,7,0.4],["玉米一根",90,3,19,1.2],["菇類",35,3,5,0.4],["海帶",25,1.5,5,0.2],["味噌湯",60,4,6,2]],
-    snack:[["蘋果",95,0.5,25,0.3],["香蕉",105,1.3,27,0.4],["芭樂",70,2.6,14,1],["珍珠奶茶",500,6,90,12],["洋芋片(小)",150,2,15,10],["黑巧克力",150,2,15,10],["餅乾兩片",100,1.5,14,4.5],["無糖優格",90,9,12,1]]
+    snack:[["蘋果",95,0.5,25,0.3],["香蕉",105,1.3,27,0.4],["芭樂",70,2.6,14,1],["珍珠奶茶",500,6,90,12],["洋芋片(小)",150,2,15,10],["黑巧克力",150,2,15,10],["餅乾兩片",100,1.5,14,4.5],["無糖優格",90,9,12,1]],
+    drink:[["珍珠奶茶(全糖)",550,6,95,14],["微糖珍奶",430,6,72,12],["黑糖珍珠鮮奶",520,9,76,16],["鮮奶茶(無糖)",200,7,16,11],["紅茶拿鐵",300,7,40,12],["芋頭鮮奶",470,8,72,15],["奶蓋綠茶",330,4,46,14],["四季春(無糖)",10,0,2,0],["多多綠",260,1,64,0],["檸檬綠茶",185,0,46,0],["百香果綠茶",215,0,53,0],["冬瓜茶",235,0,59,0],["仙草凍奶茶",400,6,72,10],["抹茶拿鐵",350,8,48,13],["波霸奶茶",580,6,100,15],["布丁奶茶",520,7,85,15],["梅子綠茶",210,0,52,0],["阿華田巧克力",430,8,70,12],["鮮百香QQ綠",285,0,70,0],["燕麥奶茶",420,8,64,13],["椰果奶茶",450,6,78,12],["蜂蜜檸檬",200,0,50,0],["烏龍鮮奶茶",280,7,30,13],["冰淇淋紅茶",330,4,58,9]]
   };
   const LUCKY=[
     {m:"雞胸肉 + 糙米飯 + 燙青菜",c:480},{m:"鮭魚 + 地瓜 + 花椰菜",c:520},
@@ -1066,8 +1073,10 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
   // ---- PWA manifest(可加到主畫面) ----
   try{
-    const icon="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='#5DA67C'/><text x='50' y='70' font-size='54' text-anchor='middle'>🍎</text></svg>");
-    const manifest={name:"DailyCal 每日健康日誌",short_name:"DailyCal",start_url:".",display:"standalone",background_color:"#F3F4ED",theme_color:"#5DA67C",icons:[{src:icon,sizes:"512x512",type:"image/svg+xml"}]};
+    const iconSvg="<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='#5DA67C'/><circle cx='50' cy='42' r='21' fill='#F2C98E'/><rect x='47' y='17' width='6' height='39' rx='3' fill='#EAF3EC'/><path d='M50 30C58 17 71 19 71 19 69 32 57 35 50 30Z' fill='#CDE7D4'/><path d='M48 37C38 27 25 30 25 30 26 41 38 44 48 37Z' fill='#EAF3EC'/><path d='M14 56A36 36 0 0 0 86 56Z' fill='#EAF3EC'/><ellipse cx='50' cy='56' rx='36' ry='7' fill='#D6EADD'/></svg>";
+    const icon="data:image/svg+xml,"+encodeURIComponent(iconSvg);
+    const ti=$("touch-icon");if(ti)ti.href=icon;
+    const manifest={name:"食光日記 DailyCal",short_name:"食光日記",start_url:".",display:"standalone",background_color:"#F3F4ED",theme_color:"#5DA67C",icons:[{src:icon,sizes:"512x512",type:"image/svg+xml"}]};
     const ml=$("manifest-link");if(ml)ml.href=URL.createObjectURL(new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"}));
   }catch(e){}
 
