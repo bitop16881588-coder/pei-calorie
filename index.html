@@ -338,6 +338,38 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .ex-card{transition:transform .2s,box-shadow .2s,opacity .2s}
 .ex-card.active{outline:2.5px solid var(--primary);outline-offset:1px;box-shadow:0 6px 16px rgba(93,166,124,.3);transform:translateY(-2px)}
 .ex-card.rest-dim{opacity:.45}
+.routine-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:2px 0 12px}
+.rchip{font-family:var(--num);font-size:13px;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--muted);cursor:pointer}
+.rchip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.ring .net{font-size:12px;color:var(--primary);margin-top:3px;min-height:16px;text-align:center;padding:0 8px}
+.fit-log-card{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px}
+.fit-goal{display:flex;align-items:center;gap:14px}
+.fitring{position:relative;width:74px;height:74px;flex:0 0 auto}
+.fitring svg{transform:rotate(-90deg)}
+.fitring .ft{fill:none;stroke:var(--line);stroke-width:7}
+.fitring .fb{fill:none;stroke:var(--primary);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset .7s cubic-bezier(.22,1,.36,1)}
+.fitring .fc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--num);font-size:18px;color:var(--primary)}
+.fit-goal-txt{flex:1}
+.fg-title{font-family:var(--num);font-size:14px}
+.fg-sub{font-size:12.5px;color:var(--muted);margin-top:3px}
+.fit-goal-edit{font-size:12px;color:var(--muted);margin-top:8px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.gbtn{font-family:var(--num);width:26px;height:26px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;font-size:12.5px}
+.gbtn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.fit-log-title{font-family:var(--num);font-size:13px;color:var(--muted);margin:14px 0 6px}
+.fit-log{list-style:none;display:flex;flex-direction:column;gap:6px}
+.fit-log li{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;background:var(--primary-soft);border-radius:10px;padding:7px 11px}
+.fit-log .fl-r{color:var(--muted);white-space:nowrap}
+.fit-log .empty{justify-content:center;color:var(--muted);background:transparent;padding:10px}
+.gender-f .fig2 polyline,.gender-f .fig2 line{stroke:#D98AA0}
+.gender-f .fig2 .head{fill:#F7DCE4;stroke:#D98AA0}
+.gender-m .fig2 polyline,.gender-m .fig2 line{stroke:#5B86C4}
+.gender-m .fig2 .head{fill:#D7E4F5;stroke:#5B86C4}
+.mode-row{display:flex;gap:8px}
+.sexbtn{flex:1;font-family:var(--num);font-size:14px;padding:10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.sexbtn.active{color:#fff;border-color:transparent}
+.sexbtn.active[data-sex="m"]{background:#5B86C4}
+.sexbtn.active[data-sex="f"]{background:#D98AA0}
+.mode-note{font-size:11.5px;color:var(--muted);margin-top:9px;line-height:1.5}
 
 @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media (max-width:1180px){
@@ -387,7 +419,15 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
       <div class="macro-legend" id="macro-legend">今天還沒有記錄</div>
     </div>
 
-  </aside>
+      <div class="panel-card" id="p-mode">
+      <h3><span class="ico"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.1" fill="#5B86C4"/><path d="M4.7 19c0-3 1.9-5 4.3-5s4.3 2 4.3 5Z" fill="#A9C2E6"/><circle cx="17" cy="7.4" r="2.5" fill="#D98AA0"/><path d="M13.8 18c0-2.4 1.4-4 3.2-4s3.2 1.6 3.2 4Z" fill="#EEC2CE"/></svg></span> 運動模式</h3>
+      <div class="mode-row">
+        <button class="sexbtn" data-sex="m">♂ 男生</button>
+        <button class="sexbtn" data-sex="f">♀ 女生</button>
+      </div>
+      <p class="mode-note">切換後,健身小人換上對應顏色,估算消耗也依男女略作調整。再按一次同一個可取消。</p>
+    </div>
+</aside>
 
   <main class="main-panel">
     <div class="container">
@@ -425,6 +465,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
               <span class="num" id="ring-num">0</span>
               <span class="of" id="ring-of">/ 2000 kcal</span>
               <span class="over" id="ring-over"></span>
+              <span class="net" id="ring-net"></span>
             </div>
           </div>
         </div>
@@ -464,67 +505,13 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
             <p class="desc">跟著下面的小人示範做。按開始後,計時器會自動帶你輪流完成每個動作,並標示「現在做哪個」、安排休息與進度,結束還會估算消耗熱量。</p>
           </div>
 
-          <div class="ex-grid">
-            <div class="ex-card">
-              <svg class="ex-svg fig2" viewBox="0 0 100 120"><g>
-                <animateTransform attributeName="transform" type="translate" values="0,2;0,-7;0,2" dur="0.7s" repeatCount="indefinite"/>
-                <circle class="head" cx="50" cy="18" r="11"/><line x1="50" y1="29" x2="50" y2="64"/>
-                <polyline points="50,34 40,50 34,64"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,34 40,50 34,64;50,34 40,28 34,12;50,34 40,50 34,64"/></polyline>
-                <polyline points="50,34 60,50 66,64"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,34 60,50 66,64;50,34 60,28 66,12;50,34 60,50 66,64"/></polyline>
-                <polyline points="50,64 46,90 44,113"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,64 46,90 44,113;50,64 38,92 28,113;50,64 46,90 44,113"/></polyline>
-                <polyline points="50,64 54,90 56,113"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,64 54,90 56,113;50,64 62,92 72,113;50,64 54,90 56,113"/></polyline>
-              </g></svg>
-              <div class="ex-name">開合跳</div><div class="ex-target">30 秒 / 暖身</div>
-            </div>
-            <div class="ex-card">
-              <svg class="ex-svg fig2" viewBox="0 0 100 120">
-                <circle class="head" cx="50" cy="18" r="11"/><line x1="50" y1="29" x2="50" y2="64"/>
-                <polyline points="50,34 42,48 40,62"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,34 42,48 40,62;50,34 44,44 50,34;50,34 42,48 40,62"/></polyline>
-                <polyline points="50,34 58,48 60,62"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,34 58,48 60,62;50,34 56,44 50,34;50,34 58,48 60,62"/></polyline>
-                <polyline points="50,64 44,88 44,113"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,64 40,74 52,88;50,64 44,88 44,113;50,64 40,74 52,88"/></polyline>
-                <polyline points="50,64 56,88 56,113"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,64 56,88 56,113;50,64 60,74 48,88;50,64 56,88 56,113"/></polyline>
-              </svg>
-              <div class="ex-name">高抬腿</div><div class="ex-target">30 秒 / 心肺</div>
-            </div>
-            <div class="ex-card">
-              <svg class="ex-svg fig2" viewBox="0 0 100 120">
-                <circle class="head" cx="50" cy="18" r="11"><animate attributeName="cy" dur="0.85s" repeatCount="indefinite" values="18;30;18"/></circle>
-                <line x1="50" y1="29" x2="50" y2="64"><animate attributeName="y1" dur="0.85s" repeatCount="indefinite" values="29;41;29"/><animate attributeName="y2" dur="0.85s" repeatCount="indefinite" values="64;76;64"/></line>
-                <polyline points="50,34 40,50 34,64"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,34 40,50 34,64;50,40 36,40 30,33;50,34 40,50 34,64"/></polyline>
-                <polyline points="50,34 60,50 66,64"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,34 60,50 66,64;50,40 64,40 70,33;50,34 60,50 66,64"/></polyline>
-                <polyline points="50,64 44,90 44,113"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,64 44,90 44,113;50,76 33,94 44,113;50,64 44,90 44,113"/></polyline>
-                <polyline points="50,64 56,90 56,113"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,64 56,90 56,113;50,76 67,94 56,113;50,64 56,90 56,113"/></polyline>
-              </svg>
-              <div class="ex-name">深蹲</div><div class="ex-target">15 下 / 臀腿</div>
-            </div>
-            <div class="ex-card">
-              <svg class="ex-svg fig2" viewBox="0 0 100 120">
-                <circle class="head" cx="50" cy="18" r="11"><animate attributeName="cy" dur="0.9s" repeatCount="indefinite" values="18;27;18"/></circle>
-                <line x1="50" y1="29" x2="50" y2="64"><animate attributeName="y2" dur="0.9s" repeatCount="indefinite" values="64;71;64"/></line>
-                <polyline points="50,34 41,48 38,62"/><polyline points="50,34 59,48 62,62"/>
-                <polyline points="50,64 40,88 34,113"><animate attributeName="points" dur="0.9s" repeatCount="indefinite" values="50,64 40,88 34,113;50,71 34,86 34,113;50,64 40,88 34,113"/></polyline>
-                <polyline points="50,64 60,92 70,113"><animate attributeName="points" dur="0.9s" repeatCount="indefinite" values="50,64 60,92 70,113;50,71 64,98 78,113;50,64 60,92 70,113"/></polyline>
-              </svg>
-              <div class="ex-name">弓箭步</div><div class="ex-target">左右各 10 下</div>
-            </div>
-            <div class="ex-card">
-              <svg class="ex-svg fig2" viewBox="0 0 120 80">
-                <polyline points="78,40 96,54 108,70"/>
-                <circle class="head" cx="26" cy="38" r="10"><animate attributeName="cy" dur="0.8s" repeatCount="indefinite" values="38;49;38"/></circle>
-                <line x1="36" y1="40" x2="80" y2="42"><animate attributeName="y1" dur="0.8s" repeatCount="indefinite" values="40;51;40"/></line>
-                <polyline points="42,42 42,56 42,70"><animate attributeName="points" dur="0.8s" repeatCount="indefinite" values="42,42 42,56 42,70;42,52 30,60 42,70;42,42 42,56 42,70"/></polyline>
-              </svg>
-              <div class="ex-name">伏地挺身</div><div class="ex-target">10 下 / 上肢</div>
-            </div>
-            <div class="ex-card">
-              <svg class="ex-svg fig2" viewBox="0 0 120 80"><g>
-                <animateTransform attributeName="transform" type="translate" values="0,0;0.8,-1;0,0" dur="0.22s" repeatCount="indefinite"/>
-                <circle class="head" cx="26" cy="42" r="10"/><line x1="34" y1="44" x2="86" y2="48"/>
-                <polyline points="42,46 42,66 58,66"/><polyline points="86,48 102,60 112,68"/>
-              </g></svg>
-              <div class="ex-name">棒式</div><div class="ex-target">撐 40 秒 / 核心</div>
-            </div>
+          <div class="routine-chips" id="routine-chips">
+            <button class="rchip active" data-rt="0">全身燃脂</button>
+            <button class="rchip" data-rt="1">核心強化</button>
+            <button class="rchip" data-rt="2">臀腿雕塑</button>
+            <button class="rchip" data-rt="3">伸展放鬆</button>
           </div>
+          <div class="ex-grid" id="ex-grid"></div>
 
           <div class="timer-card" id="timer-card">
             <div class="timer-phase" id="timer-phase">準備開始</div>
@@ -542,6 +529,25 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
             </div>
             <div class="timer-progress"><div class="timer-bar" id="timer-bar"></div></div>
             <p class="timer-note" id="timer-note">每動作 30 秒、休息 15 秒,共 4 輪 ≈ 18 分鐘</p>
+          </div>
+          <div class="fit-log-card">
+            <div class="fit-goal">
+              <div class="fitring">
+                <svg viewBox="0 0 74 74"><circle class="ft" cx="37" cy="37" r="32"/><circle class="fb" id="fit-ring-bar" cx="37" cy="37" r="32"/></svg>
+                <div class="fc"><b id="fit-ring-pct">0</b></div>
+              </div>
+              <div class="fit-goal-txt">
+                <div class="fg-title">本週運動目標</div>
+                <div class="fg-sub">已完成 <b id="fit-week-count">0</b> / <span id="fit-goal-n">4</span> 次 · 消耗 <b id="fit-week-kcal">0</b> kcal</div>
+                <div class="fit-goal-edit">每週目標
+                  <button class="gbtn" data-g="3">3</button>
+                  <button class="gbtn active" data-g="4">4</button>
+                  <button class="gbtn" data-g="5">5</button> 次
+                </div>
+              </div>
+            </div>
+            <div class="fit-log-title">最近訓練</div>
+            <ul class="fit-log" id="fit-log"></ul>
           </div>
         </div>
       </div>
@@ -773,9 +779,9 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
   function load(){
     try{const raw=localStorage.getItem(KEY);
-      if(raw){const d=JSON.parse(raw);d.records=d.records||{};d.water=d.water||{};d.goal=d.goal||2000;d.plate=d.plate||{};d.weights=d.weights||{};d.settings=d.settings||{};return d;}
+      if(raw){const d=JSON.parse(raw);d.records=d.records||{};d.water=d.water||{};d.goal=d.goal||2000;d.plate=d.plate||{};d.weights=d.weights||{};d.settings=d.settings||{};d.workouts=d.workouts||[];d.fitGoal=d.fitGoal||4;return d;}
     }catch(e){}
-    return {records:{},water:{},goal:2000,weight:"",height:"",plate:{},weights:{},settings:{}};
+    return {records:{},water:{},goal:2000,weight:"",height:"",plate:{},weights:{},settings:{},workouts:[],fitGoal:4};
   }
   function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
 
@@ -784,6 +790,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   function sameDay(a,b){return key(a)===key(b);}
   function dayItems(d){return data.records[key(d)]||[];}
   function dayTotal(d){return dayItems(d).reduce((s,i)=>s+i.cal,0);}
+  function dayBurn(d){return dayItems(d).reduce((s,i)=>s+(i.burn?-(i.cal||0):0),0);}
 
   let toastTimer;
   function toast(msg){const el=$("toast");if(!el)return;el.textContent=msg;el.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove("show"),1800);}
@@ -883,105 +890,143 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     },3100);
   };
 
-  // ---- fitness interval timer ----
+  // ---- fitness: routines + interval timer + auto-log ----
   (function(){
     const tg=$("timer-toggle"); if(!tg) return;
-    const card=$("timer-card");
-    const EXS=[
-      {n:"開合跳",t:30},{n:"高抬腿",t:30},{n:"深蹲",t:30},
-      {n:"弓箭步",t:30},{n:"伏地挺身",t:30},{n:"棒式",t:40}
-    ];
+    const card=$("timer-card"),grid=$("ex-grid");
     const REST=15;
-    let rounds=4, timer=null, running=false;
-    let queue=[], qi=0, left=0, totalSec=0, doneSec=0;
-    const cards=Array.from(document.querySelectorAll("#fitness-tab .ex-card"));
+  const FIG={
+    jump:`<svg class="ex-svg fig2" viewBox="0 0 100 120"><g>
+<animateTransform attributeName="transform" type="translate" values="0,2;0,-7;0,2" dur="0.7s" repeatCount="indefinite"/>
+<circle class="head" cx="50" cy="18" r="11"/><line x1="50" y1="29" x2="50" y2="64"/>
+<polyline points="50,34 40,50 34,64"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,34 40,50 34,64;50,34 40,28 34,12;50,34 40,50 34,64"/></polyline>
+<polyline points="50,34 60,50 66,64"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,34 60,50 66,64;50,34 60,28 66,12;50,34 60,50 66,64"/></polyline>
+<polyline points="50,64 46,90 44,113"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,64 46,90 44,113;50,64 38,92 28,113;50,64 46,90 44,113"/></polyline>
+<polyline points="50,64 54,90 56,113"><animate attributeName="points" dur="0.7s" repeatCount="indefinite" values="50,64 54,90 56,113;50,64 62,92 72,113;50,64 54,90 56,113"/></polyline>
+</g></svg>`,
+    highknee:`<svg class="ex-svg fig2" viewBox="0 0 100 120">
+<circle class="head" cx="50" cy="18" r="11"/><line x1="50" y1="29" x2="50" y2="64"/>
+<polyline points="50,34 42,48 40,62"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,34 42,48 40,62;50,34 44,44 50,34;50,34 42,48 40,62"/></polyline>
+<polyline points="50,34 58,48 60,62"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,34 58,48 60,62;50,34 56,44 50,34;50,34 58,48 60,62"/></polyline>
+<polyline points="50,64 44,88 44,113"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,64 40,74 52,88;50,64 44,88 44,113;50,64 40,74 52,88"/></polyline>
+<polyline points="50,64 56,88 56,113"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="50,64 56,88 56,113;50,64 60,74 48,88;50,64 56,88 56,113"/></polyline>
+</svg>`,
+    squat:`<svg class="ex-svg fig2" viewBox="0 0 100 120">
+<circle class="head" cx="50" cy="18" r="11"><animate attributeName="cy" dur="0.85s" repeatCount="indefinite" values="18;30;18"/></circle>
+<line x1="50" y1="29" x2="50" y2="64"><animate attributeName="y1" dur="0.85s" repeatCount="indefinite" values="29;41;29"/><animate attributeName="y2" dur="0.85s" repeatCount="indefinite" values="64;76;64"/></line>
+<polyline points="50,34 40,50 34,64"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,34 40,50 34,64;50,40 36,40 30,33;50,34 40,50 34,64"/></polyline>
+<polyline points="50,34 60,50 66,64"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,34 60,50 66,64;50,40 64,40 70,33;50,34 60,50 66,64"/></polyline>
+<polyline points="50,64 44,90 44,113"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,64 44,90 44,113;50,76 33,94 44,113;50,64 44,90 44,113"/></polyline>
+<polyline points="50,64 56,90 56,113"><animate attributeName="points" dur="0.85s" repeatCount="indefinite" values="50,64 56,90 56,113;50,76 67,94 56,113;50,64 56,90 56,113"/></polyline>
+</svg>`,
+    lunge:`<svg class="ex-svg fig2" viewBox="0 0 100 120">
+<circle class="head" cx="50" cy="18" r="11"><animate attributeName="cy" dur="0.9s" repeatCount="indefinite" values="18;27;18"/></circle>
+<line x1="50" y1="29" x2="50" y2="64"><animate attributeName="y2" dur="0.9s" repeatCount="indefinite" values="64;71;64"/></line>
+<polyline points="50,34 41,48 38,62"/><polyline points="50,34 59,48 62,62"/>
+<polyline points="50,64 40,88 34,113"><animate attributeName="points" dur="0.9s" repeatCount="indefinite" values="50,64 40,88 34,113;50,71 34,86 34,113;50,64 40,88 34,113"/></polyline>
+<polyline points="50,64 60,92 70,113"><animate attributeName="points" dur="0.9s" repeatCount="indefinite" values="50,64 60,92 70,113;50,71 64,98 78,113;50,64 60,92 70,113"/></polyline>
+</svg>`,
+    pushup:`<svg class="ex-svg fig2" viewBox="0 0 120 80">
+<polyline points="78,40 96,54 108,70"/>
+<circle class="head" cx="26" cy="38" r="10"><animate attributeName="cy" dur="0.8s" repeatCount="indefinite" values="38;49;38"/></circle>
+<line x1="36" y1="40" x2="80" y2="42"><animate attributeName="y1" dur="0.8s" repeatCount="indefinite" values="40;51;40"/></line>
+<polyline points="42,42 42,56 42,70"><animate attributeName="points" dur="0.8s" repeatCount="indefinite" values="42,42 42,56 42,70;42,52 30,60 42,70;42,42 42,56 42,70"/></polyline>
+</svg>`,
+    plank:`<svg class="ex-svg fig2" viewBox="0 0 120 80"><g>
+<animateTransform attributeName="transform" type="translate" values="0,0;0.8,-1;0,0" dur="0.22s" repeatCount="indefinite"/>
+<circle class="head" cx="26" cy="42" r="10"/><line x1="34" y1="44" x2="86" y2="48"/>
+<polyline points="42,46 42,66 58,66"/><polyline points="86,48 102,60 112,68"/>
+</g></svg>`,
+    crunch:`<svg class="ex-svg fig2" viewBox="0 0 120 80"><g>
+<circle class="head" cx="34" cy="50" r="10"><animate attributeName="cx" dur="0.95s" repeatCount="indefinite" values="34;48;34"/><animate attributeName="cy" dur="0.95s" repeatCount="indefinite" values="50;42;50"/></circle>
+<polyline points="44,52 60,58 74,64"><animate attributeName="points" dur="0.95s" repeatCount="indefinite" values="44,52 60,58 74,64;56,46 66,55 74,64;44,52 60,58 74,64"/></polyline>
+<polyline points="74,64 92,44 80,38"/>
+<polyline points="44,52 58,56 70,60"><animate attributeName="points" dur="0.95s" repeatCount="indefinite" values="44,52 58,56 70,60;56,46 66,50 78,48;44,52 58,56 70,60"/></polyline>
+</g></svg>`,
+    mountain:`<svg class="ex-svg fig2" viewBox="0 0 120 80"><g>
+<circle class="head" cx="94" cy="38" r="10"/>
+<line x1="86" y1="40" x2="48" y2="42"/>
+<line x1="84" y1="42" x2="84" y2="70"/>
+<polyline points="48,42 34,56 26,70"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="48,42 34,56 26,70;48,42 62,52 68,62;48,42 34,56 26,70"/></polyline>
+<polyline points="48,42 44,58 40,70"><animate attributeName="points" dur="0.5s" repeatCount="indefinite" values="48,42 62,52 68,62;48,42 34,56 26,70;48,42 62,52 68,62"/></polyline>
+</g></svg>`,
+    fold:`<svg class="ex-svg fig2" viewBox="0 0 100 120">
+<polyline points="50,72 45,94 45,116"/>
+<polyline points="50,72 55,94 55,116"/>
+<g><animateTransform attributeName="transform" type="rotate" dur="2.6s" repeatCount="indefinite" values="0 50 72;72 50 72;72 50 72;0 50 72"/>
+<line x1="50" y1="72" x2="50" y2="36"/>
+<circle class="head" cx="50" cy="25" r="11"/>
+<polyline points="50,42 44,56 42,70"/>
+<polyline points="50,42 56,56 58,70"/>
+</g></svg>`,
+    side:`<svg class="ex-svg fig2" viewBox="0 0 100 120">
+<polyline points="50,70 45,92 45,114"/>
+<polyline points="50,70 55,92 55,114"/>
+<g><animateTransform attributeName="transform" type="rotate" dur="3s" repeatCount="indefinite" values="0 50 70;18 50 70;0 50 70;-18 50 70;0 50 70"/>
+<line x1="50" y1="70" x2="50" y2="34"/>
+<circle class="head" cx="50" cy="23" r="11"/>
+<polyline points="50,40 46,28 42,16"/>
+<polyline points="50,40 58,52 60,64"/>
+</g></svg>`,
+    reach:`<svg class="ex-svg fig2" viewBox="0 0 100 120">
+<circle class="head" cx="50" cy="22" r="11"><animate attributeName="cy" dur="2.4s" repeatCount="indefinite" values="22;18;22"/></circle>
+<line x1="50" y1="33" x2="50" y2="70"><animate attributeName="y1" dur="2.4s" repeatCount="indefinite" values="33;29;33"/></line>
+<polyline points="50,40 42,24 40,10"><animate attributeName="points" dur="2.4s" repeatCount="indefinite" values="50,40 42,24 40,10;50,36 44,18 44,4;50,40 42,24 40,10"/></polyline>
+<polyline points="50,40 58,24 60,10"><animate attributeName="points" dur="2.4s" repeatCount="indefinite" values="50,40 58,24 60,10;50,36 56,18 56,4;50,40 58,24 60,10"/></polyline>
+<polyline points="50,70 45,92 45,114"/>
+<polyline points="50,70 55,92 55,114"/>
+</svg>`,
+    chest:`<svg class="ex-svg fig2" viewBox="0 0 100 120">
+<circle class="head" cx="50" cy="20" r="11"/>
+<line x1="50" y1="31" x2="50" y2="68"/>
+<polyline points="50,40 38,46 30,40"><animate attributeName="points" dur="2.6s" repeatCount="indefinite" values="50,40 38,46 30,40;50,40 40,38 34,26;50,40 38,46 30,40"/></polyline>
+<polyline points="50,40 62,46 70,40"><animate attributeName="points" dur="2.6s" repeatCount="indefinite" values="50,40 62,46 70,40;50,40 60,38 66,26;50,40 62,46 70,40"/></polyline>
+<polyline points="50,68 45,90 45,113"/>
+<polyline points="50,68 55,90 55,113"/>
+</svg>`
+  };
+  const RT=[
+    {name:"全身燃脂",exs:[{k:"jump",n:"開合跳",t:30,tag:"暖身"},{k:"highknee",n:"高抬腿",t:30,tag:"心肺"},{k:"squat",n:"深蹲",t:30,tag:"臀腿"},{k:"lunge",n:"弓箭步",t:30,tag:"臀腿"},{k:"pushup",n:"伏地挺身",t:30,tag:"上肢"},{k:"plank",n:"棒式",t:40,tag:"核心"}]},
+    {name:"核心強化",exs:[{k:"crunch",n:"捲腹",t:30,tag:"腹"},{k:"plank",n:"棒式",t:40,tag:"核心"},{k:"mountain",n:"登山者",t:30,tag:"核心"},{k:"highknee",n:"高抬腿",t:30,tag:"心肺"},{k:"crunch",n:"捲腹",t:30,tag:"腹"},{k:"plank",n:"棒式",t:40,tag:"核心"}]},
+    {name:"臀腿雕塑",exs:[{k:"squat",n:"深蹲",t:35,tag:"臀腿"},{k:"lunge",n:"弓箭步",t:30,tag:"臀腿"},{k:"jump",n:"開合跳",t:30,tag:"心肺"},{k:"squat",n:"深蹲",t:35,tag:"臀腿"},{k:"lunge",n:"弓箭步",t:30,tag:"臀腿"},{k:"plank",n:"棒式",t:40,tag:"核心"}]},
+    {name:"伸展放鬆",rest:5,exs:[{k:"fold",n:"站姿前彎",t:30,tag:"放鬆"},{k:"side",n:"體側伸展",t:30,tag:"側腰"},{k:"chest",n:"擴胸伸展",t:25,tag:"開胸"},{k:"reach",n:"向上延展",t:25,tag:"延展"},{k:"fold",n:"站姿前彎",t:30,tag:"放鬆"},{k:"side",n:"體側伸展",t:30,tag:"側腰"}]}
+  ];
+    let ri=0,rounds=4,timer=null,running=false;
+    let queue=[],qi=0,left=0,totalSec=0,doneSec=0,cards=[];
     const ftFmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
-
+    const exs=()=>RT[ri].exs;
+    function renderRoutine(){
+      if(grid){
+        grid.innerHTML=exs().map((e,i)=>'<div class="ex-card" data-i="'+i+'">'+(FIG[e.k]||"")+'<div class="ex-name">'+e.n+'</div><div class="ex-target">'+e.t+' 秒 · '+e.tag+'</div></div>').join("");
+        cards=Array.from(grid.querySelectorAll(".ex-card"));
+      }
+      document.querySelectorAll(".rchip").forEach((ch,i)=>ch.classList.toggle("active",i===ri));
+    }
     function buildQueue(){
       queue=[];
-      for(let r=0;r<rounds;r++){
-        EXS.forEach((e,i)=>{
-          queue.push({type:"work",name:e.n,idx:i,sec:e.t,round:r+1});
-          queue.push({type:"rest",name:"休息",idx:i,sec:REST,round:r+1});
-        });
-      }
-      if(queue.length && queue[queue.length-1].type==="rest") queue.pop();
-      totalSec=queue.reduce((a,b)=>a+b.sec,0); doneSec=0;
+      const rest=RT[ri].rest!=null?RT[ri].rest:REST;
+      for(let r=0;r<rounds;r++){exs().forEach((e,i)=>{queue.push({type:"work",name:e.n,idx:i,sec:e.t,round:r+1});queue.push({type:"rest",name:"休息",idx:i,sec:rest,round:r+1});});}
+      if(queue.length&&queue[queue.length-1].type==="rest")queue.pop();
+      totalSec=queue.reduce((a,b)=>a+b.sec,0);doneSec=0;
     }
-    function beep(freq,dur){
-      try{
-        const ac=window._ac||(window._ac=new (window.AudioContext||window.webkitAudioContext)());
-        const o=ac.createOscillator(),g=ac.createGain();
-        o.connect(g);g.connect(ac.destination);o.type="sine";o.frequency.value=freq;
-        g.gain.setValueAtTime(0.0001,ac.currentTime);
-        g.gain.exponentialRampToValueAtTime(0.25,ac.currentTime+0.02);
-        g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+dur);
-        o.start();o.stop(ac.currentTime+dur);
-      }catch(e){}
-    }
-    function highlight(idx,resting){
-      cards.forEach((c,i)=>{
-        c.classList.toggle("active", i===idx && !resting);
-        c.classList.toggle("rest-dim", resting);
-      });
-    }
-    function clearHi(){cards.forEach(c=>c.classList.remove("active","rest-dim"));}
-    function bar(){ $("timer-bar").style.width = totalSec? Math.min(100,(doneSec/totalSec)*100)+"%" : "0%"; }
-    function showPhase(){
-      const ph=queue[qi];
-      card.classList.toggle("work",ph.type==="work");
-      card.classList.toggle("rest",ph.type==="rest");
-      $("timer-phase").textContent = ph.type==="work" ? ("第 "+ph.round+"/"+rounds+" 輪 · 運動") : "休息一下";
-      $("timer-disp").textContent = ftFmt(left);
-      $("timer-now").textContent = ph.type==="work" ? ("▶ "+ph.name) : ("下一個:"+(queue[qi+1]?queue[qi+1].name:"完成"));
-      highlight(ph.idx, ph.type==="rest");
-      bar();
-    }
-    function tick(){
-      left--; doneSec++;
-      if(left<=3 && left>0) beep(880,0.1);
-      if(left<=0){
-        qi++;
-        if(qi>=queue.length){ finish(); return; }
-        left=queue[qi].sec;
-        beep(queue[qi].type==="work"?1046:660,0.18);
-        showPhase(); return;
-      }
-      $("timer-disp").textContent=ftFmt(left); bar();
-    }
-    function start(){
-      if(!queue.length||qi>=queue.length){ buildQueue(); qi=0; left=queue[0].sec; }
-      running=true; tg.textContent="⏸ 暫停"; beep(1046,0.18); showPhase();
-      timer=setInterval(tick,1000);
-    }
-    function pause(){ running=false; clearInterval(timer); timer=null; tg.textContent="▶ 繼續"; }
-    function reset(){
-      running=false; clearInterval(timer); timer=null; buildQueue(); qi=0; left=0;
-      tg.textContent="▶ 開始訓練"; card.classList.remove("work","rest");
-      $("timer-phase").textContent="準備開始"; $("timer-disp").textContent=ftFmt(EXS[0].t);
-      $("timer-now").textContent="按下開始,跟著動作做"; $("timer-bar").style.width="0%"; clearHi();
-    }
-    function finish(){
-      running=false; clearInterval(timer); timer=null; clearHi();
-      card.classList.remove("work","rest");
-      const mins=Math.round(totalSec/60), kcal=Math.round(totalSec/60*8);
-      $("timer-phase").textContent="完成 🎉"; $("timer-disp").textContent="DONE";
-      $("timer-now").textContent="做了 "+mins+" 分鐘,約消耗 "+kcal+" kcal";
-      $("timer-bar").style.width="100%"; tg.textContent="▶ 再來一次"; qi=queue.length;
-      beep(1318,0.2); setTimeout(()=>beep(1568,0.25),180);
-      toast("🎉 完成!你超棒!約 "+kcal+" kcal");
-    }
-    tg.addEventListener("click",()=>{ running?pause():start(); });
+    function note(){const rest=RT[ri].rest!=null?RT[ri].rest:REST;const est=Math.round((exs().reduce((a,e)=>a+e.t,0)*rounds+rest*(exs().length*rounds-1))/60);const n=$("timer-note");if(n)n.textContent="共 "+rounds+" 輪 · "+exs().length+" 個動作 ≈ "+est+" 分鐘";}
+    function beep(f,d){try{const ac=window._ac||(window._ac=new (window.AudioContext||window.webkitAudioContext)());const o=ac.createOscillator(),g=ac.createGain();o.connect(g);g.connect(ac.destination);o.type="sine";o.frequency.value=f;g.gain.setValueAtTime(0.0001,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.25,ac.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+d);o.start();o.stop(ac.currentTime+d);}catch(e){}}
+    function highlight(idx,resting){cards.forEach((ch,i)=>{ch.classList.toggle("active",i===idx&&!resting);ch.classList.toggle("rest-dim",resting);});}
+    function clearHi(){cards.forEach(ch=>ch.classList.remove("active","rest-dim"));}
+    function bar(){const b=$("timer-bar");if(b)b.style.width=totalSec?Math.min(100,(doneSec/totalSec)*100)+"%":"0%";}
+    function showPhase(){const ph=queue[qi];card.classList.toggle("work",ph.type==="work");card.classList.toggle("rest",ph.type==="rest");$("timer-phase").textContent=ph.type==="work"?("第 "+ph.round+"/"+rounds+" 輪 · 運動"):"休息一下";$("timer-disp").textContent=ftFmt(left);$("timer-now").textContent=ph.type==="work"?("▶ "+ph.name):("下一個:"+(queue[qi+1]?queue[qi+1].name:"完成"));highlight(ph.idx,ph.type==="rest");bar();}
+    function tick(){left--;doneSec++;if(left<=3&&left>0)beep(880,0.1);if(left<=0){qi++;if(qi>=queue.length){finish();return;}left=queue[qi].sec;beep(queue[qi].type==="work"?1046:660,0.18);showPhase();return;}$("timer-disp").textContent=ftFmt(left);bar();}
+    function start(){if(!queue.length||qi>=queue.length){buildQueue();qi=0;left=queue[0].sec;}running=true;tg.textContent="⏸ 暫停";beep(1046,0.18);showPhase();timer=setInterval(tick,1000);}
+    function pause(){running=false;clearInterval(timer);timer=null;tg.textContent="▶ 繼續";}
+    function reset(){running=false;clearInterval(timer);timer=null;buildQueue();qi=0;left=0;tg.textContent="▶ 開始訓練";card.classList.remove("work","rest");$("timer-phase").textContent="準備開始";$("timer-disp").textContent=ftFmt(exs()[0].t);$("timer-now").textContent="按下開始,跟著動作做";const b=$("timer-bar");if(b)b.style.width="0%";clearHi();}
+    function finish(){running=false;clearInterval(timer);timer=null;clearHi();card.classList.remove("work","rest");const gd=(data.settings&&data.settings.gender)||"",fac=gd==="f"?7.2:(gd==="m"?8.5:8);const mins=Math.round(totalSec/60),kcal=Math.round(totalSec/60*fac);$("timer-phase").textContent="完成 🎉";$("timer-disp").textContent="DONE";$("timer-now").textContent="做了 "+mins+" 分鐘,約消耗 "+kcal+" kcal";const b=$("timer-bar");if(b)b.style.width="100%";tg.textContent="▶ 再來一次";qi=queue.length;beep(1318,0.2);setTimeout(()=>beep(1568,0.25),180);toast("🎉 完成!約消耗 "+kcal+" kcal");try{data.workouts=data.workouts||[];data.workouts.push({d:key(new Date()),routine:RT[ri].name,rounds:rounds,mins:mins,kcal:kcal});if(data.workouts.length>300)data.workouts=data.workouts.slice(-300);const dk=key(new Date());data.records[dk]=data.records[dk]||[];data.records[dk].push({id:Date.now()+""+Math.floor(Math.random()*1000),name:"🔥 居家訓練・"+RT[ri].name,cal:-kcal,p:0,c:0,f:0,burn:true});save();renderAll();}catch(e){}}
+    tg.addEventListener("click",()=>{running?pause():start();});
     $("timer-reset").addEventListener("click",reset);
-    document.querySelectorAll(".rbtn").forEach(b=>b.addEventListener("click",function(){
-      if(running) return;
-      document.querySelectorAll(".rbtn").forEach(x=>x.classList.remove("active"));
-      this.classList.add("active"); rounds=+this.dataset.r;
-      const est=Math.round((EXS.reduce((a,e)=>a+e.t,0)*rounds + REST*(EXS.length*rounds-1))/60);
-      $("timer-note").textContent="每動作 30 秒、休息 15 秒,共 "+rounds+" 輪 ≈ "+est+" 分鐘";
-      reset();
-    }));
-    buildQueue();
+    document.querySelectorAll(".rbtn").forEach(b=>b.addEventListener("click",function(){if(running)return;document.querySelectorAll(".rbtn").forEach(x=>x.classList.remove("active"));this.classList.add("active");rounds=+this.dataset.r;note();reset();}));
+    document.querySelectorAll(".rchip").forEach(b=>b.addEventListener("click",function(){if(running)return;ri=+this.dataset.rt;renderRoutine();note();reset();}));
+    document.querySelectorAll(".gbtn").forEach(b=>b.addEventListener("click",function(){data.fitGoal=+this.dataset.g;save();renderFitness();}));
+    document.querySelectorAll(".sexbtn").forEach(b=>b.addEventListener("click",function(){data.settings=data.settings||{};data.settings.gender=(data.settings.gender===this.dataset.sex)?"":this.dataset.sex;save();applyGender();}));
+    renderRoutine();buildQueue();note();reset();
   })();
 
   // ---- renders ----
@@ -1011,6 +1056,8 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     ringBar.style.stroke=pct<=0.7?"var(--primary)":(pct<=1?"var(--accent)":"var(--coral)");
     $("ring-num").textContent=total;$("ring-of").textContent="/ "+goal+" kcal";
     $("ring-over").textContent=total>goal?("超過 "+(total-goal)+" kcal"):"";
+    const burn=dayBurn(selected),netEl=$("ring-net");
+    if(netEl)netEl.textContent=burn>0?("🔥 已含運動消耗 −"+burn+" kcal"):"";
   }
   function renderList(){
     const ul=$("list");if(!ul)return;const items=dayItems(selected);ul.innerHTML="";
@@ -1096,7 +1143,34 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     const k=key(selected);data.records[k]=(data.records[k]||[]).filter(i=>i.id!==id);
     if(!data.records[k].length)delete data.records[k];save();renderAll();
   }
-  function renderAll(){renderCalendar();renderLabel();renderRing();renderList();renderStats();renderChart();renderWater();renderPlate();renderStreak();renderMacros();renderWeightChart();}
+  function applyGender(){
+    const g=(data.settings&&data.settings.gender)||"";
+    document.body.classList.remove("gender-m","gender-f");
+    if(g==="m")document.body.classList.add("gender-m");
+    else if(g==="f")document.body.classList.add("gender-f");
+    document.querySelectorAll(".sexbtn").forEach(b=>b.classList.toggle("active",b.dataset.sex===g));
+  }
+  function renderFitness(){
+    const ws=data.workouts||[],goal=data.fitGoal||4;
+    const now=new Date(),dow=(now.getDay()+6)%7,start=new Date(now);
+    start.setHours(0,0,0,0);start.setDate(now.getDate()-dow);
+    let cnt=0,kc=0;
+    ws.forEach(w=>{const wd=new Date(w.d+"T00:00:00");if(wd>=start){cnt++;kc+=w.kcal||0;}});
+    let el=$("fit-week-count");if(el)el.textContent=cnt;
+    el=$("fit-week-kcal");if(el)el.textContent=kc;
+    el=$("fit-goal-n");if(el)el.textContent=goal;
+    const Cc=2*Math.PI*32,bar=$("fit-ring-bar");
+    if(bar){bar.style.strokeDasharray=Cc;const pct=goal>0?Math.min(cnt/goal,1):0;bar.style.strokeDashoffset=Cc*(1-pct);}
+    el=$("fit-ring-pct");if(el)el.textContent=cnt;
+    document.querySelectorAll(".gbtn").forEach(b=>b.classList.toggle("active",+b.dataset.g===goal));
+    const log=$("fit-log");
+    if(log){
+      const recent=ws.slice(-6).reverse();
+      if(!recent.length){log.innerHTML='<li class="empty">完成一次訓練就會記錄在這裡</li>';}
+      else{log.innerHTML=recent.map(w=>{const md=w.d.slice(5).replace("-","/");return '<li><span>'+md+' · '+w.routine+'</span><span class="fl-r">'+w.mins+' 分 · '+w.kcal+' kcal</span></li>';}).join("");}
+    }
+  }
+  function renderAll(){renderCalendar();renderLabel();renderRing();renderList();renderStats();renderChart();renderWater();renderPlate();renderStreak();renderMacros();renderWeightChart();renderFitness();applyGender();}
 
   $("prev-week")?.addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()-7);renderAll();});
   $("next-week")?.addEventListener("click",()=>{weekStart.setDate(weekStart.getDate()+7);renderAll();});
@@ -1305,7 +1379,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   $("import-file")?.addEventListener("change",function(){
     const file=this.files[0];if(!file)return;const r=new FileReader();
     r.onload=()=>{try{const d=JSON.parse(r.result);
-      data={records:d.records||{},water:d.water||{},goal:d.goal||2000,weight:d.weight||"",height:d.height||"",plate:d.plate||{},weights:d.weights||{},settings:d.settings||{}};
+      data={records:d.records||{},water:d.water||{},goal:d.goal||2000,weight:d.weight||"",height:d.height||"",plate:d.plate||{},weights:d.weights||{},settings:d.settings||{},workouts:d.workouts||[],fitGoal:d.fitGoal||4};
       save();renderAll();toast("✅ 匯入成功!");
     }catch(e){toast("匯入失敗:檔案格式不對");}};
     r.readAsText(file);this.value="";
