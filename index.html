@@ -418,6 +418,46 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 .diet-src li{font-size:12px;color:var(--muted);line-height:1.6}
 .diet-src b{color:var(--ink)}
 .diet-src .src-from{color:var(--primary)}
+.hc-today{background:var(--primary-soft);border-radius:16px;padding:18px;text-align:center}
+.hc-badge{display:inline-block;font-family:var(--num);font-size:11px;color:#fff;background:var(--primary);border-radius:999px;padding:3px 11px;margin-bottom:10px}
+.hc-emoji{font-size:38px;line-height:1}
+.hc-title{font-family:var(--num);font-size:17px;margin-top:6px}
+.hc-text{font-size:13px;color:var(--ink);line-height:1.65;margin-top:6px}
+.hc-src{font-size:11px;color:var(--muted);margin-top:8px}
+#hc-next{margin-top:13px}
+.hc-all{margin-top:14px}
+.hc-all ul{list-style:none;margin:11px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.hc-all li{font-size:12.5px;color:var(--muted);line-height:1.6}
+.hc-all b{color:var(--ink)}
+.hc-banner{display:flex;align-items:center;gap:10px;background:var(--accent-soft);border:1px solid var(--line);border-radius:14px;padding:11px 14px;margin-bottom:16px;cursor:pointer}
+.hcb-emoji{font-size:22px;flex:0 0 auto}
+.hc-banner .hcb-text{font-size:12.5px;color:var(--ink);line-height:1.5}
+.hc-banner b{font-family:var(--num)}
+.hc-banner::after{content:"›";margin-left:auto;color:var(--muted);font-size:18px;flex:0 0 auto}
+.gr-presets{margin:4px 0 18px}
+.gr-presets-label{font-family:var(--num);font-size:13px;color:var(--ink);margin-bottom:10px}
+.gr-chips{display:flex;flex-wrap:wrap;gap:8px}
+.gr-chip{display:flex;flex-direction:column;align-items:flex-start;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:8px 13px;cursor:pointer;transition:.15s}
+.gr-chip:hover{border-color:var(--primary);transform:translateY(-1px)}
+.grc-name{font-family:var(--num);font-size:13px;color:var(--ink)}
+.grc-tag{font-size:10.5px;color:var(--muted)}
+.gr-tip{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:11px;background:var(--primary-soft);border-radius:10px;padding:9px 12px}
+.gr-fav{margin-top:14px}
+.gr-fav-label{font-family:var(--num);font-size:13px;color:var(--ink);margin-bottom:9px}
+.gr-fav-add{display:flex;gap:8px;flex-wrap:wrap}
+#gr-fav-name{flex:1;min-width:120px;font-family:var(--num);font-size:13px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink)}
+.gr-fav-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.gr-favchip{position:relative;padding-right:26px}
+.gr-fav-del{position:absolute;top:4px;right:5px;width:17px;height:17px;border:0;background:transparent;color:var(--muted);cursor:pointer;font-size:15px;line-height:1;padding:0}
+.gr-fav-del:hover{color:#C45B5B}
+.gr-fav-empty{font-size:11.5px;color:var(--muted)}
+.est-btns{display:flex;gap:8px;margin-bottom:2px}
+.est-btns .btn{flex:1;white-space:nowrap}
+.ai-url-field{margin-top:16px}
+.ai-url-field label{display:block;font-size:12.5px;color:var(--ink);margin-bottom:6px;font-family:var(--num)}
+#ai-url{width:100%;font-size:12.5px;padding:9px 12px;border:1px solid var(--line);border-radius:11px;background:var(--surface);color:var(--ink);box-sizing:border-box}
+.f-esthint{display:none;font-size:12px;color:var(--muted);line-height:1.55;margin:2px 0 10px;background:var(--primary-soft);border-radius:9px;padding:8px 11px}
+.f-esthint.show{display:block}
 
 @keyframes pop{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media (max-width:1180px){
@@ -503,6 +543,10 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
       <!-- DIET -->
       <div id="diet-tab" class="tab-pane active">
+        <div class="hc-banner" id="hc-banner">
+          <span class="hcb-emoji" id="hcb-emoji">🍽️</span>
+          <span class="hcb-text"><b id="hcb-title"></b> <span id="hcb-text"></span></span>
+        </div>
         <div class="ring-card" id="p-ring">
           <div class="ring">
             <svg viewBox="0 0 220 220" width="220" height="220">
@@ -535,6 +579,8 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
           <h3><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 19l1.3-4.3L15.5 5.5l3 3-9.2 9.2L5 19Z" fill="#F2C98E"/><path d="M14.5 6.5l3 3" stroke="#E6A368" stroke-width="1.6" stroke-linecap="round"/><path d="M5 19l1.3-4.3 3 3L5 19Z" fill="#5DA67C"/></svg></span> 手動添加飲食</h3>
           <div class="field"><input type="text" id="f-name" placeholder="食物名稱(如:煎雞腿)"></div>
           <div class="field"><input type="number" id="f-cal" placeholder="卡路里(kcal)" min="1"></div>
+          <div class="est-btns"><button class="btn ghost" id="f-est" type="button">💡 估算</button><button class="btn ghost" id="f-ai" type="button">🤖 AI 估算</button></div>
+          <div class="f-esthint" id="f-esthint"></div>
           <button class="btn" id="add-manual">添加記錄</button>
         </div>
 
@@ -626,6 +672,20 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
             <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><rect x="13.4" y="2.8" width="2" height="9" rx="1" transform="rotate(20 14.4 7)" fill="#E6A368"/><path d="M11 6.6C8.9 4 5.3 4.7 5.3 4.7 5.6 8 8.5 8.8 11 6.6Z" fill="#79B17A"/><path d="M6.8 7.5h10.4l-1.3 13.1a1.7 1.7 0 0 1-1.7 1.5h-4.4a1.7 1.7 0 0 1-1.7-1.5L6.8 7.5Z" fill="#A7CDB0"/><path d="M7.2 11h9.6l-1 9.6a1.7 1.7 0 0 1-1.7 1.5h-4.2a1.7 1.7 0 0 1-1.7-1.5L7.2 11Z" fill="#5DA67C"/></svg></div>
             <h3>綠拿鐵熱量計算機</h3>
             <p class="desc">選好食材,放進冰沙機按 OK 現打成冰沙,算出這杯的總熱量。</p>
+          </div>
+
+          <div class="gr-presets">
+            <div class="gr-presets-label">🌟 推薦食譜・點一下直接現打</div>
+            <div class="gr-chips" id="gr-chips"></div>
+            <div class="gr-fav">
+              <div class="gr-fav-label">💚 我的收藏</div>
+              <div class="gr-fav-add">
+                <input type="text" id="gr-fav-name" placeholder="幫這杯特調取名…" maxlength="12">
+                <button class="btn ghost" id="gr-fav-save">💾 收藏目前搭配</button>
+              </div>
+              <div class="gr-fav-chips" id="gr-fav-chips"></div>
+            </div>
+            <p class="gr-tip">小提醒:綠拿鐵連渣一起喝、保留膳食纖維,比濾渣果汁更好;適合當點心或早餐的一部分,別讓它取代正餐全部的蛋白質與全穀。現打現喝風味最佳。</p>
           </div>
 
           <div class="blender-stage">
@@ -748,6 +808,25 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
             </ul>
           </details>
         </div>
+        <div class="sub-feature-card">
+          <div class="f-head">
+            <div class="feature-icon-wrapper"><svg viewBox="0 0 24 24"><path d="M12 20S4 14.5 4 9.2A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 8 2.2C20 14.5 12 20 12 20Z" fill="#E58B7B"/><path d="M6.5 12h3l1.2-2.4 1.6 4 1.2-1.6h3.5" fill="none" stroke="#FBFBF7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <h3>健康觀念</h3>
+            <p class="desc">每天一則有依據的健康小觀念,搭配來源,慢慢養成好習慣。</p>
+          </div>
+          <div class="hc-today">
+            <div class="hc-badge">今日觀念</div>
+            <div class="hc-emoji" id="hc-emoji">🍽️</div>
+            <div class="hc-title" id="hc-title">均衡餐盤</div>
+            <div class="hc-text" id="hc-text"></div>
+            <div class="hc-src" id="hc-src"></div>
+            <button class="btn ghost" id="hc-next">換一則 ↻</button>
+          </div>
+          <details class="diet-src hc-all">
+            <summary>📚 全部健康觀念與來源</summary>
+            <ul id="hc-list"></ul>
+          </details>
+        </div>
       </div>
     </div>
   </main>
@@ -805,6 +884,11 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
         <button class="btn ghost" id="exp-csv">匯出 CSV</button>
       </div>
       <label class="btn accent" for="import-file" style="margin-top:8px;display:block;text-align:center">匯入備份<input type="file" id="import-file" accept="application/json" hidden></label>
+      <div class="ai-url-field">
+        <label for="ai-url">🤖 AI 估算 API 網址(選填・Cloudflare Worker)</label>
+        <input type="text" id="ai-url" placeholder="https://你的worker.workers.dev" autocomplete="off">
+        <p class="backup-note">填入後,手動添加的「🤖 AI 估算」就能在你部署的網站上使用任意食物估算;未填則僅限此預覽環境。設定方式見另附的 worker.js。</p>
+      </div>
     </div>
   </aside>
 </div>
@@ -838,9 +922,9 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
 
   function load(){
     try{const raw=localStorage.getItem(KEY);
-      if(raw){const d=JSON.parse(raw);d.records=d.records||{};d.water=d.water||{};d.goal=d.goal||2000;d.plate=d.plate||{};d.weights=d.weights||{};d.settings=d.settings||{};d.workouts=d.workouts||[];d.fitGoal=d.fitGoal||4;return d;}
+      if(raw){const d=JSON.parse(raw);d.records=d.records||{};d.water=d.water||{};d.goal=d.goal||2000;d.plate=d.plate||{};d.weights=d.weights||{};d.settings=d.settings||{};d.workouts=d.workouts||[];d.fitGoal=d.fitGoal||4;d.greenFav=d.greenFav||[];return d;}
     }catch(e){}
-    return {records:{},water:{},goal:2000,weight:"",height:"",plate:{},weights:{},settings:{},workouts:[],fitGoal:4};
+    return {records:{},water:{},goal:2000,weight:"",height:"",plate:{},weights:{},settings:{},workouts:[],fitGoal:4,greenFav:[]};
   }
   function save(){try{localStorage.setItem(KEY,JSON.stringify(data));}catch(e){}}
 
@@ -1247,6 +1331,74 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     render();
   })();
 
+  // ---- 健康觀念 ----
+  (function(){
+    if(!$("hc-title"))return;
+    const HEALTH=[
+      {e:"🍽️",t:"均衡餐盤",d:"每餐目標:半盤蔬果、¼ 全榖雜糧、¼ 優質蛋白(魚、雞、豆、蛋)。",s:"國民健康署「我的餐盤」、哈佛健康餐盤"},
+      {e:"🥤",t:"少喝含糖飲",d:"游離糖建議低於每日總熱量 10%,降到 5%(約 25 克/6 茶匙)以下更好。",s:"WHO 游離糖指引(who.int)"},
+      {e:"🌈",t:"蔬果多色",d:"每天吃到多份、不同顏色的蔬果,纖維與植化素更齊全。",s:"國民健康署 蔬果彩虹 579"},
+      {e:"🍚",t:"全榖換精緻",d:"把白飯白麵換成糙米、燕麥、地瓜,血糖較穩、也更耐餓。",s:"哈佛 The Nutrition Source"},
+      {e:"💧",t:"口渴先喝水",d:"想吃零食前先喝杯水;口渴常被誤當成肚子餓。",s:"一般營養建議"},
+      {e:"🏃",t:"每週 150 分鐘",d:"成人每週至少 150 分鐘中等強度有氧,另加每週 2 天肌力訓練。",s:"WHO 身體活動指引(who.int)"},
+      {e:"🪑",t:"久坐要起身",d:"每坐 30–60 分鐘起來動一動,對代謝與血糖都有幫助。",s:"WHO 身體活動指引"},
+      {e:"💪",t:"肌力顧代謝",d:"阻力訓練保留肌肉、墊高基礎代謝,減重時尤其重要。",s:"WHO／運動科學共識"},
+      {e:"😴",t:"睡飽 7 小時",d:"成人每晚建議至少 7 小時;長期睡不夠會增加食慾、不利體重。",s:"美國 CDC 睡眠建議(cdc.gov)"},
+      {e:"⚖️",t:"溫和減重",d:"每週減約 0.5–1 公斤最穩健,靠每日約 500 大卡的小赤字。",s:"美國 CDC Healthy Weight(cdc.gov)"},
+      {e:"🧘",t:"細嚼慢嚥",d:"放慢吃飯、專心進食,較容易感到飽、避免不知不覺吃太多。",s:"一般營養建議"}
+    ];
+    const n=new Date(),start=new Date(n.getFullYear(),0,0);
+    const todayIdx=Math.floor((n-start)/86400000)%HEALTH.length;
+    let idx=todayIdx;
+    (function(){const b=HEALTH[todayIdx];if($("hcb-emoji")){$("hcb-emoji").textContent=b.e;$("hcb-title").textContent=b.t;$("hcb-text").textContent=b.d;}const ban=$("hc-banner");if(ban)ban.addEventListener("click",()=>{const t=[...document.querySelectorAll("[onclick]")].find(x=>(x.getAttribute("onclick")||"").includes("'plate'"));if(t)t.click();});})();
+    function show(){const h=HEALTH[((idx%HEALTH.length)+HEALTH.length)%HEALTH.length];$("hc-emoji").textContent=h.e;$("hc-title").textContent=h.t;$("hc-text").textContent=h.d;$("hc-src").textContent="來源:"+h.s;}
+    const nx=$("hc-next");if(nx)nx.addEventListener("click",()=>{idx=(idx+1)%HEALTH.length;show();});
+    const list=$("hc-list");if(list)list.innerHTML=HEALTH.map(h=>'<li><b>'+h.e+' '+h.t+'</b> — '+h.d+'<span class="src-from"> 來源:'+h.s+'</span></li>').join("");
+    show();
+  })();
+
+  // ---- 綠拿鐵推薦食譜 + 我的收藏 ----
+  (function(){
+    const box=$("gr-chips"); if(!box) return;
+    const PRESETS=[
+      {n:"經典綠拿鐵",v:"有機菠菜",f:"富士蘋果",l:"高纖無糖豆漿",tag:"清爽入門・高纖"},
+      {n:"莓果抗氧",v:"羽衣甘藍",f:"藍莓",l:"無糖優格",tag:"花青素・維生素C"},
+      {n:"熱帶補C",v:"小黃瓜",f:"鳳梨",l:"純淨水/椰子水",tag:"維生素C・清爽"},
+      {n:"高蛋白飽足",v:"有機菠菜",f:"熟香蕉",l:"低脂鮮乳",tag:"蛋白質・耐餓"},
+      {n:"順暢高纖",v:"羽衣甘藍",f:"火龍果",l:"燕麥奶",tag:"膳食纖維"},
+      {n:"美顏C＋",v:"青江菜",f:"奇異果",l:"無糖杏仁奶",tag:"維生素C・低卡"},
+      {n:"輕卡消暑",v:"西洋芹",f:"柳橙",l:"純淨水/椰子水",tag:"低熱量・補水"}
+    ];
+    function setSel(id,name){const s=$(id);if(!s)return;for(let i=0;i<s.options.length;i++){if(s.options[i].textContent.includes(name)){s.selectedIndex=i;return;}}}
+    function valOf(id,name){const s=$(id);if(!s)return 0;for(const o of s.options){if(o.textContent.includes(name))return parseInt(o.value)||0;}return 0;}
+    function kcalOf(v,f,l){return valOf("green-veg",v)+valOf("green-fruit",f)+valOf("green-liquid",l);}
+    function apply(v,f,l){setSel("green-veg",v);setSel("green-fruit",f);setSel("green-liquid",l);if(window.calculateGreenSmoothie)window.calculateGreenSmoothie();const res=$("green-result");if(res)res.scrollIntoView({behavior:"smooth",block:"nearest"});}
+    box.innerHTML=PRESETS.map((pp,i)=>'<button class="gr-chip" data-i="'+i+'"><span class="grc-name">'+pp.n+'</span><span class="grc-tag">'+pp.tag+' · ≈'+kcalOf(pp.v,pp.f,pp.l)+' kcal</span></button>').join("");
+    box.querySelectorAll(".gr-chip").forEach(b=>b.addEventListener("click",function(){const pp=PRESETS[+this.dataset.i];apply(pp.v,pp.f,pp.l);}));
+    function curName(id){const s=$(id);return s&&s.selectedOptions[0]?s.selectedOptions[0].textContent.split(" (")[0]:"";}
+    function renderFav(){
+      const wrap=$("gr-fav-chips");if(!wrap)return;
+      const list=(data.greenFav||[]);
+      if(!list.length){wrap.innerHTML='<span class="gr-fav-empty">還沒有收藏。選好搭配後按「收藏目前搭配」存起來。</span>';return;}
+      wrap.innerHTML=list.map((r,i)=>'<span class="gr-chip gr-favchip" data-i="'+i+'"><span class="grc-name">'+r.n+'</span><span class="grc-tag">≈'+kcalOf(r.v,r.f,r.l)+' kcal</span><button class="gr-fav-del" data-d="'+i+'" title="刪除">×</button></span>').join("");
+      wrap.querySelectorAll(".gr-favchip").forEach(el=>el.addEventListener("click",function(e){if(e.target.classList.contains("gr-fav-del"))return;const r=data.greenFav[+this.dataset.i];apply(r.v,r.f,r.l);}));
+      wrap.querySelectorAll(".gr-fav-del").forEach(btn=>btn.addEventListener("click",function(e){e.stopPropagation();data.greenFav.splice(+this.dataset.d,1);save();renderFav();}));
+    }
+    const sv=$("gr-fav-save");
+    if(sv)sv.addEventListener("click",()=>{
+      const v=curName("green-veg"),f=curName("green-fruit"),l=curName("green-liquid");
+      if(!v||!f||!l)return;
+      const inp=$("gr-fav-name");let nm=(inp&&inp.value.trim())||"";
+      if(!nm)nm=v+"＋"+f;
+      data.greenFav=data.greenFav||[];
+      data.greenFav.push({n:nm,v:v,f:f,l:l});
+      if(data.greenFav.length>20)data.greenFav=data.greenFav.slice(-20);
+      save();if(inp)inp.value="";renderFav();
+      if(typeof toast==="function")toast("已收藏:"+nm);
+    });
+    renderFav();
+  })();
+
   // ---- renders ----
   function renderCalendar(){
     const box=$("days");if(!box)return;box.innerHTML="";const today=new Date();
@@ -1398,10 +1550,63 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     const nameEl=$("f-name"),calEl=$("f-cal");const name=nameEl.value.trim(),cal=parseInt(calEl.value,10);
     if(!name){toast("請輸入食物名稱");nameEl.focus();return;}
     if(!cal||cal<1){toast("請輸入正確的卡路里");calEl.focus();return;}
-    addItem(name,cal);nameEl.value="";calEl.value="";nameEl.focus();
+    addItem(name,cal);nameEl.value="";calEl.value="";const eh=$("f-esthint");if(eh){eh.textContent="";eh.classList.remove("show");}nameEl.focus();
   }
   $("add-manual")?.addEventListener("click",submitManual);
   $("f-cal")?.addEventListener("keydown",e=>{if(e.key==="Enter")submitManual();});
+
+  // 手動新增・熱量估算(離線內建食物庫)
+  (function(){
+    const estBtn=$("f-est"); if(!estBtn) return;
+    const EXTRA=[
+      ["炒飯",650],["炒麵",550],["燴飯",600],["咖哩飯",700],["漢堡",500],["薯條",380],["披薩一片",285],["三明治",320],["鮪魚三明治",350],["潛艇堡",450],["義大利麵",600],["焗烤飯",550],["鐵板麵",600],["炒米粉",400],["油飯",450],["廣東粥",150],["稀飯",130],["蘿蔔糕",200],["鍋燒意麵",550],["雞排飯",850],["香腸",250],["滷蛋",75],["茶葉蛋",70],["雞塊",280],["烤雞翅",100],["貢丸湯",120],["蛤蜊湯",80],["玉米濃湯",180],["酸辣湯",120],["蛋糕",350],["提拉米蘇",400],["甜甜圈",280],["鬆餅",350],["雞蛋糕",200],["紅豆餅",180],["布丁",150],["冰淇淋",140],["鳳梨酥",200],["蛋黃酥",350],["爆米花",150],["美式咖啡",10],["拿鐵",130],["卡布奇諾",120],["可樂",140],["啤酒",150],["養樂多",70],["運動飲料",125],["柳橙汁",120],["西瓜",85],["芒果",100],["火龍果",70],["奇異果",60],["草莓",40],["關東煮",200],["壽司",350],["生魚片",200],["牛排",450],["雞肉飯",450],["滷味",400]
+    ];
+    const DB=Object.values(FOODS).flat().map(a=>[a[0],a[1]]).concat(EXTRA);
+    const KW=[["炒飯",650],["蛋炒飯",650],["炒麵",550],["便當",750],["焗烤",550],["咖哩",700],["義大利麵",600],["拌麵",450],["乾麵",420],["湯麵",380],["米粉",380],["羹",300],["稀飯",150],["粥",150],["漢堡",500],["薯條",380],["披薩",285],["比薩",285],["三明治",320],["吐司",95],["麵包",250],["蛋糕",350],["甜甜圈",280],["餅乾",120],["巧克力",150],["洋芋片",150],["薯片",150],["沙拉",120],["火鍋",600],["壽司",350],["生魚片",200],["丼",650],["炸",450],["滷味",400],["鹽酥雞",500],["雞排",500],["珍奶",500],["珍珠",480],["奶茶",400],["拿鐵",130],["咖啡",15],["可樂",140],["汽水",140],["果汁",120],["冰淇淋",140],["飯",350],["麵",400],["湯",90],["茶",30]];
+    function estimate(q){
+      q=(q||"").trim(); if(!q)return null;
+      for(const a of DB){if(a[0]===q)return {kcal:a[1],ref:a[0]};}
+      let best=null;
+      for(const a of DB){if(q.indexOf(a[0])>=0||a[0].indexOf(q)>=0){if(!best||a[0].length>best.ref.length)best={kcal:a[1],ref:a[0]};}}
+      if(best)return best;
+      for(const a of KW){if(q.indexOf(a[0])>=0)return {kcal:a[1],ref:a[0],rough:true};}
+      return null;
+    }
+    function showEst(){
+      const name=$("f-name").value.trim(),hint=$("f-esthint");
+      if(!name){toast("先輸入食物名稱");$("f-name").focus();return;}
+      const r=estimate(name);
+      if(r){$("f-cal").value=r.kcal;hint.textContent="💡 估約 "+r.kcal+" kcal(參考:"+r.ref+")"+(r.rough?"・粗估僅供參考":"")+"。可再手動微調。";}
+      else{hint.textContent="🔍 找不到對應食物,試試更常見的名稱(如「雞腿便當」「珍奶」),或直接手動輸入。";}
+      hint.classList.add("show");
+    }
+    const aiBtn=$("f-ai");
+    async function aiEstimate(){
+      const name=$("f-name").value.trim(),hint=$("f-esthint");
+      if(!name){toast("先輸入食物名稱");$("f-name").focus();return;}
+      const url=(data.settings&&data.settings.aiUrl)||"https://api.anthropic.com/v1/messages";
+      hint.textContent="🤖 AI 估算中…";hint.classList.add("show");if(aiBtn)aiBtn.disabled=true;
+      try{
+        const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:300,messages:[{role:"user",content:"你是台灣的營養估算助手。估算這個食物常見的『一份/一人份』總熱量。只回一個 JSON,不要任何其他文字或 markdown,格式:{\"kcal\":整數,\"portion\":\"份量假設\",\"note\":\"一句說明\"}。食物名稱:"+name}]})});
+        if(!res.ok)throw new Error("伺服器回應 "+res.status);
+        const d=await res.json();
+        const text=(d.content||[]).map(x=>x.text||"").join("");
+        const si=text.indexOf("{"),ei=text.lastIndexOf("}");
+        if(si<0||ei<0)throw new Error("回應格式無法解析");
+        const obj=JSON.parse(text.slice(si,ei+1));
+        const kc=Math.round(obj.kcal);
+        if(!kc||kc<1)throw new Error("無法取得熱量數值");
+        $("f-cal").value=kc;
+        hint.textContent="🤖 AI 估約 "+kc+" kcal("+(obj.portion||"一份")+")"+(obj.note?"・"+obj.note:"")+"。可再手動微調。";
+      }catch(err){
+        const msg=String((err&&err.message)||err);
+        hint.textContent="⚠️ AI 估算失敗:"+(/Failed to fetch|NetworkError|TypeError|Load failed/.test(msg)?"無法連線。部署在 GitHub Pages 需先到下方『資料備份』填入你的 Cloudflare Worker 網址;或改用 💡 離線估算 / 手動輸入。":msg);
+      }finally{if(aiBtn)aiBtn.disabled=false;}
+    }
+    estBtn.addEventListener("click",showEst);
+    if(aiBtn)aiBtn.addEventListener("click",aiEstimate);
+    $("f-name").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();if(!$("f-cal").value)showEst();else $("f-cal").focus();}});
+  })();
 
   $("calc-tdee")?.addEventListener("click",()=>{
     const w=parseFloat($("t-weight").value),h=parseFloat($("t-height").value);
@@ -1599,11 +1804,13 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
   $("import-file")?.addEventListener("change",function(){
     const file=this.files[0];if(!file)return;const r=new FileReader();
     r.onload=()=>{try{const d=JSON.parse(r.result);
-      data={records:d.records||{},water:d.water||{},goal:d.goal||2000,weight:d.weight||"",height:d.height||"",plate:d.plate||{},weights:d.weights||{},settings:d.settings||{},workouts:d.workouts||[],fitGoal:d.fitGoal||4};
+      data={records:d.records||{},water:d.water||{},goal:d.goal||2000,weight:d.weight||"",height:d.height||"",plate:d.plate||{},weights:d.weights||{},settings:d.settings||{},workouts:d.workouts||[],fitGoal:d.fitGoal||4,greenFav:d.greenFav||[]};
       save();renderAll();toast("✅ 匯入成功!");
     }catch(e){toast("匯入失敗:檔案格式不對");}};
     r.readAsText(file);this.value="";
   });
+  const aiUrlEl=$("ai-url");
+  if(aiUrlEl){aiUrlEl.value=(data.settings&&data.settings.aiUrl)||"";aiUrlEl.addEventListener("input",()=>{data.settings=data.settings||{};data.settings.aiUrl=aiUrlEl.value.trim();save();});}
 
   // ---- 喝水提醒(瀏覽器通知) ----
   let remindTimer;
