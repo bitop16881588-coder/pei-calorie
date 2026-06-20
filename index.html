@@ -579,7 +579,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
           <h3><span class="ico"><svg viewBox="0 0 24 24"><path d="M5 19l1.3-4.3L15.5 5.5l3 3-9.2 9.2L5 19Z" fill="#F2C98E"/><path d="M14.5 6.5l3 3" stroke="#E6A368" stroke-width="1.6" stroke-linecap="round"/><path d="M5 19l1.3-4.3 3 3L5 19Z" fill="#5DA67C"/></svg></span> 手動添加飲食</h3>
           <div class="field"><input type="text" id="f-name" placeholder="食物名稱(如:煎雞腿)"></div>
           <div class="field"><input type="number" id="f-cal" placeholder="卡路里(kcal)" min="1"></div>
-          <div class="est-btns"><button class="btn ghost" id="f-est" type="button">💡 估算</button><button class="btn ghost" id="f-ai" type="button">🤖 AI 估算</button></div>
+          <div class="est-btns"><button class="btn ghost" id="f-est" type="button">💡 估算熱量</button></div>
           <div class="f-esthint" id="f-esthint"></div>
           <button class="btn" id="add-manual">添加記錄</button>
         </div>
@@ -884,11 +884,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
         <button class="btn ghost" id="exp-csv">匯出 CSV</button>
       </div>
       <label class="btn accent" for="import-file" style="margin-top:8px;display:block;text-align:center">匯入備份<input type="file" id="import-file" accept="application/json" hidden></label>
-      <div class="ai-url-field">
-        <label for="ai-url">🤖 AI 估算 API 網址(選填・Cloudflare Worker)</label>
-        <input type="text" id="ai-url" placeholder="https://你的worker.workers.dev" autocomplete="off">
-        <p class="backup-note">填入後,手動添加的「🤖 AI 估算」就能在你部署的網站上使用任意食物估算;未填則僅限此預覽環境。設定方式見另附的 worker.js。</p>
-      </div>
+
     </div>
   </aside>
 </div>
@@ -1584,7 +1580,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     async function aiEstimate(){
       const name=$("f-name").value.trim(),hint=$("f-esthint");
       if(!name){toast("先輸入食物名稱");$("f-name").focus();return;}
-      const url=(data.settings&&data.settings.aiUrl)||"https://api.anthropic.com/v1/messages";
+      const url=(data.settings&&data.settings.aiUrl)||"https://dailycal-ai.bitop16881588.workers.dev/";
       hint.textContent="🤖 AI 估算中…";hint.classList.add("show");if(aiBtn)aiBtn.disabled=true;
       try{
         const res=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-6",max_tokens:300,messages:[{role:"user",content:"你是台灣的營養估算助手。估算這個食物常見的『一份/一人份』總熱量。只回一個 JSON,不要任何其他文字或 markdown,格式:{\"kcal\":整數,\"portion\":\"份量假設\",\"note\":\"一句說明\"}。食物名稱:"+name}]})});
@@ -1810,7 +1806,7 @@ input:focus,.fancy-select:focus{border-color:var(--primary);box-shadow:0 0 0 3px
     r.readAsText(file);this.value="";
   });
   const aiUrlEl=$("ai-url");
-  if(aiUrlEl){aiUrlEl.value=(data.settings&&data.settings.aiUrl)||"";aiUrlEl.addEventListener("input",()=>{data.settings=data.settings||{};data.settings.aiUrl=aiUrlEl.value.trim();save();});}
+  if(aiUrlEl){aiUrlEl.value=(data.settings&&data.settings.aiUrl)||"https://dailycal-ai.bitop16881588.workers.dev/";aiUrlEl.addEventListener("input",()=>{data.settings=data.settings||{};data.settings.aiUrl=aiUrlEl.value.trim();save();});}
 
   // ---- 喝水提醒(瀏覽器通知) ----
   let remindTimer;
